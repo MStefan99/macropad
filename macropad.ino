@@ -1,9 +1,20 @@
 #include "Arduino.h"
 
 
-constexpr static uint32_t debounceTime {20};
+constexpr static uint32_t buttonDebounceTime {20};
+constexpr static uint32_t encoderDebounceTime {5};
 
-uint32_t buttonTimes[15] {0};
+
+constexpr static int8_t encoderTransitions[4][4] {
+  { 0, -1,  1,  0},
+  { 1,  0,  0, -1},
+  {-1,  0,  0,  1},
+  { 0,  1, -1,  0}
+};
+
+static uint32_t buttonTimes[14] {0};
+static uint8_t encoderPosition = 0;
+static int32_t encoderCount {0};
 
 
 void buttonHandler(void* pinPtr) {
@@ -12,7 +23,7 @@ void buttonHandler(void* pinPtr) {
   auto buttonTime = buttonTimes[pin];
   buttonTimes[pin] = millis();
 
-  if (millis() - buttonTime < debounceTime) {
+  if (millis() - buttonTime < buttonDebounceTime) {
     return;
   }
 
@@ -21,17 +32,16 @@ void buttonHandler(void* pinPtr) {
 }
 
 void encoderHandler(void* pinPtr) {
-  uint8_t pin {static_cast<uint8_t>(reinterpret_cast<int>(pinPtr) - 17)};
+  auto buttonTime = buttonTimes[13];
+  buttonTimes[13] = millis();
 
-  auto buttonTime = buttonTimes[pin];
-  buttonTimes[pin] = millis();
-
-  if (millis() - buttonTime < debounceTime) {
+  if (millis() - buttonTime < encoderDebounceTime) {
     return;
   }
 
-  Serial.print("Encoder ");
-  Serial.println(static_cast<int>(pin));
+  uint8_t newPosition = (static_cast<uint8_t>(digitalRead(17)) << 1) | (static_cast<uint8_t>(digitalRead(18)));
+  encoderCount -= encoderTransitions[encoderPosition][newPosition];
+  encoderPosition = newPosition;
 }
 
 void setup() {
