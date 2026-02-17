@@ -1,9 +1,9 @@
 #include "macropad.hpp"
-#include "pluginDefinitions/TestPluginDefinition.hpp"
+#include "pluginDefinitions/kritaQuickDefinition.hpp"
 
 
-static auto testPlugin {
-  QuickPlugin {pluginEnvironment, testPluginDefinition}
+static auto kritaQuickPlugin {
+  QuickPlugin {pluginEnvironment, kritaQuickDefinition}
 };
 
-Plugin* definedPlugins[] {&testPlugin};
+Plugin* definedPlugins[] {&kritaQuickPlugin};
