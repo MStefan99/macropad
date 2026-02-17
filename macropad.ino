@@ -32,20 +32,32 @@ constexpr static int8_t encoderTransitions[4][4] {
 
 static Adafruit_SH1106G  display = Adafruit_SH1106G(128, 64, OLED_MOSI, OLED_CLK, OLED_DC, OLED_RST, OLED_CS);
 static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
-static PinStatus         pinStatuses[13] {};
-static uint8_t           encoderPosition {0};
-static int32_t           encoderCount {0};
-static Plugin*           activePlugin {nullptr};
+
+static PinStatus pinStatuses[13] {};
+static uint8_t   encoderPosition {0};
+static int32_t   encoderCount {0};
+
+static Plugin* activePlugin {nullptr};
+
+const static uint8_t* dispatchQueue {nullptr};
+static bool           dispatched {false};
+static uint32_t       dispatchStart {0};
+static uint32_t       dispatchDuration {0};
 
 void pluginDisplayCb() {
 	display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
 	display.display();
 }
 
+void dispatchCb(const uint8_t keys[6], uint32_t duration) {
+	dispatchQueue = keys;
+	dispatchDuration = duration;
+}
+
 PluginCanvas    pluginCanvas {pluginDisplayCb};
 PluginBacklight pluginBacklight {};
 PluginTone      pluginTone {};
-KeyDispatcher   keyDispatcher {};
+KeyDispatcher   keyDispatcher {dispatchCb};
 
 
 PluginEnvironment pluginEnvironment {pluginCanvas, pluginBacklight, pluginTone, keyDispatcher};
@@ -145,6 +157,21 @@ void setup() {
 void loop() {
 	if (activePlugin) {
 		activePlugin->onTick();
+	}
+
+	if (dispatchQueue) {
+		for (uint8_t i {0}; i < 6 && dispatchQueue[i]; ++i) {
+			Keyboard.press(dispatchQueue[i]);
+		}
+
+		dispatchQueue = nullptr;
+		dispatchStart = millis();
+		dispatched = true;
+	}
+
+	if (dispatched && millis() - dispatchStart > dispatchDuration) {
+		Keyboard.releaseAll();
+		dispatched = false;
 	}
 
 	delay(1);

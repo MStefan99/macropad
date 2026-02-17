@@ -7,11 +7,6 @@ class PluginBacklight {
 public:
 	using CallbackType = void (*)();
 
-protected:
-	uint32_t     buffer[12] {};
-	CallbackType _updateCallback {};
-
-public:
 	PluginBacklight(CallbackType updateCallback = nullptr);
 
 	void setPixel(uint8_t i, uint32_t color);
@@ -25,6 +20,10 @@ public:
 	void update();
 
 	uint32_t* getBuffer();
+
+protected:
+	uint32_t     buffer[12] {};
+	CallbackType _updateCallback {};
 };
 
 #endif

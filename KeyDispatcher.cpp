@@ -5,8 +5,8 @@ KeyDispatcher::KeyDispatcher(CallbackType dispatchCallback):
 	// Nothing to do
 }
 
-void KeyDispatcher::dispatch(const uint8_t keys[6], uint32_t timeout) {
+void KeyDispatcher::dispatch(const uint8_t keys[6], uint32_t duration) {
 	if (_dispatchCallback) {
-		_dispatchCallback(keys, timeout);
+		_dispatchCallback(keys, duration);
 	}
 }

@@ -8,13 +8,12 @@ class PluginCanvas: public GFXcanvas1 {
 public:
 	using CallbackType = void (*)();
 
-protected:
-	CallbackType _displayCallback {};
-
-public:
 	PluginCanvas(CallbackType displayCallback = nullptr);
 
 	void display();
+
+protected:
+	CallbackType _displayCallback {};
 };
 
 #endif

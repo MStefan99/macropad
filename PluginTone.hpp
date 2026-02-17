@@ -7,13 +7,12 @@ class PluginTone {
 public:
 	using CallbackType = void (*)(unsigned int frequency, unsigned long duration);
 
-protected:
-	CallbackType _toneCallback {};
-
-public:
 	PluginTone(CallbackType toneCallback = nullptr);
 
 	void tone(unsigned int frequency, unsigned long duration);
+
+protected:
+	CallbackType _toneCallback {};
 };
 
 #endif
