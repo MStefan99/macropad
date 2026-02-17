@@ -18,3 +18,7 @@ void QuickPlugin::onEncoderDown(int32_t count) {
 void QuickPlugin::onEncoderUp(int32_t count) {
 	_environment.keyDispatcher.dispatch(_definition.encoderDefinitions[1].keys);
 }
+
+const char* QuickPlugin::getName() const {
+    return _definition.displayName;
+}

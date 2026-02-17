@@ -31,6 +31,8 @@ public:
 	virtual void onEncoderUp(int32_t count) override;
 	virtual void onEncoderDown(int32_t count) override;
 
+    virtual const char* getName() const override;
+
 protected:
 	PluginEnvironment&           _environment;
 	const QuickPluginDefinition& _definition;

@@ -35,6 +35,7 @@ static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ80
 static PinStatus         pinStatuses[13] {};
 static uint8_t           encoderPosition {0};
 static int32_t           encoderCount {0};
+static Plugin* activePlugin {nullptr};
 
 void drawPlugin() {
 	display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE);
@@ -66,6 +67,22 @@ void encoderHandler(void* pinPtr) {
 	encoderPosition = newPosition;
 }
 
+void enablePlugin(Plugin* plugin) {
+  if (activePlugin) {
+    activePlugin->onDisable();
+  }
+  
+  activePlugin = plugin;
+
+  int16_t x, y; uint16_t w, h;
+  display.getTextBounds(activePlugin->getName(), 0, 0, &x, &y, &w, &h);
+
+  display.setCursor(64 - w/2, 0);
+  display.print(activePlugin->getName());
+
+	display.display();
+}
+
 void setup() {
 	pinMode(LED_PIN, OUTPUT);
 	digitalWrite(LED_PIN, HIGH);
@@ -93,11 +110,17 @@ void setup() {
 
 	display.begin(0, true);
 	display.display();
-	delay(2000);
+	delay(1000);
 	display.clearDisplay();
-	display.display();
+  display.fillRect(0, 0, 128, 8, SH110X_WHITE);
+  display.setTextColor(SH110X_BLACK);
 
 	digitalWrite(LED_PIN, LOW);
+
+  // Plugin initialization
+  if (definedPlugins[0]) {  // TODO: Bad, needs fixing
+    enablePlugin(definedPlugins[0]);
+  }
 }
 
 void loop() {

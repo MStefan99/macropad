@@ -10,10 +10,17 @@ public:
 	Plugin() = default;
 	virtual ~Plugin() = default;
 
+  virtual void onEnable();
+  virtual void onDisable();
+
 	virtual void onKeyDown(uint8_t key) = 0;
 	virtual void onKeyUp(uint8_t key);
 	virtual void onEncoderDown(int32_t count);
 	virtual void onEncoderUp(int32_t count);
+
+  virtual const char* getName() const;
+  virtual const char* getLabelL() const;
+  virtual const char* getLabelR() const;
 
 	// Should return true if plugin did some work during the tick for optimal scheduling
 	virtual bool onTick();
