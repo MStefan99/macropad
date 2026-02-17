@@ -1,6 +1,8 @@
 #ifndef QUICK_PLUGIN_HPP
 #define QUICK_PLUGIN_HPP
 
+#include <Adafruit_SH110X.h>
+
 #include "Arduino.h"
 
 #include "Plugin.hpp"
@@ -27,15 +29,20 @@ class QuickPlugin: public Plugin {
 public:
 	QuickPlugin(PluginEnvironment& environment, const QuickPluginDefinition& definition);
 
+	virtual void onActivate() override;
+
 	virtual void onKeyDown(uint8_t key) override;
+	virtual void onKeyUp(uint8_t key) override;
 	virtual void onEncoderUp(int32_t count) override;
 	virtual void onEncoderDown(int32_t count) override;
 
-    virtual const char* getName() const override;
+	virtual const char* getName() const override;
 
 protected:
 	PluginEnvironment&           _environment;
 	const QuickPluginDefinition& _definition;
+
+	void _highlight(uint8_t key, bool down);
 };
 
 #endif

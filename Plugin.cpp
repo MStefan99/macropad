@@ -1,11 +1,11 @@
 #include "Plugin.hpp"
 
-void Plugin::onEnable() {
-  // Emtpy stub
+void Plugin::onActivate() {
+	// Emtpy stub
 }
 
-void Plugin::onDisable() {
-  // Empty stub
+void Plugin::onDeactivate() {
+	// Empty stub
 }
 
 void Plugin::onKeyUp(uint8_t key) {
@@ -26,13 +26,5 @@ bool Plugin::onTick() {
 }
 
 const char* Plugin::getName() const {
-  return "Untitled";
-}
-
-const char* Plugin::getLabelL() const {
-  return "";
-}
-
-const char* Plugin::getLabelR() const {
-  return "";
+	return "Untitled";
 }

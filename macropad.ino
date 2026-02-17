@@ -35,13 +35,14 @@ static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ80
 static PinStatus         pinStatuses[13] {};
 static uint8_t           encoderPosition {0};
 static int32_t           encoderCount {0};
-static Plugin* activePlugin {nullptr};
+static Plugin*           activePlugin {nullptr};
 
-void drawPlugin() {
-	display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE);
+void pluginDisplayCb() {
+	display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
+	display.display();
 }
 
-PluginCanvas    pluginCanvas {drawPlugin};
+PluginCanvas    pluginCanvas {pluginDisplayCb};
 PluginBacklight pluginBacklight {};
 PluginTone      pluginTone {};
 KeyDispatcher   keyDispatcher {};
@@ -58,27 +59,45 @@ void buttonHandler(void* pinPtr) {
 	}
 	pinStatuses[pin] = status;
 
-	strip.setPixelColor(pin - 1, status ? 0 : 0xffffff);
+	if (activePlugin) {
+		if (status) {
+			activePlugin->onKeyUp(pin);
+		} else {
+			activePlugin->onKeyDown(pin);
+		}
+	}
 }
 
 void encoderHandler(void* pinPtr) {
 	uint8_t newPosition = (static_cast<uint8_t>(digitalRead(17)) << 1) | (static_cast<uint8_t>(digitalRead(18)));
-	encoderCount -= encoderTransitions[encoderPosition][newPosition];
+	int8_t  transition = -encoderTransitions[encoderPosition][newPosition];
+	encoderCount += transition;
 	encoderPosition = newPosition;
+
+	if (activePlugin && transition && !(encoderCount % 4)) {
+		if (transition > 0) {
+			activePlugin->onEncoderUp(encoderCount);
+		} else {
+			activePlugin->onEncoderDown(encoderCount);
+		}
+	}
 }
 
 void enablePlugin(Plugin* plugin) {
-  if (activePlugin) {
-    activePlugin->onDisable();
-  }
-  
-  activePlugin = plugin;
+	if (activePlugin) {
+		activePlugin->onDeactivate();
+	}
 
-  int16_t x, y; uint16_t w, h;
-  display.getTextBounds(activePlugin->getName(), 0, 0, &x, &y, &w, &h);
+	encoderCount = 0;
+	plugin->onActivate();
+	activePlugin = plugin;
 
-  display.setCursor(64 - w/2, 0);
-  display.print(activePlugin->getName());
+	int16_t  x, y;
+	uint16_t w, h;
+	display.getTextBounds(activePlugin->getName(), 0, 0, &x, &y, &w, &h);
+
+	display.setCursor(64 - w / 2, 0);
+	display.print(activePlugin->getName());
 
 	display.display();
 }
@@ -112,18 +131,21 @@ void setup() {
 	display.display();
 	delay(1000);
 	display.clearDisplay();
-  display.fillRect(0, 0, 128, 8, SH110X_WHITE);
-  display.setTextColor(SH110X_BLACK);
+	display.fillRect(0, 0, 128, 8, SH110X_WHITE);
+	display.setTextColor(SH110X_BLACK);
 
 	digitalWrite(LED_PIN, LOW);
 
-  // Plugin initialization
-  if (definedPlugins[0]) {  // TODO: Bad, needs fixing
-    enablePlugin(definedPlugins[0]);
-  }
+	// Plugin initialization
+	if (definedPlugins[0]) {  // TODO: Bad, needs fixing
+		enablePlugin(definedPlugins[0]);
+	}
 }
 
 void loop() {
-	strip.show();
-	delay(20);
+	if (activePlugin) {
+		activePlugin->onTick();
+	}
+
+	delay(1);
 }

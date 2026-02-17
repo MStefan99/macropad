@@ -9,12 +9,12 @@ public:
 	using CallbackType = void (*)();
 
 protected:
-	CallbackType _drawCallback {};
+	CallbackType _displayCallback {};
 
 public:
-	PluginCanvas(CallbackType drawCallback = nullptr);
+	PluginCanvas(CallbackType displayCallback = nullptr);
 
-	void draw();
+	void display();
 };
 
 #endif

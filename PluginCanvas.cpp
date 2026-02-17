@@ -1,13 +1,13 @@
 #include "PluginCanvas.hpp"
 
-PluginCanvas::PluginCanvas(CallbackType drawCallback):
+PluginCanvas::PluginCanvas(CallbackType displayCallback):
   GFXcanvas1(128, 56),
-  _drawCallback {drawCallback} {
+  _displayCallback {displayCallback} {
 	// Nothing to do
 }
 
-void PluginCanvas::draw() {
-	if (_drawCallback) {
-		_drawCallback();
+void PluginCanvas::display() {
+	if (_displayCallback) {
+		_displayCallback();
 	}
 }
