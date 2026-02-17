@@ -46,7 +46,7 @@ PluginTone      pluginTone {};
 KeyDispatcher   keyDispatcher {};
 
 
-static PluginEnvironment pluginEnvironment {pluginCanvas, pluginBacklight, pluginTone, keyDispatcher};
+PluginEnvironment pluginEnvironment {pluginCanvas, pluginBacklight, pluginTone, keyDispatcher};
 
 void buttonHandler(void* pinPtr) {
 	uint8_t pin {static_cast<uint8_t>(reinterpret_cast<int>(pinPtr))};

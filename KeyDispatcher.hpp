@@ -5,7 +5,7 @@
 
 class KeyDispatcher {
 public:
-	using CallbackType = void (*)(uint8_t keys[6], uint32_t timeout);
+	using CallbackType = void (*)(const uint8_t keys[6], uint32_t timeout);
 
 protected:
 	CallbackType _dispatchCallback {};
@@ -13,7 +13,7 @@ protected:
 public:
 	KeyDispatcher(CallbackType dispatchCallback = nullptr);
 
-	void dispatch(uint8_t keys[6], uint32_t timeout = 20);
+	void dispatch(const uint8_t keys[6], uint32_t timeout = 20);
 };
 
 #endif
