@@ -11,8 +11,7 @@
 #define NEOPIXEL_COUNT 12
 
 
-constexpr static uint32_t buttonDebounceTime {20};
-constexpr static uint32_t encoderDebounceTime {5};
+constexpr static uint32_t encoderDebounceTime {1};
 
 
 constexpr static int8_t encoderTransitions[4][4] {
@@ -37,13 +36,15 @@ static Settings settings {};
 static PinStatus pinStatuses[13] {};
 static uint8_t   encoderPosition {0};
 static int32_t   encoderCount {0};
+static uint32_t  encoderTime {0};
 
 static Plugin* activePlugin {nullptr};
 
-const static uint8_t* dispatchQueue {nullptr};
-static bool           dispatched {false};
-static uint32_t       dispatchStart {0};
-static uint32_t       dispatchDuration {0};
+const static uint16_t* dispatchQueue {nullptr};
+static bool            dispatched {false};
+static uint32_t        dispatchStart {0};
+static uint32_t        dispatchDuration {0};
+static bool            dispatchConsumer {false};
 
 void displayPlugin() {
 	display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
@@ -64,9 +65,10 @@ void setBacklight() {
 	strip.show();
 }
 
-void dispatchKeys(const uint8_t keys[6], uint32_t duration) {
+void dispatchKeys(const uint16_t keys[6], bool consumerKeys, uint32_t duration) {
 	dispatchQueue = keys;
 	dispatchDuration = duration;
+	dispatchConsumer = consumerKeys;
 }
 
 PluginCanvas    pluginCanvas {displayPlugin};
@@ -100,6 +102,13 @@ void encoderHandler(void* pinPtr) {
 	int8_t  transition = -encoderTransitions[encoderPosition][newPosition];
 	encoderCount += transition;
 	encoderPosition = newPosition;
+
+	auto lastEncoderTime {encoderTime};
+	encoderTime = millis();
+
+	if (millis() - lastEncoderTime < encoderDebounceTime) {
+		return;
+	}
 
 	if (transition && !(encoderCount % 4)) {
 		if (!pinStatuses[0]) {  // Setting brightness
@@ -188,7 +197,11 @@ void loop() {
 
 	if (dispatchQueue) {
 		for (uint8_t i {0}; i < 6 && dispatchQueue[i]; ++i) {
-			Keyboard.press(dispatchQueue[i]);
+			if (dispatchConsumer) {
+				Keyboard.consumerPress(dispatchQueue[i]);
+			} else {
+				Keyboard.press(dispatchQueue[i]);
+			}
 		}
 
 		dispatchQueue = nullptr;
@@ -200,6 +213,8 @@ void loop() {
 		Keyboard.releaseAll();
 		dispatched = false;
 	}
+
+	strip.show();
 
 	delay(10);
 }

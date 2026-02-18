@@ -12,22 +12,26 @@
 
 struct KeyDefinition {
 	char    displayName[16];
-	uint8_t keys[8];
+	uint16_t keys[8];
 	Color color;
+	uint16_t consumerKey;
+};
+
+struct EncoderKeyDefinition {
+	uint16_t keys[6];
 	uint16_t consumerKey;
 };
 
 struct EncoderDefinition {
 	char    displayName[16];
-	uint8_t keys[8];
-	uint16_t consumerKey;
+	EncoderKeyDefinition encoderKeys[2];
 };
 
 struct QuickPluginDefinition {
 	char              name[16];
 	char              displayName[16];
 	KeyDefinition     keyDefinitions[12];
-	EncoderDefinition encoderDefinitions[2];
+	EncoderDefinition encoderDefinition;
 };
 
 class QuickPlugin: public Plugin {

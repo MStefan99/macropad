@@ -7,11 +7,11 @@
 
 class KeyDispatcher {
 public:
-	using CallbackType = void (*)(const uint8_t keys[6], uint32_t duration);
+	using CallbackType = void (*)(const uint16_t keys[6], bool consumerKeys, uint32_t duration);
 
 	KeyDispatcher(CallbackType dispatchCallback = nullptr);
 
-	void dispatch(const uint8_t keys[6], uint32_t duration = 20);
+	void dispatch(const uint16_t keys[6], bool consumerKeys = false, uint32_t duration = 15);
 
 protected:
 	CallbackType _dispatchCallback {};

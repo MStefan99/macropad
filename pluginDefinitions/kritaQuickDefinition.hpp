@@ -20,7 +20,8 @@ QuickPluginDefinition kritaQuickDefinition {
     {"Move", {KEY_LEFT_CTRL, 't'}, Color::HSV(1024, 180)},
     {"BG", {KEY_BACKSPACE}, Color::HSV(256)},
     {"FG", {KEY_LEFT_SHIFT, KEY_BACKSPACE}, Color::HSV(128)},
-    {"Clear", {KEY_DELETE}, Color::HSV(0)}}
+    {"Clear", {KEY_DELETE}, Color::HSV(0)}},
+  {"Zoom", {{'['}, {']'}}}
 };
 
 #endif

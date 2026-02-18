@@ -79,11 +79,17 @@ void QuickPlugin::onKeyUp(uint8_t key) {
 }
 
 void QuickPlugin::onEncoderDown(int32_t count) {
-	_environment.keyDispatcher.dispatch(_definition.encoderDefinitions[0].keys);
+	_environment.keyDispatcher.dispatch(
+	    _definition.encoderDefinition.encoderKeys[0].keys,
+	    _definition.encoderDefinition.encoderKeys[1].consumerKey
+	);
 }
 
 void QuickPlugin::onEncoderUp(int32_t count) {
-	_environment.keyDispatcher.dispatch(_definition.encoderDefinitions[1].keys);
+	_environment.keyDispatcher.dispatch(
+	    _definition.encoderDefinition.encoderKeys[1].keys,
+	    _definition.encoderDefinition.encoderKeys[1].consumerKey
+	);
 }
 
 const char* QuickPlugin::getName() const {
