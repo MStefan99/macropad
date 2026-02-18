@@ -1,6 +1,8 @@
 #ifndef MACROPAD_HPP
 #define MACROPAD_HPP
 
+#define ALLOW_HARDWARE
+
 
 #include "KeyDispatcher.hpp"
 #include "Plugin.hpp"

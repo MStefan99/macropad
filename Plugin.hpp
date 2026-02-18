@@ -5,6 +5,10 @@
 
 #include "PluginEnvironment.hpp"
 
+#ifndef ALLOW_HARDWARE
+#pragma GCC poison Adafruit_SH1106G Adafruit_NeoPixel Keyboard Tone pinMode digitalWrite digitalRead analogWrite analogRead digitalPinToInterrupt attachInterrupt
+#endif
+
 class Plugin {
 public:
 	Plugin() = default;

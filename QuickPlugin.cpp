@@ -4,6 +4,7 @@ QuickPlugin::QuickPlugin(PluginEnvironment& environment, const QuickPluginDefini
   Plugin {},
   _environment {environment},
   _definition {definition} {
+	Keyboard.begin();
 	// Nothing to do
 }
 
