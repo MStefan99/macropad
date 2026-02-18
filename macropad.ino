@@ -1,11 +1,3 @@
-#include <Adafruit_GFX.h>
-#include <Adafruit_NeoPixel.h>
-#include <Adafruit_SH110X.h>
-#include <SPI.h>
-
-#include "Arduino.h"
-#include "Keyboard.h"
-
 #include "macropad.hpp"
 
 #define OLED_MOSI 27
@@ -29,9 +21,18 @@ constexpr static int8_t encoderTransitions[4][4] {
   {-1, 0,  0,  1 },
   {0,  1,  -1, 0 }
 };
+constexpr static uint8_t brightnessTable[32] = {0,   0,   1,   2,   4,   6,   9,   13,  16,  21,  26,
+                                                32,  38,  44,  52,  59,  67,  76,  85,  95,  106, 117,
+                                                128, 140, 152, 165, 179, 193, 208, 223, 238, 255};
+
+struct __attribute__((packed)) Settings {
+	int8_t brightness {31};
+};
 
 static Adafruit_SH1106G  display = Adafruit_SH1106G(128, 64, OLED_MOSI, OLED_CLK, OLED_DC, OLED_RST, OLED_CS);
 static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
+
+static Settings settings {};
 
 static PinStatus pinStatuses[13] {};
 static uint8_t   encoderPosition {0};
@@ -44,29 +45,34 @@ static bool           dispatched {false};
 static uint32_t       dispatchStart {0};
 static uint32_t       dispatchDuration {0};
 
-void canvasCb() {
+void displayPlugin() {
 	display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
 	display.display();
 }
 
-void backlightCb() {
+void setBacklight() {
 	for (uint8_t i {0}; i < 12; ++i) {
 		auto color {pluginBacklight.getPixel(i)};
-		strip.setPixelColor(i, color.getR(), color.getG(), color.getB());
+		strip.setPixelColor(
+		    i,
+		    (color.getR() * brightnessTable[settings.brightness]) >> 8u,
+		    (color.getG() * brightnessTable[settings.brightness]) >> 8u,
+		    (color.getB() * brightnessTable[settings.brightness]) >> 8u
+		);
 	}
 
 	strip.show();
 }
 
-void dispatchCb(const uint8_t keys[6], uint32_t duration) {
+void dispatchKeys(const uint8_t keys[6], uint32_t duration) {
 	dispatchQueue = keys;
 	dispatchDuration = duration;
 }
 
-PluginCanvas    pluginCanvas {canvasCb};
-PluginBacklight pluginBacklight {backlightCb};
+PluginCanvas    pluginCanvas {displayPlugin};
+PluginBacklight pluginBacklight {setBacklight};
 PluginTone      pluginTone {};
-KeyDispatcher   keyDispatcher {dispatchCb};
+KeyDispatcher   keyDispatcher {dispatchKeys};
 
 
 PluginEnvironment pluginEnvironment {pluginCanvas, pluginBacklight, pluginTone, keyDispatcher};
@@ -95,11 +101,18 @@ void encoderHandler(void* pinPtr) {
 	encoderCount += transition;
 	encoderPosition = newPosition;
 
-	if (activePlugin && transition && !(encoderCount % 4)) {
-		if (transition > 0) {
-			activePlugin->onEncoderUp(encoderCount);
-		} else {
-			activePlugin->onEncoderDown(encoderCount);
+	if (transition && !(encoderCount % 4)) {
+		if (!pinStatuses[0]) {  // Setting brightness
+			settings.brightness = min(max(settings.brightness + transition, 0), 31);
+			setBacklight();
+			EEPROM.put(0, settings);
+			EEPROM.commit();
+		} else if (activePlugin) {
+			if (transition > 0) {
+				activePlugin->onEncoderUp(encoderCount);
+			} else {
+				activePlugin->onEncoderDown(encoderCount);
+			}
 		}
 	}
 }
@@ -154,6 +167,9 @@ void setup() {
 	display.clearDisplay();
 	display.fillRect(0, 0, 128, 8, SH110X_WHITE);
 	display.setTextColor(SH110X_BLACK);
+
+	EEPROM.begin(256);
+	EEPROM.get(0, settings);
 
 	digitalWrite(LED_PIN, LOW);
 

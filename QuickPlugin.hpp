@@ -1,7 +1,7 @@
 #ifndef QUICK_PLUGIN_HPP
 #define QUICK_PLUGIN_HPP
 
-#include <Adafruit_SH110X.h>
+#include "Adafruit_SH110X.h"
 
 #include "Arduino.h"
 

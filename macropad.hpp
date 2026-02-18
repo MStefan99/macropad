@@ -3,6 +3,13 @@
 
 #define ALLOW_HARDWARE
 
+#include "Adafruit_GFX.h"
+#include "Adafruit_NeoPixel.h"
+#include "Adafruit_SH110X.h"
+#include "Arduino.h"
+#include "Keyboard.h"
+#include "SPI.h"
+#include "EEPROM.h"
 
 #include "KeyDispatcher.hpp"
 #include "Plugin.hpp"
