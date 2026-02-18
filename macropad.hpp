@@ -6,6 +6,7 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_NeoPixel.h"
 #include "Adafruit_SH110X.h"
+#include "tusb.h"
 #include "Arduino.h"
 #include "Keyboard.h"
 #include "SPI.h"

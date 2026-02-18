@@ -106,7 +106,7 @@ void encoderHandler(void* pinPtr) {
 	}
 
 	if (transition && !(encoderCount % 4)) {
-		if (!pinStatuses[0]) {  // Setting brightness
+		if (!pinStatuses[0] && tud_ready()) {  // Setting brightness
 			settings.brightness = min(max(settings.brightness + transition, 0), 31);
 			commitSettings = true;
 			setBacklight();
@@ -120,7 +120,7 @@ void encoderHandler(void* pinPtr) {
 	}
 }
 
-void enablePlugin(Plugin* plugin) {
+void activatePlugin(Plugin* plugin) {
 	if (activePlugin) {
 		activePlugin->onDeactivate();
 	}
@@ -128,6 +128,10 @@ void enablePlugin(Plugin* plugin) {
 	encoderCount = 0;
 	plugin->onActivate();
 	activePlugin = plugin;
+
+	display.clearDisplay();
+	display.fillRect(0, 0, 128, 8, SH110X_WHITE);
+	display.setTextColor(SH110X_BLACK);
 
 	int16_t  x, y;
 	uint16_t w, h;
@@ -137,6 +141,15 @@ void enablePlugin(Plugin* plugin) {
 	display.print(activePlugin->getName());
 
 	display.display();
+}
+
+void deactivatePlugin() {
+	if (!activePlugin) {
+		return;
+	}
+
+	activePlugin->onDeactivate();
+	activePlugin = nullptr;
 }
 
 void setup() {
@@ -167,9 +180,6 @@ void setup() {
 	display.begin(0, true);
 	display.display();
 	delay(1000);
-	display.clearDisplay();
-	display.fillRect(0, 0, 128, 8, SH110X_WHITE);
-	display.setTextColor(SH110X_BLACK);
 
 	EEPROM.begin(256);
 	EEPROM.get(0, settings);
@@ -177,8 +187,11 @@ void setup() {
 	digitalWrite(LED_PIN, LOW);
 
 	// Plugin initialization
-	if (definedPlugins[0]) {  // TODO: Bad, needs fixing
-		enablePlugin(definedPlugins[0]);
+	if (tud_ready() && definedPlugins[0]) {  // TODO: Bad, needs fixing
+		activatePlugin(definedPlugins[0]);
+	} else {
+		display.fillScreen(SH110X_BLACK);
+		display.display();
 	}
 }
 
@@ -232,6 +245,19 @@ void loop() {
 			);
 		}
 		strip.show();
+	}
+
+	if (!tud_ready() && activePlugin) {
+		deactivatePlugin();
+		display.fillScreen(SH110X_BLACK);
+		display.display();
+
+		for (uint8_t i {0}; i < 12; ++i) {
+			strip.setPixelColor(i, 0);
+		}
+		strip.show();
+	} else if (tud_ready() && !activePlugin && definedPlugins[0]) {
+		activatePlugin(definedPlugins[0]);
 	}
 
 	delay(1);
