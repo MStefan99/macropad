@@ -28,6 +28,10 @@ struct __attribute__((packed)) Settings {
 static Adafruit_SH1106G  display = Adafruit_SH1106G(128, 64, OLED_MOSI, OLED_CLK, OLED_DC, OLED_RST, OLED_CS);
 static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
+static bool updateDisplay {false};
+static bool showBacklight {false};
+static bool commitSettings {false};
+
 static Settings settings {};
 
 static PinStatus pinStatuses[13] {};
@@ -43,27 +47,17 @@ static uint32_t        dispatchStart {0};
 static uint32_t        dispatchDuration {0};
 static bool            dispatchConsumer {false};
 
+// Called from interrupts
 void displayPlugin() {
-	display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
-	display.display();
+	updateDisplay = true;
 }
 
+// Called from interrupts
 void setBacklight() {
-	uint8_t brightness = settings.brightness * (256 / 32);
-
-	for (uint8_t i {0}; i < 12; ++i) {
-		auto color {pluginBacklight.getPixel(i)};
-		strip.setPixelColor(
-		    i,
-		    strip.gamma8((color.getR() * brightness) >> 8u),
-		    strip.gamma8((color.getG() * brightness) >> 8u),
-		    strip.gamma8((color.getB() * brightness) >> 8u)
-		);
-	}
-
-	strip.show();
+	showBacklight = true;
 }
 
+// Called from interrupts
 void dispatchKeys(const uint16_t keys[6], bool consumerKeys, uint32_t duration) {
 	dispatchQueue = keys;
 	dispatchDuration = duration;
@@ -78,6 +72,7 @@ KeyDispatcher   keyDispatcher {dispatchKeys};
 
 PluginEnvironment pluginEnvironment {pluginCanvas, pluginBacklight, pluginTone, keyDispatcher};
 
+// Called from interrupts
 void buttonHandler(void* pinPtr) {
 	uint8_t pin {static_cast<uint8_t>(reinterpret_cast<int>(pinPtr))};
 	auto    status = digitalRead(pin);
@@ -96,6 +91,7 @@ void buttonHandler(void* pinPtr) {
 	}
 }
 
+// Called from interrupts
 void encoderHandler(void* pinPtr) {
 	uint8_t newPosition = (static_cast<uint8_t>(digitalRead(17)) << 1) | (static_cast<uint8_t>(digitalRead(18)));
 	int8_t  transition = -encoderTransitions[encoderPosition][newPosition];
@@ -112,9 +108,8 @@ void encoderHandler(void* pinPtr) {
 	if (transition && !(encoderCount % 4)) {
 		if (!pinStatuses[0]) {  // Setting brightness
 			settings.brightness = min(max(settings.brightness + transition, 0), 31);
+			commitSettings = true;
 			setBacklight();
-			EEPROM.put(0, settings);
-			EEPROM.commit();
 		} else if (activePlugin) {
 			if (transition > 0) {
 				activePlugin->onEncoderUp(encoderCount);
@@ -187,8 +182,6 @@ void setup() {
 	}
 }
 
-uint16_t h {0};
-
 void loop() {
 	if (activePlugin) {
 		activePlugin->onTick();
@@ -209,11 +202,37 @@ void loop() {
 	}
 
 	if (dispatched && millis() - dispatchStart > dispatchDuration) {
-		Keyboard.releaseAll();
 		dispatched = false;
+		Keyboard.releaseAll();
 	}
 
-	strip.show();
+	if (updateDisplay) {
+		updateDisplay = false;
+		display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
+		display.display();
+	}
 
-	delay(10);
+	if (commitSettings) {
+		commitSettings = false;
+		EEPROM.put(0, settings);
+		EEPROM.commit();
+	}
+
+	if (showBacklight) {
+		showBacklight = false;
+		uint8_t brightness = settings.brightness * (256 / 32);
+
+		for (uint8_t i {0}; i < 12; ++i) {
+			auto color {pluginBacklight.getPixel(i)};
+			strip.setPixelColor(
+			    i,
+			    strip.gamma8((color.getR() * brightness) >> 8u),
+			    strip.gamma8((color.getG() * brightness) >> 8u),
+			    strip.gamma8((color.getB() * brightness) >> 8u)
+			);
+		}
+		strip.show();
+	}
+
+	delay(1);
 }

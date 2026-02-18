@@ -9,7 +9,7 @@
 
 #ifndef ALLOW_HARDWARE
 #undef digitalPinToInterrupt
-#pragma GCC poison Adafruit_SH1106G Adafruit_NeoPixel Keyboard EEPROM Tone pinMode digitalWrite digitalRead analogWrite analogRead digitalPinToInterrupt attachInterrupt
+#pragma GCC poison Adafruit_SH1106G Adafruit_NeoPixel Keyboard EEPROM Tone pinMode digitalWrite digitalRead analogWrite analogRead digitalPinToInterrupt attachInterrupt delay delayMicroseconds
 #endif
 
 
