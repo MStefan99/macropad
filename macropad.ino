@@ -163,6 +163,8 @@ void setup() {
 	}
 }
 
+uint16_t h {0};
+
 void loop() {
 	if (activePlugin) {
 		activePlugin->onTick();
@@ -183,5 +185,5 @@ void loop() {
 		dispatched = false;
 	}
 
-	delay(1);
+	delay(10);
 }
