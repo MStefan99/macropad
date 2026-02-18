@@ -11,7 +11,7 @@
 #define NEOPIXEL_COUNT 12
 
 
-constexpr static uint32_t encoderDebounceTime {1};
+constexpr static uint32_t encoderDebounceTime {2};
 
 
 constexpr static int8_t encoderTransitions[4][4] {

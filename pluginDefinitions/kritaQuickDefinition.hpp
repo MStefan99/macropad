@@ -21,7 +21,7 @@ QuickPluginDefinition kritaQuickDefinition {
     {"BG", {KEY_BACKSPACE}, Color::HSV(256)},
     {"FG", {KEY_LEFT_SHIFT, KEY_BACKSPACE}, Color::HSV(128)},
     {"Clear", {KEY_DELETE}, Color::HSV(0)}},
-  {"Zoom", {{'['}, {']'}}}
+  {"Brush", {{'['}, {']'}}}
 };
 
 #endif

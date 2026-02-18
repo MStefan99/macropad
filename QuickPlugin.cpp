@@ -14,10 +14,14 @@ void QuickPlugin::onActivate() {
 	_environment.backlight.show();
 
 	_environment.canvas.setTextColor(SH110X_WHITE);
-	for (uint8_t i {0}; i < 4; ++i) {
-		int16_t  x, y;
-		uint16_t w, h;
+	int16_t  x, y;
+	uint16_t w, h;
 
+	_environment.canvas.getTextBounds(_definition.encoderDefinition.displayName, 0, 0, &x, &y, &w, &h);
+	_environment.canvas.setCursor(_environment.canvas.width() - w - 4, 4);
+	_environment.canvas.print(_definition.encoderDefinition.displayName);
+
+	for (uint8_t i {0}; i < 4; ++i) {
 		_environment.canvas.getTextBounds(_definition.keyDefinitions[3 * i].displayName, 0, 0, &x, &y, &w, &h);
 		_environment.canvas.setCursor(0, 16 + h * i);
 		_environment.canvas.print(_definition.keyDefinitions[3 * i].displayName);

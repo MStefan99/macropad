@@ -11,7 +11,7 @@ public:
 
 	KeyDispatcher(CallbackType dispatchCallback = nullptr);
 
-	void dispatch(const uint16_t keys[6], bool consumerKeys = false, uint32_t duration = 15);
+	void dispatch(const uint16_t keys[6], bool consumerKeys = false, uint32_t duration = 10);
 
 protected:
 	CallbackType _dispatchCallback {};
