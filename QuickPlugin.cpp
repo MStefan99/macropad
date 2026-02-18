@@ -4,13 +4,16 @@ QuickPlugin::QuickPlugin(PluginEnvironment& environment, const QuickPluginDefini
   Plugin {},
   _environment {environment},
   _definition {definition} {
-	Keyboard.begin();
 	// Nothing to do
 }
 
 void QuickPlugin::onActivate() {
-	_environment.canvas.setTextColor(SH110X_WHITE);
+	for (uint8_t i {0}; i < 12; ++i) {
+		_environment.backlight.setPixel(i, _definition.keyDefinitions[i].color);
+	}
+	_environment.backlight.show();
 
+	_environment.canvas.setTextColor(SH110X_WHITE);
 	for (uint8_t i {0}; i < 4; ++i) {
 		int16_t  x, y;
 		uint16_t w, h;

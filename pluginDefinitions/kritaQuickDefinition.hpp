@@ -9,7 +9,7 @@
 QuickPluginDefinition kritaQuickDefinition {
   "krita",
   "Krita",
-  {{"Undo", {KEY_LEFT_CTRL, 'z'}},
+  {{"Undo", {KEY_LEFT_CTRL, 'z'}, {0xff0000}},
     {"Redo", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'z'}},
     {"Select", {KEY_LEFT_CTRL, 'a'}},
     {"Brush", {'b'}},

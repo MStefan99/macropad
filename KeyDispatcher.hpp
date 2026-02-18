@@ -1,7 +1,9 @@
 #ifndef KEY_DISPATCHER_HPP
 #define KEY_DISPATCHER_HPP
 
+
 #include "Arduino.h"
+
 
 class KeyDispatcher {
 public:
@@ -14,5 +16,6 @@ public:
 protected:
 	CallbackType _dispatchCallback {};
 };
+
 
 #endif

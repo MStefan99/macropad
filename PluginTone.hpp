@@ -1,7 +1,9 @@
 #ifndef PLUGIN_TONE_HPP
 #define PLUGIN_TONE_HPP
 
+
 #include "Arduino.h"
+
 
 class PluginTone {
 public:
@@ -14,5 +16,6 @@ public:
 protected:
 	CallbackType _toneCallback {};
 };
+
 
 #endif

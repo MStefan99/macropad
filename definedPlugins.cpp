@@ -6,4 +6,5 @@ static auto kritaQuickPlugin {
   QuickPlugin {pluginEnvironment, kritaQuickDefinition}
 };
 
+
 Plugin* definedPlugins[] {&kritaQuickPlugin};

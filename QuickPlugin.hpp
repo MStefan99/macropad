@@ -5,17 +5,22 @@
 
 #include "Arduino.h"
 
+#include "Color.hpp"
 #include "Plugin.hpp"
 #include "PluginEnvironment.hpp"
+
 
 struct KeyDefinition {
 	char    displayName[16];
 	uint8_t keys[8];
+	Color color;
+	uint16_t consumerKey;
 };
 
 struct EncoderDefinition {
 	char    displayName[16];
 	uint8_t keys[8];
+	uint16_t consumerKey;
 };
 
 struct QuickPluginDefinition {
@@ -44,5 +49,6 @@ protected:
 
 	void _highlight(uint8_t key, bool down);
 };
+
 
 #endif

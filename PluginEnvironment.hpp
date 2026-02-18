@@ -1,6 +1,7 @@
 #ifndef PLUGIN_ENVIRONMENT_HPP
 #define PLUGIN_ENVIRONMENT_HPP
 
+
 #include "Arduino.h"
 
 #include "KeyDispatcher.hpp"
@@ -8,17 +9,18 @@
 #include "PluginCanvas.hpp"
 #include "PluginTone.hpp"
 
+
 struct PluginEnvironment {
-	PluginCanvas    canvas;
-	PluginBacklight backlight;
-	PluginTone      tone;
-	KeyDispatcher   keyDispatcher;
+	PluginCanvas&    canvas;
+	PluginBacklight& backlight;
+	PluginTone&      tone;
+	KeyDispatcher&  keyDispatcher;
 
 	PluginEnvironment(
-	    const PluginCanvas&    canvas,
-	    const PluginBacklight& backlight,
-	    const PluginTone&      tone,
-	    const KeyDispatcher&   keyDispatcher
+	    PluginCanvas&    canvas,
+	    PluginBacklight& backlight,
+	    PluginTone&      tone,
+	    KeyDispatcher&   keyDispatcher
 	):
 	  canvas {canvas},
 	  backlight {backlight},
@@ -27,5 +29,6 @@ struct PluginEnvironment {
 		// Nothing to do
 	}
 };
+
 
 #endif

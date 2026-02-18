@@ -44,9 +44,18 @@ static bool           dispatched {false};
 static uint32_t       dispatchStart {0};
 static uint32_t       dispatchDuration {0};
 
-void pluginDisplayCb() {
+void canvasCb() {
 	display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
 	display.display();
+}
+
+void backlightCb() {
+	for (uint8_t i {0}; i < 12; ++i) {
+		auto color {pluginBacklight.getPixel(i)};
+		strip.setPixelColor(i, color.getR(), color.getG(), color.getB());
+	}
+
+	strip.show();
 }
 
 void dispatchCb(const uint8_t keys[6], uint32_t duration) {
@@ -54,8 +63,8 @@ void dispatchCb(const uint8_t keys[6], uint32_t duration) {
 	dispatchDuration = duration;
 }
 
-PluginCanvas    pluginCanvas {pluginDisplayCb};
-PluginBacklight pluginBacklight {};
+PluginCanvas    pluginCanvas {canvasCb};
+PluginBacklight pluginBacklight {backlightCb};
 PluginTone      pluginTone {};
 KeyDispatcher   keyDispatcher {dispatchCb};
 

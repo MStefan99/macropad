@@ -1,13 +1,17 @@
 #ifndef PLUGIN_HPP
 #define PLUGIN_HPP
 
+
 #include "Arduino.h"
 
 #include "PluginEnvironment.hpp"
 
+
 #ifndef ALLOW_HARDWARE
+#undef digitalPinToInterrupt
 #pragma GCC poison Adafruit_SH1106G Adafruit_NeoPixel Keyboard Tone pinMode digitalWrite digitalRead analogWrite analogRead digitalPinToInterrupt attachInterrupt
 #endif
+
 
 class Plugin {
 public:
@@ -27,5 +31,6 @@ public:
 	// Should return true if plugin did some work during the tick for optimal scheduling
 	virtual bool onTick();
 };
+
 
 #endif
