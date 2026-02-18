@@ -13,7 +13,7 @@ QuickPluginDefinition kritaQuickDefinition {
     {"Redo", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'z'}, Color::HSV(512)},
     {"Select", {KEY_LEFT_CTRL, 'a'}, Color::HSV(1024, 180)},
     {"Brush", {'b'}, Color::HSV(512)},
-    {"Eraser", {'e'}, Color::HSV(64)},
+    {"Eraser", {'e'}, Color::HSV(128)},
     {"Desel", {KEY_LEFT_CTRL, 'd'}, Color::HSV(0, 180)},
     {"Layer+", {KEY_INSERT}, Color::HSV(1024, 160)},
     {"Layer-", {KEY_LEFT_SHIFT, KEY_DELETE}, Color::HSV(0, 180)},

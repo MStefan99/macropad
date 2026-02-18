@@ -20,9 +20,6 @@ constexpr static int8_t encoderTransitions[4][4] {
   {-1, 0,  0,  1 },
   {0,  1,  -1, 0 }
 };
-constexpr static uint8_t brightnessTable[32] = {0,   0,   1,   2,   4,   6,   9,   13,  16,  21,  26,
-                                                32,  38,  44,  52,  59,  67,  76,  85,  95,  106, 117,
-                                                128, 140, 152, 165, 179, 193, 208, 223, 238, 255};
 
 struct __attribute__((packed)) Settings {
 	int8_t brightness {31};
@@ -52,13 +49,15 @@ void displayPlugin() {
 }
 
 void setBacklight() {
+	uint8_t brightness = settings.brightness * (256 / 32);
+
 	for (uint8_t i {0}; i < 12; ++i) {
 		auto color {pluginBacklight.getPixel(i)};
 		strip.setPixelColor(
 		    i,
-		    (color.getR() * brightnessTable[settings.brightness]) >> 8u,
-		    (color.getG() * brightnessTable[settings.brightness]) >> 8u,
-		    (color.getB() * brightnessTable[settings.brightness]) >> 8u
+		    strip.gamma8((color.getR() * brightness) >> 8u),
+		    strip.gamma8((color.getG() * brightness) >> 8u),
+		    strip.gamma8((color.getB() * brightness) >> 8u)
 		);
 	}
 
