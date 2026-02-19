@@ -78,7 +78,7 @@ public:
 	}
 
 	static Color Lime(uint8_t s = 255, uint8_t v = 255) {
-		return HSV(384, s, v);
+		return HSV(320, s, v);  // Adjusted to stand out more
 	}
 
 	static Color Green(uint8_t s = 255, uint8_t v = 255) {
@@ -102,7 +102,7 @@ public:
 	}
 
 	static Color Purple(uint8_t s = 255, uint8_t v = 255) {
-		return HSV(1152, s, v);
+		return HSV(1184, s, v);  // Adjusted to stand out more
 	}
 
 	static Color Magenta(uint8_t s = 255, uint8_t v = 255) {
