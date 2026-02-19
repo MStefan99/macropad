@@ -13,6 +13,7 @@
 
 constexpr static uint32_t keyDebounceTime {5};
 constexpr static uint32_t encoderDebounceTime {2};
+constexpr static uint32_t idleTimeout {1000 * 60 * 10};
 
 
 constexpr static int8_t encoderTransitions[4][4] {
@@ -44,7 +45,9 @@ static int32_t  encoderCount {0};
 static int32_t  sentEncoderCount {0};
 static uint32_t encoderTime {0};
 
-static Plugin* activePlugin {nullptr};
+static Plugin*  activePlugin {nullptr};
+static uint32_t lastAction {0};
+static bool     idle {false};
 
 static uint8_t  dispatchQueue[8] {0};
 static uint16_t dispatchConsumer {0};
@@ -55,11 +58,13 @@ static uint32_t dispatchDuration {0};
 // Called from interrupts
 void displayPlugin() {
 	updateDisplay = true;
+	lastAction = millis();
 }
 
 // Called from interrupts
 void setBacklight() {
 	showBacklight = true;
+	lastAction = millis();
 }
 
 // Called from interrupts
@@ -70,6 +75,7 @@ void dispatchKeys(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration
 
 	dispatchConsumer = consumerKey;
 	dispatchDuration = duration;
+	lastAction = millis();
 }
 
 PluginCanvas    pluginCanvas {displayPlugin};
@@ -84,6 +90,12 @@ PluginEnvironment pluginEnvironment {pluginCanvas, pluginBacklight, pluginTone, 
 void buttonHandler(void* pinPtr) {
 	uint8_t pin {static_cast<uint8_t>(reinterpret_cast<int>(pinPtr))};
 	auto    status = digitalRead(pin);
+
+	if (idle) {
+		displayPlugin();
+		setBacklight();
+		return;
+	}
 
 	if (status == pinStatuses[pin]) {
 		return;
@@ -117,6 +129,12 @@ void encoderHandler(void* pinPtr) {
 	encoderCount += transition;
 	encoderPosition = newPosition;
 
+	if (idle) {
+		displayPlugin();
+		setBacklight();
+		return;
+	}
+
 	auto lastEncoderTime {encoderTime};
 	if (millis() - lastEncoderTime < encoderDebounceTime) {
 		return;
@@ -141,6 +159,18 @@ void encoderHandler(void* pinPtr) {
 	}
 }
 
+void drawPluginName() {
+	display.fillRect(0, 0, 128, 8, SH110X_WHITE);
+	display.setTextColor(SH110X_BLACK);
+
+	int16_t  x, y;
+	uint16_t w, h;
+	display.getTextBounds(activePlugin->getDisplayName(), 0, 0, &x, &y, &w, &h);
+
+	display.setCursor(64 - w / 2, 0);
+	display.print(activePlugin->getDisplayName());
+}
+
 void activatePlugin(Plugin* plugin) {
 	if (activePlugin) {
 		activePlugin->onDeactivate();
@@ -151,16 +181,7 @@ void activatePlugin(Plugin* plugin) {
 	activePlugin = plugin;
 
 	display.clearDisplay();
-	display.fillRect(0, 0, 128, 8, SH110X_WHITE);
-	display.setTextColor(SH110X_BLACK);
-
-	int16_t  x, y;
-	uint16_t w, h;
-	display.getTextBounds(activePlugin->getDisplayName(), 0, 0, &x, &y, &w, &h);
-
-	display.setCursor(64 - w / 2, 0);
-	display.print(activePlugin->getDisplayName());
-
+	drawPluginName();
 	display.display();
 }
 
@@ -235,6 +256,28 @@ void loop() {
 		dispatched = true;
 	}
 
+	if (!idle && millis() - lastAction > idleTimeout) {
+		idle = true;
+		display.fillScreen(SH110X_BLACK);
+		display.display();
+		for (uint8_t i {0}; i < 12; ++i) {
+			strip.setPixelColor(i, 0);
+		}
+		strip.show();
+	} else if (idle && millis() - lastAction < idleTimeout) {
+		idle = false;
+
+		drawPluginName();
+		updateDisplay = true;
+		showBacklight = true;
+	}
+
+	if (commitSettings) {
+		commitSettings = false;
+		EEPROM.put(0, settings);
+		EEPROM.commit();
+	}
+
 	if (dispatched && millis() - dispatchStart > dispatchDuration) {
 		dispatched = false;
 		Keyboard.releaseAll();
@@ -245,12 +288,6 @@ void loop() {
 		updateDisplay = false;
 		display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
 		display.display();
-	}
-
-	if (commitSettings) {
-		commitSettings = false;
-		EEPROM.put(0, settings);
-		EEPROM.commit();
 	}
 
 	if (showBacklight) {
