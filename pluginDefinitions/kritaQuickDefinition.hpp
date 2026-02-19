@@ -1,5 +1,5 @@
-#ifndef TEST_PLUGIN_HPP
-#define TEST_PLUGIN_HPP
+#ifndef KRITA_QUICK_DEFINITION_HPP
+#define KRITA_QUICK_DEFINITION_HPP
 
 #include "Keyboard.h"
 
@@ -11,7 +11,7 @@ QuickPluginDefinition kritaQuickDefinition {
   "Krita",
   {{"Undo", {KEY_LEFT_CTRL, 'z'}, Color::HSV(0)},
     {"Redo", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'z'}, Color::HSV(512)},
-    {"Select", {KEY_LEFT_CTRL, 'a'}, Color::HSV(1024, 180)},
+    {"Select", {'s'}, Color::HSV(1024, 180)},
     {"Brush", {'b'}, Color::HSV(512)},
     {"Eraser", {'e'}, Color::HSV(128)},
     {"Desel", {KEY_LEFT_CTRL, 'd'}, Color::HSV(0, 180)},

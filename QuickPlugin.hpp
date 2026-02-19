@@ -12,13 +12,13 @@
 
 struct KeyDefinition {
 	char    displayName[16];
-	uint16_t keys[8];
+	uint8_t keys[8];
 	Color color;
 	uint16_t consumerKey;
 };
 
 struct EncoderKeyDefinition {
-	uint16_t keys[6];
+	uint8_t keys[6];
 	uint16_t consumerKey;
 };
 

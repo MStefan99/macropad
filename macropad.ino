@@ -41,11 +41,11 @@ static uint32_t  encoderTime {0};
 
 static Plugin* activePlugin {nullptr};
 
-const static uint16_t* dispatchQueue {nullptr};
-static bool            dispatched {false};
-static uint32_t        dispatchStart {0};
-static uint32_t        dispatchDuration {0};
-static bool            dispatchConsumer {false};
+static uint8_t  dispatchQueue[6] {0};
+static uint16_t dispatchConsumer {0};
+static bool     dispatched {false};
+static uint32_t dispatchStart {0};
+static uint32_t dispatchDuration {0};
 
 // Called from interrupts
 void displayPlugin() {
@@ -58,10 +58,13 @@ void setBacklight() {
 }
 
 // Called from interrupts
-void dispatchKeys(const uint16_t keys[6], bool consumerKeys, uint32_t duration) {
-	dispatchQueue = keys;
+void dispatchKeys(const uint8_t keys[6], uint16_t consumerKey, uint32_t duration) {
+	for (uint8_t i {0}; i < 6 && keys[i]; ++i) {
+		dispatchQueue[i] = keys[i];
+	}
+
+	dispatchConsumer = consumerKey;
 	dispatchDuration = duration;
-	dispatchConsumer = consumerKeys;
 }
 
 PluginCanvas    pluginCanvas {displayPlugin};
@@ -99,11 +102,11 @@ void encoderHandler(void* pinPtr) {
 	encoderPosition = newPosition;
 
 	auto lastEncoderTime {encoderTime};
-	encoderTime = millis();
-
 	if (millis() - lastEncoderTime < encoderDebounceTime) {
 		return;
 	}
+
+	encoderTime = millis();
 
 	if (transition && !(encoderCount % 4)) {
 		if (!pinStatuses[0] && tud_ready()) {  // Setting brightness
@@ -200,16 +203,16 @@ void loop() {
 		activePlugin->onTick();
 	}
 
-	if (dispatchQueue) {
+	if (!dispatched && (dispatchQueue[0] || dispatchConsumer)) {
 		for (uint8_t i {0}; i < 6 && dispatchQueue[i]; ++i) {
-			if (dispatchConsumer) {
-				Keyboard.consumerPress(dispatchQueue[i]);
-			} else {
-				Keyboard.press(dispatchQueue[i]);
-			}
+			Keyboard.press(dispatchQueue[i]);
+		}
+		if (dispatchConsumer) {
+			Keyboard.consumerPress(dispatchConsumer);
 		}
 
-		dispatchQueue = nullptr;
+		dispatchQueue[0] = 0;
+		dispatchConsumer = 0;
 		dispatchStart = millis();
 		dispatched = true;
 	}
@@ -217,6 +220,7 @@ void loop() {
 	if (dispatched && millis() - dispatchStart > dispatchDuration) {
 		dispatched = false;
 		Keyboard.releaseAll();
+		Keyboard.consumerRelease();
 	}
 
 	if (updateDisplay) {
