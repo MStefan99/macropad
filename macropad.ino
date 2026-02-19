@@ -37,6 +37,7 @@ static Settings settings {};
 
 static PinStatus pinStatuses[13] {};
 static uint32_t  pinTimes[13] {};
+static bool skipEncoderRelease {false};
 
 static uint8_t  encoderPosition {0};
 static int32_t  encoderCount {0};
@@ -94,6 +95,11 @@ void buttonHandler(void* pinPtr) {
 	}
 	pinTimes[pin] = millis();
 
+	if (status && skipEncoderRelease) {
+		skipEncoderRelease = false;
+		return;
+	}
+
 	if (activePlugin) {
 		if (status) {
 			activePlugin->onKeyUp(pin);
@@ -119,6 +125,7 @@ void encoderHandler(void* pinPtr) {
 	if (transition && !(encoderCount % 4)) {
 		if (!pinStatuses[0] && tud_ready()) {  // Setting brightness
 			settings.brightness = min(max(settings.brightness + transition, 0), 31);
+			skipEncoderRelease = true;
 			commitSettings = true;
 			setBacklight();
 		} else if (activePlugin) {
