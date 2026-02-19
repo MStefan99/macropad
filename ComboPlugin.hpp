@@ -8,40 +8,42 @@
 #include "Plugin.hpp"
 #include "PluginEnvironment.hpp"
 
-struct KeyDefinition {
-	char     displayName[8];
-	uint16_t keys[8];
-	Color    color;
-	uint16_t consumerKey;
-};
-
-struct LayerDefinition {
-	char          displayName[8];
-	KeyDefinition keyDefinitions[12];
-};
-
-struct EncoderKeyDefinition {
-	uint16_t keys[6];
-	uint16_t consumerKey;
-};
-
-struct EncoderDefinition {
-	char                 displayName[16];
-	EncoderKeyDefinition encoderKeys[2];
-};
-
-struct ComboPluginDefinition {
-	char name[16];
-	char displayName[16];
-
-	KeyDefinition     keyDefinitions[12];
-	LayerDefinition   layerDefinitions[12];
-	EncoderDefinition encoderDefinitions[12];
-};
-
 class ComboPlugin: public Plugin {
 public:
-	ComboPlugin(PluginEnvironment& environment, const ComboPluginDefinition& definition);
+	struct KeyDefinition {
+		char     displayName[8];
+		uint8_t  keys[8];
+		Color    color;
+		uint16_t consumerKey;
+	};
+
+	struct LayerDefinition {
+		char          displayName[8];
+		KeyDefinition keyDefinitions[12];
+		Color         color;
+	};
+
+	struct EncoderKeyDefinition {
+		uint8_t  keys[8];
+		uint16_t consumerKey;
+	};
+
+	struct EncoderDefinition {
+		char                 displayName[16];
+		EncoderKeyDefinition encoderKeys[2];
+		Color                color;
+	};
+
+	struct Definition {
+		char name[16];
+		char displayName[16];
+
+		KeyDefinition     keyDefinitions[12];
+		LayerDefinition   layerDefinitions[12];
+		EncoderDefinition encoderDefinitions[12];
+	};
+
+	ComboPlugin(PluginEnvironment& environment, const Definition& definition);
 
 	virtual void onActivate() override;
 
@@ -51,14 +53,25 @@ public:
 	virtual void onEncoderDown(int32_t count) override;
 
 	virtual const char* getName() const override;
+	virtual const char* getDisplayName() const override;
 
 protected:
-	PluginEnvironment&           _environment;
-	const ComboPluginDefinition& _definition;
+	enum class DisplayMode : uint8_t {
+		KEY,
+		LAYER,
+		ENCODER
+	};
 
-	uint8_t layerKey {0};
-	int8_t  encoderMode {0};
-	uint8_t displayMode {0};
+	PluginEnvironment& _environment;
+	const Definition&  _definition;
+
+	uint8_t     _layerKey {0};
+	int8_t      _encoderMode {0};
+	DisplayMode _displayMode {DisplayMode::KEY};
+
+	void _printLabel(uint8_t idx, const char* label);
+	void _displayLayer();
+	void _display(bool peek = false);
 };
 
 

@@ -53,6 +53,22 @@ public:
 	HSVchannels getHSV() const;
 	uint32_t    getHex() const;
 
+	static Color Red(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(0, s, v);
+	}
+
+	static Color Orange(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(128, s, v);
+	}
+
+	static Color Yellow(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(256, s, v);
+	}
+
+	static Color Green(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(512, s, v);
+	}
+
 protected:
 	RGBchannels _rgb;
 };

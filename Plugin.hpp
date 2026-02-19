@@ -27,6 +27,7 @@ public:
 	virtual void onEncoderUp(int32_t count);
 
 	virtual const char* getName() const;
+	virtual const char* getDisplayName() const;
 
 	// Should return true if plugin did some work during the tick for optimal scheduling
 	virtual bool onTick();

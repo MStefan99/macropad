@@ -6,7 +6,7 @@
 #include "../QuickPlugin.hpp"
 
 
-QuickPluginDefinition kritaQuickDefinition {
+QuickPlugin::Definition kritaQuickDefinition {
   "krita",
   "Krita",
   {{"Undo", {KEY_LEFT_CTRL, 'z'}, Color::HSV(0)},

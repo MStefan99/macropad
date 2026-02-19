@@ -1,14 +1,14 @@
 #include "macropad.hpp"
-#include "pluginDefinitions/kritaQuickDefinition.hpp"
+#include "pluginDefinitions/kritaComboDefinition.hpp"
 #include "pluginDefinitions/systemQuickDefinition.hpp"
 
 
-static auto systemQuickPlugin {
+static auto systemPlugin {
   QuickPlugin {pluginEnvironment, systemQuickDefinition}
 };
-static auto kritaQuickPlugin {
-  QuickPlugin {pluginEnvironment, kritaQuickDefinition}
+static auto kritaPlugin {
+  ComboPlugin {pluginEnvironment, kritaComboDefinition}
 };
 
 
-Plugin* definedPlugins[] {/*&systemQuickPlugin,*/ &kritaQuickPlugin};
+Plugin* definedPlugins[] {/*&systemPlugin,*/ &kritaPlugin};

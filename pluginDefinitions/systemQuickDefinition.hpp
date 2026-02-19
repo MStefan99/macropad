@@ -6,7 +6,7 @@
 #include "../QuickPlugin.hpp"
 
 
-QuickPluginDefinition systemQuickDefinition {
+QuickPlugin::Definition systemQuickDefinition {
   "sys",
   "Desktop",
   {

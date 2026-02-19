@@ -1,6 +1,6 @@
 #include "QuickPlugin.hpp"
 
-QuickPlugin::QuickPlugin(PluginEnvironment& environment, const QuickPluginDefinition& definition):
+QuickPlugin::QuickPlugin(PluginEnvironment& environment, const Definition& definition):
   Plugin {},
   _environment {environment},
   _definition {definition} {
@@ -67,10 +67,10 @@ void QuickPlugin::onKeyDown(uint8_t key) {
 		return;
 	}
 	--key;
-
 	_highlight(key, true);
 
-	_environment.keyDispatcher.dispatch(_definition.keyDefinitions[key].keys);
+	auto kd {_definition.keyDefinitions[key]};
+	_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
 }
 
 void QuickPlugin::onKeyUp(uint8_t key) {
@@ -83,19 +83,19 @@ void QuickPlugin::onKeyUp(uint8_t key) {
 }
 
 void QuickPlugin::onEncoderDown(int32_t count) {
-	_environment.keyDispatcher.dispatch(
-	    _definition.encoderDefinition.encoderKeys[0].keys,
-	    _definition.encoderDefinition.encoderKeys[1].consumerKey
-	);
+	auto kd {_definition.encoderDefinition.encoderKeys[0]};
+	_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
 }
 
 void QuickPlugin::onEncoderUp(int32_t count) {
-	_environment.keyDispatcher.dispatch(
-	    _definition.encoderDefinition.encoderKeys[1].keys,
-	    _definition.encoderDefinition.encoderKeys[1].consumerKey
-	);
+	auto kd {_definition.encoderDefinition.encoderKeys[1]};
+	_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
 }
 
 const char* QuickPlugin::getName() const {
+	return _definition.name;
+}
+
+const char* QuickPlugin::getDisplayName() const {
 	return _definition.displayName;
 }

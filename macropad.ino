@@ -41,7 +41,7 @@ static uint32_t  encoderTime {0};
 
 static Plugin* activePlugin {nullptr};
 
-static uint8_t  dispatchQueue[6] {0};
+static uint8_t  dispatchQueue[8] {0};
 static uint16_t dispatchConsumer {0};
 static bool     dispatched {false};
 static uint32_t dispatchStart {0};
@@ -58,7 +58,7 @@ void setBacklight() {
 }
 
 // Called from interrupts
-void dispatchKeys(const uint8_t keys[6], uint16_t consumerKey, uint32_t duration) {
+void dispatchKeys(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration) {
 	for (uint8_t i {0}; i < 6 && keys[i]; ++i) {
 		dispatchQueue[i] = keys[i];
 	}
@@ -140,10 +140,10 @@ void activatePlugin(Plugin* plugin) {
 
 	int16_t  x, y;
 	uint16_t w, h;
-	display.getTextBounds(activePlugin->getName(), 0, 0, &x, &y, &w, &h);
+	display.getTextBounds(activePlugin->getDisplayName(), 0, 0, &x, &y, &w, &h);
 
 	display.setCursor(64 - w / 2, 0);
-	display.print(activePlugin->getName());
+	display.print(activePlugin->getDisplayName());
 
 	display.display();
 }
@@ -206,14 +206,14 @@ void loop() {
 	}
 
 	if (!dispatched && (dispatchQueue[0] || dispatchConsumer)) {
-		for (uint8_t i {0}; i < 6 && dispatchQueue[i]; ++i) {
+		for (uint8_t i {0}; i < 8 && dispatchQueue[i]; ++i) {
 			Keyboard.press(dispatchQueue[i]);
+			dispatchQueue[i] = 0;
 		}
 		if (dispatchConsumer) {
 			Keyboard.consumerPress(dispatchConsumer);
 		}
 
-		dispatchQueue[0] = 0;
 		dispatchConsumer = 0;
 		dispatchStart = millis();
 		dispatched = true;

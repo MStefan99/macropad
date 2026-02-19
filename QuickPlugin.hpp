@@ -8,33 +8,33 @@
 #include "Plugin.hpp"
 #include "PluginEnvironment.hpp"
 
-struct KeyDefinition {
-	char     displayName[8];
-	uint8_t  keys[8];
-	Color    color;
-	uint16_t consumerKey;
-};
-
-struct EncoderKeyDefinition {
-	uint8_t  keys[6];
-	uint16_t consumerKey;
-};
-
-struct EncoderDefinition {
-	char                 displayName[16];
-	EncoderKeyDefinition encoderKeys[2];
-};
-
-struct QuickPluginDefinition {
-	char              name[16];
-	char              displayName[16];
-	KeyDefinition     keyDefinitions[12];
-	EncoderDefinition encoderDefinition;
-};
-
 class QuickPlugin: public Plugin {
 public:
-	QuickPlugin(PluginEnvironment& environment, const QuickPluginDefinition& definition);
+	struct KeyDefinition {
+		char     displayName[8];
+		uint8_t  keys[8];
+		Color    color;
+		uint16_t consumerKey;
+	};
+
+	struct EncoderKeyDefinition {
+		uint8_t  keys[8];
+		uint16_t consumerKey;
+	};
+
+	struct EncoderDefinition {
+		char                 displayName[16];
+		EncoderKeyDefinition encoderKeys[2];
+	};
+
+	struct Definition {
+		char              name[16];
+		char              displayName[16];
+		KeyDefinition     keyDefinitions[12];
+		EncoderDefinition encoderDefinition;
+	};
+
+	QuickPlugin(PluginEnvironment& environment, const Definition& definition);
 
 	virtual void onActivate() override;
 
@@ -44,10 +44,11 @@ public:
 	virtual void onEncoderDown(int32_t count) override;
 
 	virtual const char* getName() const override;
+	virtual const char* getDisplayName() const override;
 
 protected:
-	PluginEnvironment&           _environment;
-	const QuickPluginDefinition& _definition;
+	PluginEnvironment& _environment;
+	const Definition&  _definition;
 
 	void _highlight(uint8_t key, bool down);
 };
