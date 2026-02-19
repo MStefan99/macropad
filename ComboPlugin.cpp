@@ -39,18 +39,36 @@ void ComboPlugin::_printLabel(uint8_t idx, const char* label) {
 void ComboPlugin::_displayLayer() {
 	int16_t  x, y;
 	uint16_t w, h;
-	auto*    displayName {_definition.layerDefinitions[_layerKey - 1].displayName};
 
-	if (displayName[0]) {
-		_environment.canvas.getTextBounds(displayName, 0, 0, &x, &y, &w, &h);
-		w += 2;
-		h += 2;
+	{
+		auto* displayName {_definition.layerDefinitions[_layerKey - 1].displayName};
 
-		x = (_environment.canvas.width() - w) / 2;
-		_environment.canvas.fillRect(x, 0, w, h, SH110X_WHITE);
-		_environment.canvas.setTextColor(SH110X_BLACK);
-		_environment.canvas.setCursor(x + 1, 1);
-		_environment.canvas.print(displayName);
+		if (displayName[0]) {
+			_environment.canvas.getTextBounds(displayName, 0, 0, &x, &y, &w, &h);
+			w += 2;
+			h += 2;
+
+			_environment.canvas.fillRect(0, 0, w, h, SH110X_WHITE);
+			_environment.canvas.setTextColor(SH110X_BLACK);
+			_environment.canvas.setCursor(1, 1);
+			_environment.canvas.print(displayName);
+		}
+	}
+
+	{
+		auto* encoderDisplayName {_definition.encoderDefinitions[_layerKey - 1].displayName};
+
+		if (encoderDisplayName[0]) {
+			_environment.canvas.getTextBounds(encoderDisplayName, 0, 0, &x, &y, &w, &h);
+			w += 2;
+			h += 2;
+
+			x = _environment.canvas.width() - w;
+			_environment.canvas.fillRect(x, 0, w, h, SH110X_WHITE);
+			_environment.canvas.setTextColor(SH110X_BLACK);
+			_environment.canvas.setCursor(x + 1, 1);
+			_environment.canvas.print(encoderDisplayName);
+		}
 	}
 
 	for (uint8_t i {0}; i < 12; ++i) {
