@@ -77,41 +77,41 @@ public:
 		return HSV(256, s, v);
 	}
 
-  static Color Lime(uint8_t s = 255, uint8_t v = 255) {
-    return HSV(384, s ,v);
-  }
+	static Color Lime(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(384, s, v);
+	}
 
 	static Color Green(uint8_t s = 255, uint8_t v = 255) {
 		return HSV(512, s, v);
 	}
 
-  static Color Mint(uint8_t s = 255, uint8_t v = 255) {
-    return HSV(640, s, v);
-  }
+	static Color Mint(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(640, s, v);
+	}
 
-  static Color Cyan(uint8_t s = 255, uint8_t v = 255) {
-    return HSV(768, s, v);
-  }
+	static Color Cyan(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(768, s, v);
+	}
 
-  static Color Azure(uint8_t s = 255, uint8_t v = 255) {
-    return HSV(896, s, v);
-  }
+	static Color Azure(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(896, s, v);
+	}
 
-  static Color Blue(uint8_t s = 255, uint8_t v = 255) {
-    return HSV(1024, s, v);
-  }
+	static Color Blue(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(1024, s, v);
+	}
 
-  static Color Purple(uint8_t s = 255, uint8_t v = 255) {
-    return HSV(1152, s, v);
-  }
+	static Color Purple(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(1152, s, v);
+	}
 
-  static Color Magenta(uint8_t s = 255, uint8_t v = 255) {
-    return HSV(1280, s, v);
-  }
+	static Color Magenta(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(1280, s, v);
+	}
 
-  static Color Pink(uint8_t s = 255, uint8_t v = 255) {
-    return HSV(1408, s, v);
-  }
+	static Color Pink(uint8_t s = 255, uint8_t v = 255) {
+		return HSV(1408, s, v);
+	}
 
 protected:
 	RGBchannels _rgb;

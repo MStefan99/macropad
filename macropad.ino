@@ -37,7 +37,7 @@ static Settings settings {};
 
 static PinStatus pinStatuses[13] {};
 static uint32_t  pinTimes[13] {};
-static bool skipEncoderRelease {false};
+static bool      skipEncoderRelease {false};
 
 static uint8_t  encoderPosition {0};
 static int32_t  encoderCount {0};

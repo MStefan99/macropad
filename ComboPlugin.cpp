@@ -1,7 +1,7 @@
 #include "ComboPlugin.hpp"
 
 constexpr static uint16_t topMargin {16};
-constexpr static char     modeLabels[][8] {"Key", "Layer", "Enc"};
+constexpr static char     modeLabels[][8] {"Key", "Layer", "Knob"};
 
 ComboPlugin::ComboPlugin(PluginEnvironment& environment, const Definition& definition):
   _environment {environment},
@@ -123,8 +123,7 @@ void ComboPlugin::onKeyDown(uint8_t key) {
 	} else {  // Layer already active
 		auto kd {_definition.layerDefinitions[_layerKey - 1].keyDefinitions[key - 1]};
 		_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
-		_layerKey = 0;
-		_display();
+		_comboActivated = true;
 	}
 }
 
@@ -137,12 +136,15 @@ void ComboPlugin::onKeyUp(uint8_t key) {
 			_layerKey = 0;                                                                          // Deactivate layer
 		}
 		_display();
-	}
+	} else if (key == _layerKey) {  // Layer released
+		_layerKey = 0;                // Deactivate layer
 
-	if (_layerKey && _layerKey == key) {  // Layer released (quick action)
-		_layerKey = 0;                      // Deactivate layer
-		auto kd {_definition.keyDefinitions[key - 1]};
-		_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
+		if (!_comboActivated) {  // No other key was pressed
+			auto kd {_definition.keyDefinitions[key - 1]};
+			_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
+		}
+		_comboActivated = false;
+
 		_display();
 	}
 }

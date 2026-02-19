@@ -17,7 +17,22 @@ ComboPlugin::Definition kritaComboDefinition {
   // Layers
   {
    // Tools layer
-    {"Tool", {{}, {"Brush", {'b'}, Color::Green()}, {"Move", {KEY_LEFT_CTRL, 't'}, Color::Orange()}}, Color::Orange()},
+    {"Brush",
+     {
+       {},
+       {"Erase", {'e'}, Color::Orange()},
+       {"0", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '0'}, Color::White()},
+       {"1", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '1'}, Color::White()},
+       {"2", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '2'}, Color::White()},
+       {"3", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '3'}, Color::White()},
+       {"4", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '4'}, Color::White()},
+       {"5", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '5'}, Color::White()},
+       {"6", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '6'}, Color::White()},
+       {"7", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '7'}, Color::White()},
+       {"8", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '8'}, Color::White()},
+       {"9", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '9'}, Color::White()},
+     },
+     Color::Orange()},
    // (Krita) Layers layer
     {
       "Layer",

@@ -66,6 +66,7 @@ protected:
 	const Definition&  _definition;
 
 	uint8_t     _layerKey {0};
+	bool        _comboActivated {false};
 	int8_t      _encoderMode {0};
 	DisplayMode _displayMode {DisplayMode::KEY};
 
