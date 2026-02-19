@@ -41,6 +41,7 @@ static bool      skipEncoderRelease {false};
 
 static uint8_t  encoderPosition {0};
 static int32_t  encoderCount {0};
+static int32_t  sentEncoderCount {0};
 static uint32_t encoderTime {0};
 
 static Plugin* activePlugin {nullptr};
@@ -122,15 +123,15 @@ void encoderHandler(void* pinPtr) {
 	}
 	encoderTime = millis();
 
-	if (transition && !(encoderCount % 4)) {
+	int32_t count = encoderCount / 4;
+	if (transition && count != sentEncoderCount) {
+		sentEncoderCount = count;
 		if (!pinStatuses[0] && tud_ready()) {  // Setting brightness
 			settings.brightness = min(max(settings.brightness + transition, 0), 31);
 			skipEncoderRelease = true;
 			commitSettings = true;
 			setBacklight();
 		} else if (activePlugin) {
-			int32_t count = encoderCount / 4;
-
 			if (transition > 0) {
 				activePlugin->onEncoderUp(count);
 			} else {
