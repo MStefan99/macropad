@@ -9,19 +9,13 @@
 #include "PluginCanvas.hpp"
 #include "PluginTone.hpp"
 
-
 struct PluginEnvironment {
 	PluginCanvas&    canvas;
 	PluginBacklight& backlight;
 	PluginTone&      tone;
-	KeyDispatcher&  keyDispatcher;
+	KeyDispatcher&   keyDispatcher;
 
-	PluginEnvironment(
-	    PluginCanvas&    canvas,
-	    PluginBacklight& backlight,
-	    PluginTone&      tone,
-	    KeyDispatcher&   keyDispatcher
-	):
+	PluginEnvironment(PluginCanvas& canvas, PluginBacklight& backlight, PluginTone& tone, KeyDispatcher& keyDispatcher):
 	  canvas {canvas},
 	  backlight {backlight},
 	  tone {tone},

@@ -6,11 +6,11 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_NeoPixel.h"
 #include "Adafruit_SH110X.h"
-#include "tusb.h"
 #include "Arduino.h"
+#include "EEPROM.h"
 #include "Keyboard.h"
 #include "SPI.h"
-#include "EEPROM.h"
+#include "tusb.h"
 
 #include "KeyDispatcher.hpp"
 #include "Plugin.hpp"
@@ -29,9 +29,9 @@ extern PluginEnvironment pluginEnvironment;
 
 extern Plugin* definedPlugins[];
 
-
-template <typename T> int sign(T val) {
-    return (T(0) < val) - (val < T(0));
+template <typename T>
+int sign(T val) {
+	return (T(0) < val) - (val < T(0));
 }
 
 

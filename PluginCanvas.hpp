@@ -5,7 +5,6 @@
 #include "Adafruit_GFX.h"
 #include "Arduino.h"
 
-
 class PluginCanvas: public GFXcanvas1 {
 public:
 	using CallbackType = void (*)();

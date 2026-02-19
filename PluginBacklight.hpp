@@ -6,7 +6,6 @@
 
 #include "Color.hpp"
 
-
 class PluginBacklight {
 public:
 	using CallbackType = void (*)();
@@ -25,11 +24,11 @@ public:
 
 	void show();
 
-	Color getPixel(uint8_t i) const;
+	Color        getPixel(uint8_t i) const;
 	const Color* getPixels() const;
 
 protected:
-	Color     _colors[12];
+	Color        _colors[12];
 	CallbackType _showCallback {};
 };
 

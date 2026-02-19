@@ -4,7 +4,6 @@
 
 #include "Arduino.h"
 
-
 class KeyDispatcher {
 public:
 	using CallbackType = void (*)(const uint8_t keys[6], uint16_t consumerKey, uint32_t duration);

@@ -4,7 +4,6 @@
 
 #include "Arduino.h"
 
-
 class PluginTone {
 public:
 	using CallbackType = void (*)(unsigned int frequency, unsigned long duration);

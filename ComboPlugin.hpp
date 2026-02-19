@@ -1,5 +1,5 @@
-#ifndef QUICK_PLUGIN_HPP
-#define QUICK_PLUGIN_HPP
+#ifndef COMBO_PLUGIN_HPP
+#define COMBO_PLUGIN_HPP
 
 #include "Adafruit_SH110X.h"
 #include "Arduino.h"
@@ -10,13 +10,18 @@
 
 struct KeyDefinition {
 	char     displayName[8];
-	uint8_t  keys[8];
+	uint16_t keys[8];
 	Color    color;
 	uint16_t consumerKey;
 };
 
+struct LayerDefinition {
+	char          displayName[8];
+	KeyDefinition keyDefinitions[12];
+};
+
 struct EncoderKeyDefinition {
-	uint8_t  keys[6];
+	uint16_t keys[6];
 	uint16_t consumerKey;
 };
 
@@ -25,16 +30,18 @@ struct EncoderDefinition {
 	EncoderKeyDefinition encoderKeys[2];
 };
 
-struct QuickPluginDefinition {
-	char              name[16];
-	char              displayName[16];
+struct ComboPluginDefinition {
+	char name[16];
+	char displayName[16];
+
 	KeyDefinition     keyDefinitions[12];
-	EncoderDefinition encoderDefinition;
+	LayerDefinition   layerDefinitions[12];
+	EncoderDefinition encoderDefinitions[12];
 };
 
-class QuickPlugin: public Plugin {
+class ComboPlugin: public Plugin {
 public:
-	QuickPlugin(PluginEnvironment& environment, const QuickPluginDefinition& definition);
+	ComboPlugin(PluginEnvironment& environment, const ComboPluginDefinition& definition);
 
 	virtual void onActivate() override;
 
@@ -47,9 +54,11 @@ public:
 
 protected:
 	PluginEnvironment&           _environment;
-	const QuickPluginDefinition& _definition;
+	const ComboPluginDefinition& _definition;
 
-	void _highlight(uint8_t key, bool down);
+	uint8_t layerKey {0};
+	int8_t  encoderMode {0};
+	uint8_t displayMode {0};
 };
 
 

@@ -114,10 +114,12 @@ void encoderHandler(void* pinPtr) {
 			commitSettings = true;
 			setBacklight();
 		} else if (activePlugin) {
+			int32_t count = encoderCount / 4;
+
 			if (transition > 0) {
-				activePlugin->onEncoderUp(encoderCount);
+				activePlugin->onEncoderUp(count);
 			} else {
-				activePlugin->onEncoderDown(encoderCount);
+				activePlugin->onEncoderDown(count);
 			}
 		}
 	}
