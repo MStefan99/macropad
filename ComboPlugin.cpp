@@ -1,7 +1,7 @@
 #include "ComboPlugin.hpp"
 
 constexpr static uint16_t topMargin {16};
-constexpr static char     modeLabels[][8] {"Key", "Lay", "Enc"};
+constexpr static char     modeLabels[][8] {"Key", "Layer", "Enc"};
 
 ComboPlugin::ComboPlugin(PluginEnvironment& environment, const Definition& definition):
   _environment {environment},
@@ -115,12 +115,12 @@ void ComboPlugin::onActivate() {
 }
 
 void ComboPlugin::onKeyDown(uint8_t key) {
-	if (!key) {  // Encoder
-		           // Do nothing
-	} else if (!_layerKey) {
+	if (!key) {               // Encoder
+		                        // Do nothing
+	} else if (!_layerKey) {  // Activate layer
 		_layerKey = key;
 		_display(true);
-	} else {
+	} else {  // Layer already active
 		auto kd {_definition.layerDefinitions[_layerKey - 1].keyDefinitions[key - 1]};
 		_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
 		_layerKey = 0;
@@ -129,19 +129,20 @@ void ComboPlugin::onKeyDown(uint8_t key) {
 }
 
 void ComboPlugin::onKeyUp(uint8_t key) {
-	if (!key) {          // Encoder
-		if (!_layerKey) {  // No other key
-			_displayMode = static_cast<DisplayMode>((static_cast<uint8_t>(_displayMode) + 1) % 3);
-		} else {
-			_encoderMode = _layerKey - 1;
+	if (!key) {                                                                                 // Encoder
+		if (!_layerKey) {                                                                         // No layer
+			_displayMode = static_cast<DisplayMode>((static_cast<uint8_t>(_displayMode) + 1) % 3);  // Switch display mode
+		} else {                                                                                  // Layer selected
+			_encoderMode = _layerKey - 1;                                                           // Switch encoder mode
+			_layerKey = 0;                                                                          // Deactivate layer
 		}
 		_display();
 	}
 
-	if (_layerKey && _layerKey == key) {
+	if (_layerKey && _layerKey == key) {  // Layer released (quick action)
+		_layerKey = 0;                      // Deactivate layer
 		auto kd {_definition.keyDefinitions[key - 1]};
 		_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
-		_layerKey = 0;
 		_display();
 	}
 }

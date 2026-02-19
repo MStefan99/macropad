@@ -11,6 +11,7 @@
 #define NEOPIXEL_COUNT 12
 
 
+constexpr static uint32_t keyDebounceTime {5};
 constexpr static uint32_t encoderDebounceTime {2};
 
 
@@ -35,9 +36,11 @@ static bool commitSettings {false};
 static Settings settings {};
 
 static PinStatus pinStatuses[13] {};
-static uint8_t   encoderPosition {0};
-static int32_t   encoderCount {0};
-static uint32_t  encoderTime {0};
+static uint32_t  pinTimes[13] {};
+
+static uint8_t  encoderPosition {0};
+static int32_t  encoderCount {0};
+static uint32_t encoderTime {0};
 
 static Plugin* activePlugin {nullptr};
 
@@ -85,6 +88,12 @@ void buttonHandler(void* pinPtr) {
 	}
 	pinStatuses[pin] = status;
 
+	auto pinTime = pinTimes[pin];
+	if (millis() - pinTime < keyDebounceTime) {
+		return;
+	}
+	pinTimes[pin] = millis();
+
 	if (activePlugin) {
 		if (status) {
 			activePlugin->onKeyUp(pin);
@@ -105,7 +114,6 @@ void encoderHandler(void* pinPtr) {
 	if (millis() - lastEncoderTime < encoderDebounceTime) {
 		return;
 	}
-
 	encoderTime = millis();
 
 	if (transition && !(encoderCount % 4)) {
