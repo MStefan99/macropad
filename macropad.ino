@@ -38,7 +38,7 @@ static Settings settings {};
 
 static PinStatus pinStatuses[13] {};
 static uint32_t  pinTimes[13] {};
-static bool      skipEncoderRelease {false};
+static uint8_t   skipButtonRelease = ~0;
 
 static uint8_t  encoderPosition {0};
 static int32_t  encoderCount {0};
@@ -91,12 +91,6 @@ void buttonHandler(void* pinPtr) {
 	uint8_t pin {static_cast<uint8_t>(reinterpret_cast<int>(pinPtr))};
 	auto    status = digitalRead(pin);
 
-	if (idle) {
-		displayPlugin();
-		setBacklight();
-		return;
-	}
-
 	if (status == pinStatuses[pin]) {
 		return;
 	}
@@ -108,8 +102,15 @@ void buttonHandler(void* pinPtr) {
 	}
 	pinTimes[pin] = millis();
 
-	if (status && skipEncoderRelease) {
-		skipEncoderRelease = false;
+	if (idle) {
+		displayPlugin();
+		setBacklight();
+		skipButtonRelease = pin;
+		return;
+	}
+
+	if (status && pin == skipButtonRelease) {
+		skipButtonRelease = ~0;
 		return;
 	}
 
@@ -129,24 +130,24 @@ void encoderHandler(void* pinPtr) {
 	encoderCount += transition;
 	encoderPosition = newPosition;
 
-	if (idle) {
-		displayPlugin();
-		setBacklight();
-		return;
-	}
-
 	auto lastEncoderTime {encoderTime};
 	if (millis() - lastEncoderTime < encoderDebounceTime) {
 		return;
 	}
 	encoderTime = millis();
 
+	if (idle) {
+		displayPlugin();
+		setBacklight();
+		return;
+	}
+
 	int32_t count = encoderCount / 4;
 	if (transition && count != sentEncoderCount) {
 		sentEncoderCount = count;
 		if (!pinStatuses[0] && tud_ready()) {  // Setting brightness
 			settings.brightness = min(max(settings.brightness + transition, 0), 31);
-			skipEncoderRelease = true;
+			skipButtonRelease = 0;
 			commitSettings = true;
 			setBacklight();
 		} else if (activePlugin) {
