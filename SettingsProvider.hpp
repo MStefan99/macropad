@@ -6,9 +6,10 @@
 
 namespace settingsProvider {
 	struct __attribute__((packed)) Settings {
-		int8_t  brightness {31};
-		bool    soundEnabled {false};
-		uint8_t encoderDivisor {4};
+		int8_t   brightness {31};
+		bool     soundEnabled {false};
+		uint8_t  encoderDivisor {4};
+		uint32_t screenTimeout {1000 * 60 * 10};
 	};
 
 	Settings& getSettings();

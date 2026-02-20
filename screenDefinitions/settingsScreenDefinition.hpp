@@ -25,7 +25,7 @@ ListScreen::Definition settingsScreenDefinition {
      icons::sun},
     {"Knob",
      [] {
-	Serial.println("Knob");
+	navigator.open(speedScreen);
 },
      icons::rotate},
     {"Sound",
@@ -35,7 +35,7 @@ ListScreen::Definition settingsScreenDefinition {
      icons::bell},
     {"Time",
      [] {
-	Serial.println("Time");
+	navigator.open(timeoutScreen);
 },
      icons::hourglass},
     },

@@ -13,7 +13,6 @@
 
 constexpr static uint32_t keyDebounceTime {5};
 constexpr static uint32_t encoderDebounceTime {2};
-constexpr static uint32_t idleTimeout {1000 * 60 * 10};
 constexpr static uint32_t longPressDuration {1000 * 1};
 
 
@@ -155,7 +154,7 @@ void encoderHandler(void* pinPtr) {
 		return;
 	}
 
-	int32_t count = encoderCount / 4;
+	int32_t count = encoderCount / settingsProvider::getSettings().encoderDivisor;
 	if (transition && count != sentEncoderCount) {
 		sentEncoderCount = count;
 		if (!pinStatuses[0] && tud_ready()) {  // Setting brightness
@@ -296,7 +295,8 @@ void loop() {
 	}
 
 	// Screen timeout
-	if (!idle && millis() - lastAction > idleTimeout) {
+	auto screenTimeout {settingsProvider::getSettings().screenTimeout};
+	if (!idle && millis() - lastAction > screenTimeout) {
 		idle = true;
 		display.fillScreen(SH110X_BLACK);
 		display.display();
@@ -304,7 +304,7 @@ void loop() {
 			strip.setPixelColor(i, 0);
 		}
 		strip.show();
-	} else if (idle && millis() - lastAction < idleTimeout) {
+	} else if (idle && millis() - lastAction < screenTimeout) {
 		idle = false;
 
 		drawPluginName();
