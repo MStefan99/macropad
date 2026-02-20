@@ -6,6 +6,7 @@
 #include "../icons.hpp"
 #include "../ListScreen.hpp"
 #include "../Navigator.hpp"
+#include "../screens.hpp"
 
 
 ListScreen::Definition settingsScreenDefinition {
@@ -29,7 +30,7 @@ ListScreen::Definition settingsScreenDefinition {
      icons::rotate},
     {"Sound",
      [] {
-	Serial.println("Sound");
+	navigator.open(soundScreen);
 },
      icons::bell},
     {"Time",

@@ -30,7 +30,6 @@ static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ80
 
 static bool updateDisplay {false};
 static bool showBacklight {false};
-static bool commitSettings {false};
 
 static PinStatus pinStatuses[13] {};
 static uint32_t  pinTimes[13] {};
@@ -108,6 +107,10 @@ void buttonHandler(void* pinPtr) {
 	}
 	pinTimes[pin] = millis();
 
+	if (!tud_ready()) {
+		return;
+	}
+
 	if (idle) {
 		displayPlugin();
 		setBacklight();
@@ -142,6 +145,10 @@ void encoderHandler(void* pinPtr) {
 	}
 	encoderTime = millis();
 
+	if (!tud_ready()) {
+		return;
+	}
+
 	if (idle) {
 		displayPlugin();
 		setBacklight();
@@ -157,7 +164,6 @@ void encoderHandler(void* pinPtr) {
 			settingsProvider::setSettings(settings);
 
 			skipButtonRelease = 0;
-			commitSettings = true;
 			setBacklight();
 		} else if (activePluginCount) {
 			if (transition > 0) {
@@ -184,6 +190,7 @@ void drawPluginName() {
 void activatePlugin(Plugin* plugin) {
 	encoderCount = 0;
 	plugin->onActivate();
+	plugin->onResume();
 	pluginStack[++activePluginCount - 1] = plugin;
 
 	display.clearDisplay();

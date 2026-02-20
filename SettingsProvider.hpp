@@ -7,7 +7,7 @@
 namespace settingsProvider {
 	struct __attribute__((packed)) Settings {
 		int8_t  brightness {31};
-		bool    toneEnabled {false};
+		bool    soundEnabled {false};
 		uint8_t encoderDivisor {4};
 	};
 

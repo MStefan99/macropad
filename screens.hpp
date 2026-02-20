@@ -8,5 +8,9 @@
 
 extern Plugin* mainScreen;
 extern Plugin* settingsScreen;
+extern Plugin* brightnessScreen;
+extern Plugin* speedScreen;
+extern Plugin* soundScreen;
+extern Plugin* timeoutScreen;
 
 #endif

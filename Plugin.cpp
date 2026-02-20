@@ -9,7 +9,19 @@ void Plugin::onActivate() {
 	// Emtpy stub
 }
 
+void Plugin::onResume() {
+	// Empty stub
+}
+
+void Plugin::onSuspend() {
+	// Empty stub
+}
+
 void Plugin::onDeactivate() {
+	// Empty stub
+}
+
+void Plugin::onKeyDown(uint8_t key) {
 	// Empty stub
 }
 
