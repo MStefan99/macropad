@@ -62,9 +62,8 @@ void deactivatePlugin();
 
 CanvasProvider    canvasProvider {displayPlugin};
 BacklightProvider backlightProvider {setBacklight};
-ToneProvider      toneProvider {};
 KeyDispatcher     keyDispatcher {dispatchKeys};
-PluginEnvironment pluginEnvironment {canvasProvider, backlightProvider, toneProvider, keyDispatcher};
+PluginEnvironment pluginEnvironment {canvasProvider, backlightProvider, keyDispatcher};
 
 Navigator navigator(activatePlugin, deactivatePlugin);
 

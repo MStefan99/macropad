@@ -4,7 +4,6 @@
 #include "screenDefinitions/brightnessScreenDefinition.hpp"
 #include "screenDefinitions/mainScreenDefinition.hpp"
 #include "screenDefinitions/settingsScreenDefinition.hpp"
-#include "screenDefinitions/soundScreenDefinition.hpp"
 #include "screenDefinitions/speedScreenDefinition.hpp"
 #include "screenDefinitions/timeoutScreenDefinition.hpp"
 
@@ -26,7 +25,12 @@ void populateAppsScreen() {
 			appsScreenDefinition.items[i].displayName[j] = name[j];
 		}
 		appsScreenDefinition.items[i].callback = activatePlugin;
-		appsScreenDefinition.items[i].icon = plugins[i]->getIcon();
+
+		if (plugins[i]->getIcon()) {
+			appsScreenDefinition.items[i].icon = plugins[i]->getIcon();
+		} else {
+			appsScreenDefinition.items[i].icon = icons::app;
+		}
 	}
 }
 
@@ -35,7 +39,6 @@ static ListScreen   _appsScreen {pluginEnvironment, appsScreenDefinition};
 static ListScreen   _settingsScreen {pluginEnvironment, settingsScreenDefinition};
 static ValueScreen  _brightnessScreen {pluginEnvironment, brightnessScreenDefinition};
 static SelectScreen _speedScreen {pluginEnvironment, speedScreenDefinition};
-static OptionScreen _soundScreen {pluginEnvironment, soundScreenDefinition};
 static SelectScreen _timeoutScreen {pluginEnvironment, timeoutScreenDefinition};
 
 Plugin* mainScreen {&_mainScreen};
@@ -43,5 +46,4 @@ Plugin* appsScreen(&_appsScreen);
 Plugin* settingsScreen {&_settingsScreen};
 Plugin* brightnessScreen {&_brightnessScreen};
 Plugin* speedScreen {&_speedScreen};
-Plugin* soundScreen {&_soundScreen};
 Plugin* timeoutScreen {&_timeoutScreen};

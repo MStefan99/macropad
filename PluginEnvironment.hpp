@@ -7,23 +7,15 @@
 #include "BacklightProvider.hpp"
 #include "CanvasProvider.hpp"
 #include "KeyDispatcher.hpp"
-#include "ToneProvider.hpp"
 
 struct PluginEnvironment {
 	CanvasProvider&    canvas;
 	BacklightProvider& backlight;
-	ToneProvider&      tone;
 	KeyDispatcher&     keyDispatcher;
 
-	PluginEnvironment(
-	    CanvasProvider&    canvas,
-	    BacklightProvider& backlight,
-	    ToneProvider&      tone,
-	    KeyDispatcher&     keyDispatcher
-	):
+	PluginEnvironment(CanvasProvider& canvas, BacklightProvider& backlight, KeyDispatcher& keyDispatcher):
 	  canvas {canvas},
 	  backlight {backlight},
-	  tone {tone},
 	  keyDispatcher {keyDispatcher} {
 		// Nothing to do
 	}

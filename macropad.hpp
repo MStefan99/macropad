@@ -22,12 +22,10 @@
 #include "plugins.hpp"
 #include "screens.hpp"
 #include "SettingsProvider.hpp"
-#include "ToneProvider.hpp"
 
 
 extern CanvasProvider    canvasProvider;
 extern BacklightProvider backlightProvider;
-extern ToneProvider      toneProvider;
 extern KeyDispatcher     keyDispatcher;
 extern PluginEnvironment pluginEnvironment;
 

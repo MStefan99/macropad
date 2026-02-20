@@ -26,11 +26,6 @@ ListScreen::Definition settingsScreenDefinition {
 	navigator.open(speedScreen);
 },
      icons::rotate},
-    {"Sound",
-     [](uint8_t i) {
-	navigator.open(soundScreen);
-},
-     icons::bell},
     {"Time",
      [](uint8_t i) {
 	navigator.open(timeoutScreen);

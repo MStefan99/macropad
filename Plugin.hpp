@@ -14,7 +14,7 @@
 
 #ifndef ALLOW_HARDWARE
 	#undef digitalPinToInterrupt
-	#pragma GCC poison Adafruit_SH1106G Adafruit_NeoPixel Keyboard Tone pinMode digitalWrite digitalRead analogWrite analogRead digitalPinToInterrupt attachInterrupt delay delayMicroseconds
+	#pragma GCC poison Adafruit_SH1106G Adafruit_NeoPixel Keyboard tone pinMode digitalWrite digitalRead analogWrite analogRead digitalPinToInterrupt attachInterrupt delay delayMicroseconds
 #endif
 
 
