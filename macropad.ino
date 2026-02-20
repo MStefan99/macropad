@@ -13,7 +13,7 @@
 
 constexpr static uint32_t keyDebounceTime {5};
 constexpr static uint32_t encoderDebounceTime {2};
-constexpr static uint32_t longPressDuration {1000 * 1};
+constexpr static uint32_t longPressDuration {750};
 
 
 constexpr static int8_t encoderTransitions[4][4] {
@@ -51,6 +51,9 @@ static uint16_t dispatchConsumer {0};
 static bool     dispatched {false};
 static uint32_t dispatchStart {0};
 static uint32_t dispatchDuration {0};
+
+static char    serialBuffer[32] {};
+static uint8_t serialIdx {0};
 
 
 void displayPlugin();
@@ -371,6 +374,37 @@ void loop() {
 		suspended = false;
 		resumePlugin();
 		lastAction = millis();
+	}
+
+	// Serial commands
+	if (Serial.available()) {
+		auto byte {Serial.read()};
+		serialBuffer[serialIdx++] = byte;
+
+		if (!byte || byte == '\r' || (byte == '\n' && serialIdx > 1)) {
+			if (!strncmp(serialBuffer, "a>", 2)) {
+				for (uint8_t i {0}; i < pluginCount; ++i) {
+					if (!strncmp(serialBuffer + 2, plugins[i]->getName(), strlen(plugins[i]->getName()))) {
+						deactivatePlugin();
+						activatePlugin(plugins[i]);
+						Serial.print("a=>");
+						Serial.println(plugins[i]->getName());
+						serialIdx = 0;
+					}
+				}
+
+				if (serialIdx) {
+					deactivatePlugin();
+					activatePlugin(plugins[0]);
+					Serial.print("a!>");
+					Serial.println(plugins[0]->getName());
+				}
+			}
+
+			serialIdx = 0;
+		}
+
+		serialIdx = serialIdx % sizeof(serialBuffer);
 	}
 
 	delay(1);
