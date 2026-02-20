@@ -4,18 +4,23 @@
 
 #include "Arduino.h"
 
+#include "BacklightProvider.hpp"
+#include "CanvasProvider.hpp"
 #include "KeyDispatcher.hpp"
-#include "PluginBacklight.hpp"
-#include "PluginCanvas.hpp"
-#include "PluginTone.hpp"
+#include "ToneProvider.hpp"
 
 struct PluginEnvironment {
-	PluginCanvas&    canvas;
-	PluginBacklight& backlight;
-	PluginTone&      tone;
-	KeyDispatcher&   keyDispatcher;
+	CanvasProvider&    canvas;
+	BacklightProvider& backlight;
+	ToneProvider&      tone;
+	KeyDispatcher&     keyDispatcher;
 
-	PluginEnvironment(PluginCanvas& canvas, PluginBacklight& backlight, PluginTone& tone, KeyDispatcher& keyDispatcher):
+	PluginEnvironment(
+	    CanvasProvider&    canvas,
+	    BacklightProvider& backlight,
+	    ToneProvider&      tone,
+	    KeyDispatcher&     keyDispatcher
+	):
 	  canvas {canvas},
 	  backlight {backlight},
 	  tone {tone},

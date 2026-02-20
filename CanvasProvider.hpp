@@ -5,11 +5,11 @@
 #include "Adafruit_GFX.h"
 #include "Arduino.h"
 
-class PluginCanvas: public GFXcanvas1 {
+class CanvasProvider: public GFXcanvas1 {
 public:
 	using CallbackType = void (*)();
 
-	PluginCanvas(CallbackType displayCallback = nullptr);
+	CanvasProvider(CallbackType displayCallback = nullptr);
 
 	void display();
 

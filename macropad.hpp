@@ -1,6 +1,7 @@
 #ifndef MACROPAD_HPP
 #define MACROPAD_HPP
 
+#define ALLOW_STORAGE
 #define ALLOW_HARDWARE
 
 #include "Adafruit_GFX.h"
@@ -12,17 +13,17 @@
 #include "SPI.h"
 #include "tusb.h"
 
+#include "BacklightProvider.hpp"
+#include "CanvasProvider.hpp"
 #include "KeyDispatcher.hpp"
 #include "Plugin.hpp"
-#include "PluginBacklight.hpp"
-#include "PluginCanvas.hpp"
 #include "PluginEnvironment.hpp"
-#include "PluginTone.hpp"
+#include "ToneProvider.hpp"
 
 
-extern PluginCanvas      pluginCanvas;
-extern PluginBacklight   pluginBacklight;
-extern PluginTone        pluginTone;
+extern CanvasProvider    canvasProvider;
+extern BacklightProvider backlightProvider;
+extern ToneProvider      toneProvider;
 extern KeyDispatcher     keyDispatcher;
 extern PluginEnvironment pluginEnvironment;
 

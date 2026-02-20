@@ -7,9 +7,13 @@
 #include "PluginEnvironment.hpp"
 
 
+#ifndef ALLOW_STORAGE
+	#pragma GCC poison EEPROM SettingsProvider
+#endif
+
 #ifndef ALLOW_HARDWARE
 	#undef digitalPinToInterrupt
-	#pragma GCC poison Adafruit_SH1106G Adafruit_NeoPixel Keyboard EEPROM Tone pinMode digitalWrite digitalRead analogWrite analogRead digitalPinToInterrupt attachInterrupt delay delayMicroseconds
+	#pragma GCC poison Adafruit_SH1106G Adafruit_NeoPixel Keyboard Tone pinMode digitalWrite digitalRead analogWrite analogRead digitalPinToInterrupt attachInterrupt delay delayMicroseconds
 #endif
 
 
@@ -30,7 +34,7 @@ public:
 	virtual const char* getDisplayName() const;
 
 	// Should return true if plugin did some work during the tick for optimal scheduling
-	virtual bool onTick();
+	virtual void onTick();
 };
 
 

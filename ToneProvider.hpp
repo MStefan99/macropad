@@ -4,11 +4,11 @@
 
 #include "Arduino.h"
 
-class PluginTone {
+class ToneProvider {
 public:
 	using CallbackType = void (*)(unsigned int frequency, unsigned long duration);
 
-	PluginTone(CallbackType toneCallback = nullptr);
+	ToneProvider(CallbackType toneCallback = nullptr);
 
 	void tone(unsigned int frequency, unsigned long duration);
 

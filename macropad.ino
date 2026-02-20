@@ -78,13 +78,13 @@ void dispatchKeys(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration
 	lastAction = millis();
 }
 
-PluginCanvas    pluginCanvas {displayPlugin};
-PluginBacklight pluginBacklight {setBacklight};
-PluginTone      pluginTone {};
-KeyDispatcher   keyDispatcher {dispatchKeys};
+CanvasProvider    canvasProvider {displayPlugin};
+BacklightProvider backlightProvider {setBacklight};
+ToneProvider      toneProvider {};
+KeyDispatcher     keyDispatcher {dispatchKeys};
 
 
-PluginEnvironment pluginEnvironment {pluginCanvas, pluginBacklight, pluginTone, keyDispatcher};
+PluginEnvironment pluginEnvironment {canvasProvider, backlightProvider, toneProvider, keyDispatcher};
 
 // Called from interrupts
 void buttonHandler(void* pinPtr) {
@@ -287,7 +287,8 @@ void loop() {
 
 	if (updateDisplay) {
 		updateDisplay = false;
-		display.drawBitmap(0, 8, const_cast<const uint8_t*>(pluginCanvas.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
+		display
+		    .drawBitmap(0, 8, const_cast<const uint8_t*>(canvasProvider.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
 		display.display();
 	}
 
@@ -296,7 +297,7 @@ void loop() {
 		uint8_t brightness = settings.brightness * (256 / 32);
 
 		for (uint8_t i {0}; i < 12; ++i) {
-			auto color {pluginBacklight.getPixel(i)};
+			auto color {backlightProvider.getPixel(i)};
 			strip.setPixelColor(
 			    i,
 			    strip.gamma8((color.getR() * brightness) >> 8u),
@@ -318,6 +319,7 @@ void loop() {
 		strip.show();
 	} else if (tud_ready() && !activePlugin && definedPlugins[0]) {
 		activatePlugin(definedPlugins[0]);
+		lastAction = millis();
 	}
 
 	delay(1);

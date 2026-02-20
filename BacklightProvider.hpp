@@ -6,11 +6,11 @@
 
 #include "Color.hpp"
 
-class PluginBacklight {
+class BacklightProvider {
 public:
 	using CallbackType = void (*)();
 
-	PluginBacklight(CallbackType showCallback = nullptr);
+	BacklightProvider(CallbackType showCallback = nullptr);
 
 	void setPixel(uint8_t i, const Color& color);
 	void setPixel(uint8_t i, uint32_t color);

@@ -20,9 +20,8 @@ void Plugin::onEncoderUp(int32_t count) {
 	// Empty stub
 }
 
-bool Plugin::onTick() {
+void Plugin::onTick() {
 	// Empty stub
-	return false;
 }
 
 const char* Plugin::getName() const {
