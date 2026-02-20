@@ -1,8 +1,6 @@
 #ifndef SPEED_SCREEN_DEFINITION_HPP
 #define SPEED_SCREEN_DEFINITION_HPP
 
-#include "Keyboard.h"
-
 #include "../icons.hpp"
 #include "../Navigator.hpp"
 #include "../SelectScreen.hpp"
@@ -11,7 +9,6 @@
 
 SelectScreen::Definition speedScreenDefinition {
   "s_timeout",
-  "Speed",
   "Speed",
   {{"x0.25", 16}, {"x0.5", 8}, {"x1", 4}, {"x2", 2}, {"x4", 1}},
   []() -> int {

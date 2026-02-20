@@ -64,8 +64,6 @@ void SelectScreen::onActivate() {
 		initialValue = _definition.initialCallback();
 	}
 
-	Serial.println(initialValue);
-
 	for (uint8_t i {0}; i < sizeof(Definition::options) / sizeof(Definition::options[0]); ++i) {
 		if (initialValue == _definition.options[i].value) {
 			_idx = i;
@@ -75,11 +73,6 @@ void SelectScreen::onActivate() {
 }
 
 void SelectScreen::onResume() {
-	_environment.backlight.setPixels(0, 12, Color::Black());
-	_environment.backlight.setPixel(0, Color::White());
-	_environment.backlight.setPixel(2, Color::Red());
-	_environment.backlight.show();
-
 	_display();
 }
 

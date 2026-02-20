@@ -15,13 +15,13 @@ void OptionScreen::_display() {
 
 	int16_t  x, y;
 	uint16_t w, h;
-	_environment.canvas.getTextBounds(_definition.optionName, 0, 0, &x, &y, &w, &h);
+	_environment.canvas.getTextBounds(_definition.displayName, 0, 0, &x, &y, &w, &h);
 	w += 12;
 	x = (_environment.canvas.width() - w) / 2;
 
 	_environment.canvas.setTextColor(SH110X_WHITE);
 	_environment.canvas.setCursor(x + 12, 40);
-	_environment.canvas.print(_definition.optionName);
+	_environment.canvas.print(_definition.displayName);
 
 	if (_value) {
 		_environment.canvas.fillRect(x, 40, 8, 8, SH110X_WHITE);

@@ -1,8 +1,6 @@
 #ifndef MAIN_SCREEN_DEFINITION_HPP
 #define MAIN_SCREEN_DEFINITION_HPP
 
-#include "Keyboard.h"
-
 #include "../icons.hpp"
 #include "../ListScreen.hpp"
 #include "../Navigator.hpp"

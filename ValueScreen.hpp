@@ -1,31 +1,32 @@
-#ifndef SELECT_SCREEN_HPP
-#define SELECT_SCREEN_HPP
+#ifndef VALUE_SCREEN_HPP
+#define VALUE_SCREEN_HPP
 
 #include "Arduino.h"
 
 #include "Navigator.hpp"
 #include "Plugin.hpp"
 
-class SelectScreen: public Plugin {
+class ValueScreen: public Plugin {
 public:
 	using InitialCallback = int (*)();
 	using ChangeCallback = void (*)(int value);
 
-	struct Option {
-		char displayName[16];
-		int  value;
+	struct Limits {
+		int minValue;
+		int maxValue;
+		int step;
 	};
 
 	struct Definition {
 		char            name[16];
 		char            displayName[16];
-		Option          options[16];
+		Limits          limits;
 		InitialCallback initialCallback;
 		ChangeCallback  changeCallback;
 		const uint8_t*  icon;
 	};
 
-	SelectScreen(PluginEnvironment& environment, const Definition& definition);
+	ValueScreen(PluginEnvironment& environment, const Definition& definition);
 
 	virtual void onActivate() override;
 	virtual void onResume() override;
@@ -40,12 +41,12 @@ public:
 
 protected:
 	const Definition& _definition;
-	uint8_t           _idx {0};
+	int               _value {0};
 
 	void _display();
 
-	void _prevItem();
-	void _nextItem();
+	void _decrement();
+	void _increment();
 };
 
 #endif

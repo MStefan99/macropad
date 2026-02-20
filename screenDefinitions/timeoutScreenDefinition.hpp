@@ -1,8 +1,6 @@
 #ifndef TIMEOUT_SCREEN_DEFINITION_HPP
 #define TIMEOUT_SCREEN_DEFINITION_HPP
 
-#include "Keyboard.h"
-
 #include "../icons.hpp"
 #include "../Navigator.hpp"
 #include "../SelectScreen.hpp"
@@ -11,7 +9,6 @@
 
 SelectScreen::Definition timeoutScreenDefinition {
   "s_timeout",
-  "Timeout",
   "Timeout",
   {{"10s", 1000 * 10},
     {"30s", 1000 * 30},

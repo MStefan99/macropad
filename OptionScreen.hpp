@@ -14,7 +14,6 @@ public:
 	struct Definition {
 		char            name[16];
 		char            displayName[16];
-		char            optionName[16];
 		InitialCallback initialCallback;
 		ChangeCallback  changeCallback;
 		const uint8_t*  icon;
