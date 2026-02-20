@@ -129,6 +129,13 @@ void ComboPlugin::_display(bool peek) {
 }
 
 void ComboPlugin::onActivate() {
+	_layerKey = 0;
+	_comboActivated = false;
+	_encoderMode = 0;
+	_displayMode = DisplayMode::KEY;
+}
+
+void ComboPlugin::onResume() {
 	_display();
 }
 

@@ -70,7 +70,9 @@ void ListScreen::_nextItem() {
 
 void ListScreen::onActivate() {
 	_activeItem = _leftItem = _definition.firstItem;
+}
 
+void ListScreen::onResume() {
 	_environment.backlight.setPixels(0, 2, Color::White());
 	_environment.backlight.setPixel(2, Color::Red());
 	_environment.backlight.setPixels(3, 2, Color::Cyan());

@@ -15,7 +15,6 @@ SelectScreen::Definition speedScreenDefinition {
 	return settingsProvider::getSettings().encoderDivisor;
     },
   [](int value) {
-	Serial.println("Set time");
 	auto settings {settingsProvider::getSettings()};
 	settings.encoderDivisor = value;
 	settingsProvider::setSettings(settings);

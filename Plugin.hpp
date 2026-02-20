@@ -23,13 +23,13 @@ public:
 	Plugin(PluginEnvironment& environment);
 	virtual ~Plugin() = default;
 
-	virtual void onActivate() = 0;
-	virtual void onResume();
+	virtual void onActivate();
+	virtual void onResume() = 0;
 	virtual void onSuspend();
 	virtual void onDeactivate();
 
 	virtual void onKeyDown(uint8_t key);
-	virtual void onKeyUp(uint8_t key);
+	virtual void onKeyUp(uint8_t key) = 0;
 	virtual void onEncoderDown(int32_t count);
 	virtual void onEncoderUp(int32_t count);
 

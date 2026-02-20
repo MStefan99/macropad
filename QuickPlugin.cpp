@@ -6,7 +6,7 @@ QuickPlugin::QuickPlugin(PluginEnvironment& environment, const Definition& defin
 	// Nothing to do
 }
 
-void QuickPlugin::onActivate() {
+void QuickPlugin::onResume() {
 	for (uint8_t i {0}; i < 12; ++i) {
 		_environment.backlight.setPixel(i, _definition.keyDefinitions[i].color);
 	}

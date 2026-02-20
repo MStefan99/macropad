@@ -15,7 +15,6 @@ ValueScreen::Definition brightnessScreenDefinition {
 	return settingsProvider::getSettings().brightness;
     },
   [](int value) {
-	Serial.println("Set time");
 	auto settings {settingsProvider::getSettings()};
 	settings.brightness = value;
 	settingsProvider::setSettings(settings);

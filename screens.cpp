@@ -13,6 +13,7 @@ ListScreen::Definition appsScreenDefinition {"s_apps", "Apps", {}, 0};
 void activatePlugin(uint8_t idx) {
 	navigator.close();  // Close apps screen
 	navigator.close();  // Close main menu screen
+	navigator.close();  // Close currently open plugin
 	navigator.open(plugins[idx]);
 }
 

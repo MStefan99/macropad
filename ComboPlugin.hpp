@@ -47,6 +47,7 @@ public:
 	ComboPlugin(PluginEnvironment& environment, const Definition& definition);
 
 	virtual void onActivate() override;
+	virtual void onResume() override;
 
 	virtual void onKeyDown(uint8_t key) override;
 	virtual void onKeyUp(uint8_t key) override;

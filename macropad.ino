@@ -188,8 +188,12 @@ void drawPluginName() {
 
 void activatePlugin(Plugin* plugin) {
 	encoderCount = 0;
+
+	suspendPlugin();
+
 	plugin->onActivate();
 	plugin->onResume();
+
 	pluginStack[++activePluginCount - 1] = plugin;
 
 	display.clearDisplay();
@@ -197,20 +201,31 @@ void activatePlugin(Plugin* plugin) {
 	display.display();
 }
 
-void deactivatePlugin() {
-	if (!activePluginCount) {
-		return;
-	}
-
-	pluginStack[activePluginCount-- - 1]->onDeactivate();
-
+void suspendPlugin() {
 	if (activePluginCount) {
-		pluginStack[activePluginCount - 1]->onActivate();
+		pluginStack[activePluginCount - 1]->onSuspend();
+	}
+}
+
+void resumePlugin() {
+	if (activePluginCount) {
+		pluginStack[activePluginCount - 1]->onResume();
 
 		display.clearDisplay();
 		drawPluginName();
 		display.display();
 	}
+}
+
+void deactivatePlugin() {
+	if (!activePluginCount) {
+		return;
+	}
+
+	pluginStack[activePluginCount - 1]->onSuspend();
+	pluginStack[activePluginCount-- - 1]->onDeactivate();
+
+	resumePlugin();
 
 	if (settingsIdx <= activePluginCount) {
 		settingsIdx = ~0;
@@ -300,6 +315,7 @@ void loop() {
 	auto screenTimeout {settingsProvider::getSettings().screenTimeout};
 	if (!idle && millis() - lastAction > screenTimeout) {
 		idle = true;
+		suspendPlugin();
 		display.fillScreen(SH110X_BLACK);
 		display.display();
 		for (uint8_t i {0}; i < 12; ++i) {
@@ -309,9 +325,7 @@ void loop() {
 	} else if (idle && millis() - lastAction < screenTimeout) {
 		idle = false;
 
-		drawPluginName();
-		updateDisplay = true;
-		showBacklight = true;
+		resumePlugin();
 	}
 
 	settingsProvider::commitSettings();
@@ -343,9 +357,7 @@ void loop() {
 
 	// USB suspend
 	if (!tud_ready() && activePluginCount) {
-		while (activePluginCount) {
-			deactivatePlugin();
-		}
+		suspendPlugin();
 
 		display.fillScreen(SH110X_BLACK);
 		display.display();
@@ -355,7 +367,7 @@ void loop() {
 		}
 		strip.show();
 	} else if (tud_ready() && !activePluginCount && plugins[0]) {
-		activatePlugin(plugins[0]);
+		resumePlugin();
 		lastAction = millis();
 	}
 

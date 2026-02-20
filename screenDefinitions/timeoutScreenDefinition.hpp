@@ -20,7 +20,6 @@ SelectScreen::Definition timeoutScreenDefinition {
 	return settingsProvider::getSettings().screenTimeout;
     },
   [](int value) {
-	Serial.println("Set time");
 	auto settings {settingsProvider::getSettings()};
 	settings.screenTimeout = value;
 	settingsProvider::setSettings(settings);
