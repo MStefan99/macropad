@@ -9,7 +9,7 @@
 
 class ListScreen: public Plugin {
 public:
-	using ListItemCallback = void (*)();
+	using ListItemCallback = void (*)(uint8_t idx);
 
 	struct ListScreenItem {
 		char             displayName[16];

@@ -245,6 +245,8 @@ void setup() {
 
 	digitalWrite(LED_PIN, LOW);
 
+	populateAppsScreen();
+
 	// Plugin initialization
 	if (tud_ready() && plugins[0]) {  // TODO: Bad, needs fixing
 		activatePlugin(plugins[0]);

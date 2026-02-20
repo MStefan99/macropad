@@ -11,17 +11,17 @@ ListScreen::Definition mainScreenDefinition {
   "s_main",
   "Menu",
   {{"Quit",
-    [] {
+    [](uint8_t i) {
 	navigator.close();
 },
     icons::exit},
     {"Apps",
-    [] {
-	Serial.println("Apps");
+    [](uint8_t i) {
+	navigator.open(appsScreen);
 },
     icons::app},
     {"Setup",
-    [] {
+    [](uint8_t i) {
 	navigator.open(settingsScreen);
 },
     icons::cog}},

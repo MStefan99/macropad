@@ -20,7 +20,7 @@ void ListScreen::_displayItems() {
 		}
 	}
 
-	for (uint8_t i {0}; i < 2; ++i) {
+	for (uint8_t i {0}; i < 2 && _definition.items[i].displayName[0]; ++i) {
 		uint8_t idx = _leftItem + i;
 
 		auto     bgColor {idx == _activeItem ? SH110X_WHITE : SH110X_BLACK};
@@ -110,15 +110,15 @@ void ListScreen::onKeyUp(uint8_t key) {
 	switch (key) {
 		case 0:
 		case 6: {
-			_definition.items[_activeItem].callback();
+			_definition.items[_activeItem].callback(_activeItem);
 			break;
 		}
 		case 1: {
-			_definition.items[_leftItem].callback();
+			_definition.items[_leftItem].callback(_leftItem);
 			break;
 		}
 		case 2: {
-			_definition.items[_leftItem + 1].callback();
+			_definition.items[_leftItem + 1].callback(_leftItem + 1);
 			break;
 		}
 		case 3: {

@@ -19,6 +19,7 @@
 #include "Navigator.hpp"
 #include "Plugin.hpp"
 #include "PluginEnvironment.hpp"
+#include "plugins.hpp"
 #include "screens.hpp"
 #include "SettingsProvider.hpp"
 #include "ToneProvider.hpp"
@@ -29,9 +30,6 @@ extern BacklightProvider backlightProvider;
 extern ToneProvider      toneProvider;
 extern KeyDispatcher     keyDispatcher;
 extern PluginEnvironment pluginEnvironment;
-
-
-extern Plugin* plugins[];
 
 template <typename T>
 int sign(T val) {

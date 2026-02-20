@@ -12,27 +12,27 @@ ListScreen::Definition settingsScreenDefinition {
   "Setup",
   {
     {"Back",
-     [] {
+     [](uint8_t i) {
 	navigator.close();
 },
      icons::exit},
     {"Light",
-     [] {
+     [](uint8_t i) {
 	navigator.open(brightnessScreen);
 },
      icons::sun},
     {"Knob",
-     [] {
+     [](uint8_t i) {
 	navigator.open(speedScreen);
 },
      icons::rotate},
     {"Sound",
-     [] {
+     [](uint8_t i) {
 	navigator.open(soundScreen);
 },
      icons::bell},
     {"Time",
-     [] {
+     [](uint8_t i) {
 	navigator.open(timeoutScreen);
 },
      icons::hourglass},
