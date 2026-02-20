@@ -1,5 +1,10 @@
 #include "Plugin.hpp"
 
+Plugin::Plugin(PluginEnvironment& environment):
+  _environment {environment} {
+	// Nothing to do
+}
+
 void Plugin::onActivate() {
 	// Emtpy stub
 }
@@ -25,5 +30,9 @@ void Plugin::onTick() {
 }
 
 const char* Plugin::getName() const {
-	return "Untitled";
+	return "plugin";
+}
+
+const char* Plugin::getDisplayName() const {
+	return "Plugin";
 }

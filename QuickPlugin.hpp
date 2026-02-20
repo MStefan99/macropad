@@ -1,7 +1,7 @@
 #ifndef QUICK_PLUGIN_HPP
 #define QUICK_PLUGIN_HPP
 
-#include "Adafruit_SH110X.h"
+
 #include "Arduino.h"
 
 #include "Color.hpp"
@@ -47,8 +47,7 @@ public:
 	virtual const char* getDisplayName() const override;
 
 protected:
-	PluginEnvironment& _environment;
-	const Definition&  _definition;
+	const Definition& _definition;
 
 	void _highlight(uint8_t key, bool down);
 };

@@ -4,7 +4,7 @@ constexpr static uint16_t topMargin {16};
 constexpr static char     modeLabels[][8] {"Key", "Layer", "Knob"};
 
 ComboPlugin::ComboPlugin(PluginEnvironment& environment, const Definition& definition):
-  _environment {environment},
+  Plugin {environment},
   _definition {definition} {
 	// Nothing to do
 }

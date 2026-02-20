@@ -18,6 +18,8 @@
 #include "KeyDispatcher.hpp"
 #include "Plugin.hpp"
 #include "PluginEnvironment.hpp"
+#include "screens.hpp"
+#include "SettingsProvider.hpp"
 #include "ToneProvider.hpp"
 
 
@@ -28,7 +30,7 @@ extern KeyDispatcher     keyDispatcher;
 extern PluginEnvironment pluginEnvironment;
 
 
-extern Plugin* definedPlugins[];
+extern Plugin* plugins[];
 
 template <typename T>
 int sign(T val) {

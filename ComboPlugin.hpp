@@ -1,7 +1,7 @@
 #ifndef COMBO_PLUGIN_HPP
 #define COMBO_PLUGIN_HPP
 
-#include "Adafruit_SH110X.h"
+
 #include "Arduino.h"
 
 #include "Color.hpp"
@@ -62,8 +62,7 @@ protected:
 		ENCODER
 	};
 
-	PluginEnvironment& _environment;
-	const Definition&  _definition;
+	const Definition& _definition;
 
 	uint8_t     _layerKey {0};
 	bool        _comboActivated {false};

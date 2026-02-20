@@ -10,9 +10,9 @@ QuickPlugin::Definition systemQuickDefinition {
   "sys",
   "Desktop",
   {
-    {"Files", {KEY_LEFT_GUI, 'e'}, Color::HSV(256)},
+    {"Files", {KEY_LEFT_GUI, 'e'}, Color::Yellow()},
     },
-  {"Volume", {{KEY_VOLUME_DECREMENT}, {KEY_VOLUME_INCREMENT}}}
+  {"Volume", {{{}, KEY_VOLUME_DECREMENT}, {{}, KEY_VOLUME_INCREMENT}}}
 };
 
 #endif

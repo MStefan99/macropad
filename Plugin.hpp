@@ -2,6 +2,7 @@
 #define PLUGIN_HPP
 
 
+#include "Adafruit_SH110X.h"
 #include "Arduino.h"
 
 #include "PluginEnvironment.hpp"
@@ -19,7 +20,7 @@
 
 class Plugin {
 public:
-	Plugin() = default;
+	Plugin(PluginEnvironment& environment);
 	virtual ~Plugin() = default;
 
 	virtual void onActivate();
@@ -33,8 +34,10 @@ public:
 	virtual const char* getName() const;
 	virtual const char* getDisplayName() const;
 
-	// Should return true if plugin did some work during the tick for optimal scheduling
 	virtual void onTick();
+
+protected:
+	PluginEnvironment& _environment;
 };
 
 

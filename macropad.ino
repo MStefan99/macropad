@@ -14,6 +14,7 @@
 constexpr static uint32_t keyDebounceTime {5};
 constexpr static uint32_t encoderDebounceTime {2};
 constexpr static uint32_t idleTimeout {1000 * 60 * 10};
+constexpr static uint32_t longPressDuration {1000 * 1};
 
 
 constexpr static int8_t encoderTransitions[4][4] {
@@ -23,9 +24,6 @@ constexpr static int8_t encoderTransitions[4][4] {
   {0,  1,  -1, 0 }
 };
 
-struct __attribute__((packed)) Settings {
-	int8_t brightness {31};
-};
 
 static Adafruit_SH1106G  display = Adafruit_SH1106G(128, 64, OLED_MOSI, OLED_CLK, OLED_DC, OLED_RST, OLED_CS);
 static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
@@ -33,8 +31,6 @@ static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ80
 static bool updateDisplay {false};
 static bool showBacklight {false};
 static bool commitSettings {false};
-
-static Settings settings {};
 
 static PinStatus pinStatuses[13] {};
 static uint32_t  pinTimes[13] {};
@@ -45,7 +41,9 @@ static int32_t  encoderCount {0};
 static int32_t  sentEncoderCount {0};
 static uint32_t encoderTime {0};
 
-static Plugin*  activePlugin {nullptr};
+static Plugin*  pluginStack[16] {};
+static uint8_t  activePluginCount {0};
+static uint8_t  settingsIdx = ~0;
 static uint32_t lastAction {0};
 static bool     idle {false};
 
@@ -114,11 +112,11 @@ void buttonHandler(void* pinPtr) {
 		return;
 	}
 
-	if (activePlugin) {
+	if (activePluginCount) {
 		if (status) {
-			activePlugin->onKeyUp(pin);
+			pluginStack[activePluginCount - 1]->onKeyUp(pin);
 		} else {
-			activePlugin->onKeyDown(pin);
+			pluginStack[activePluginCount - 1]->onKeyDown(pin);
 		}
 	}
 }
@@ -146,15 +144,18 @@ void encoderHandler(void* pinPtr) {
 	if (transition && count != sentEncoderCount) {
 		sentEncoderCount = count;
 		if (!pinStatuses[0] && tud_ready()) {  // Setting brightness
+			auto settings {settingsProvider::getSettings()};
 			settings.brightness = min(max(settings.brightness + transition, 0), 31);
+			settingsProvider::setSettings(settings);
+
 			skipButtonRelease = 0;
 			commitSettings = true;
 			setBacklight();
-		} else if (activePlugin) {
+		} else if (activePluginCount) {
 			if (transition > 0) {
-				activePlugin->onEncoderUp(count);
+				pluginStack[activePluginCount - 1]->onEncoderUp(count);
 			} else {
-				activePlugin->onEncoderDown(count);
+				pluginStack[activePluginCount - 1]->onEncoderDown(count);
 			}
 		}
 	}
@@ -166,20 +167,16 @@ void drawPluginName() {
 
 	int16_t  x, y;
 	uint16_t w, h;
-	display.getTextBounds(activePlugin->getDisplayName(), 0, 0, &x, &y, &w, &h);
+	display.getTextBounds(pluginStack[activePluginCount - 1]->getDisplayName(), 0, 0, &x, &y, &w, &h);
 
 	display.setCursor(64 - w / 2, 0);
-	display.print(activePlugin->getDisplayName());
+	display.print(pluginStack[activePluginCount - 1]->getDisplayName());
 }
 
 void activatePlugin(Plugin* plugin) {
-	if (activePlugin) {
-		activePlugin->onDeactivate();
-	}
-
 	encoderCount = 0;
 	plugin->onActivate();
-	activePlugin = plugin;
+	pluginStack[++activePluginCount - 1] = plugin;
 
 	display.clearDisplay();
 	drawPluginName();
@@ -187,24 +184,28 @@ void activatePlugin(Plugin* plugin) {
 }
 
 void deactivatePlugin() {
-	if (!activePlugin) {
+	if (!activePluginCount) {
 		return;
 	}
 
-	activePlugin->onDeactivate();
-	activePlugin = nullptr;
+	pluginStack[activePluginCount-- - 1]->onDeactivate();
+
+	if (activePluginCount) {
+		pluginStack[activePluginCount - 1]->onActivate();
+
+		display.clearDisplay();
+		drawPluginName();
+		display.display();
+	}
 }
 
 void setup() {
 	pinMode(LED_PIN, OUTPUT);
 	digitalWrite(LED_PIN, HIGH);
 
-	for (uint8_t i {}; i < sizeof(pinStatuses) / sizeof(pinStatuses[0]); ++i) {
-		pinStatuses[i] = PinStatus::HIGH;
-	}
-
 	for (uint8_t i {0}; i <= 12; ++i) {
 		pinMode(i, INPUT_PULLUP);
+		pinStatuses[i] = PinStatus::HIGH;
 		attachInterrupt(digitalPinToInterrupt(i), buttonHandler, PinStatus::CHANGE, reinterpret_cast<void*>(i));
 	}
 
@@ -224,14 +225,11 @@ void setup() {
 	display.display();
 	delay(1000);
 
-	EEPROM.begin(256);
-	EEPROM.get(0, settings);
-
 	digitalWrite(LED_PIN, LOW);
 
 	// Plugin initialization
-	if (tud_ready() && definedPlugins[0]) {  // TODO: Bad, needs fixing
-		activatePlugin(definedPlugins[0]);
+	if (tud_ready() && plugins[0]) {  // TODO: Bad, needs fixing
+		activatePlugin(plugins[0]);
 	} else {
 		display.fillScreen(SH110X_BLACK);
 		display.display();
@@ -239,8 +237,8 @@ void setup() {
 }
 
 void loop() {
-	if (activePlugin) {
-		activePlugin->onTick();
+	if (activePluginCount) {
+		pluginStack[activePluginCount - 1]->onTick();
 	}
 
 	if (!dispatched && (dispatchQueue[0] || dispatchConsumer)) {
@@ -255,6 +253,20 @@ void loop() {
 		dispatchConsumer = 0;
 		dispatchStart = millis();
 		dispatched = true;
+	}
+
+	if (!pinStatuses[0] && millis() - pinTimes[0] > longPressDuration) {
+		pinStatuses[0] = PinStatus::HIGH;
+
+		if (settingsIdx > activePluginCount) {
+			settingsIdx = activePluginCount;
+			activatePlugin(mainScreen);
+		} else {
+			deactivatePlugin();
+			if (settingsIdx <= activePluginCount) {
+				settingsIdx = ~0;
+			}
+		}
 	}
 
 	if (!idle && millis() - lastAction > idleTimeout) {
@@ -273,11 +285,7 @@ void loop() {
 		showBacklight = true;
 	}
 
-	if (commitSettings) {
-		commitSettings = false;
-		EEPROM.put(0, settings);
-		EEPROM.commit();
-	}
+	settingsProvider::commitSettings();
 
 	if (dispatched && millis() - dispatchStart > dispatchDuration) {
 		dispatched = false;
@@ -294,7 +302,7 @@ void loop() {
 
 	if (showBacklight) {
 		showBacklight = false;
-		uint8_t brightness = settings.brightness * (256 / 32);
+		uint8_t brightness = settingsProvider::getSettings().brightness * (256 / 32);
 
 		for (uint8_t i {0}; i < 12; ++i) {
 			auto color {backlightProvider.getPixel(i)};
@@ -308,8 +316,12 @@ void loop() {
 		strip.show();
 	}
 
-	if (!tud_ready() && activePlugin) {
-		deactivatePlugin();
+
+	if (!tud_ready() && activePluginCount) {
+		while (activePluginCount) {
+			deactivatePlugin();
+		}
+
 		display.fillScreen(SH110X_BLACK);
 		display.display();
 
@@ -317,8 +329,8 @@ void loop() {
 			strip.setPixelColor(i, 0);
 		}
 		strip.show();
-	} else if (tud_ready() && !activePlugin && definedPlugins[0]) {
-		activatePlugin(definedPlugins[0]);
+	} else if (tud_ready() && !activePluginCount && plugins[0]) {
+		activatePlugin(plugins[0]);
 		lastAction = millis();
 	}
 

@@ -1,8 +1,7 @@
 #include "QuickPlugin.hpp"
 
 QuickPlugin::QuickPlugin(PluginEnvironment& environment, const Definition& definition):
-  Plugin {},
-  _environment {environment},
+  Plugin {environment},
   _definition {definition} {
 	// Nothing to do
 }
@@ -13,6 +12,7 @@ void QuickPlugin::onActivate() {
 	}
 	_environment.backlight.show();
 
+	_environment.canvas.fillScreen(SH110X_BLACK);
 	_environment.canvas.setTextColor(SH110X_WHITE);
 	int16_t  x, y;
 	uint16_t w, h;
