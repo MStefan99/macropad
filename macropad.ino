@@ -227,7 +227,7 @@ void deactivatePlugin() {
 
 	resumePlugin();
 
-	if (settingsIdx <= activePluginCount) {
+	if (activePluginCount <= settingsIdx) {
 		settingsIdx = ~0;
 	}
 }
