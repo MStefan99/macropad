@@ -53,6 +53,23 @@ static bool     dispatched {false};
 static uint32_t dispatchStart {0};
 static uint32_t dispatchDuration {0};
 
+
+void displayPlugin();
+void setBacklight();
+void dispatchKeys(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration);
+void activatePlugin(Plugin* plugin);
+void deactivatePlugin();
+
+
+CanvasProvider    canvasProvider {displayPlugin};
+BacklightProvider backlightProvider {setBacklight};
+ToneProvider      toneProvider {};
+KeyDispatcher     keyDispatcher {dispatchKeys};
+PluginEnvironment pluginEnvironment {canvasProvider, backlightProvider, toneProvider, keyDispatcher};
+
+Navigator         navigator(activatePlugin, deactivatePlugin);
+ScreenEnvironment screenEnvironment {canvasProvider, backlightProvider, toneProvider, keyDispatcher, navigator};
+
 // Called from interrupts
 void displayPlugin() {
 	updateDisplay = true;
@@ -75,14 +92,6 @@ void dispatchKeys(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration
 	dispatchDuration = duration;
 	lastAction = millis();
 }
-
-CanvasProvider    canvasProvider {displayPlugin};
-BacklightProvider backlightProvider {setBacklight};
-ToneProvider      toneProvider {};
-KeyDispatcher     keyDispatcher {dispatchKeys};
-
-
-PluginEnvironment pluginEnvironment {canvasProvider, backlightProvider, toneProvider, keyDispatcher};
 
 // Called from interrupts
 void buttonHandler(void* pinPtr) {

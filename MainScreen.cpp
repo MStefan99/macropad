@@ -1,6 +1,6 @@
 #include "MainScreen.hpp"
 
-MainScreen::MainScreen(PluginEnvironment& environment):
+MainScreen::MainScreen(ScreenEnvironment& environment):
   Plugin(environment) {
 	// Nothing to do
 }

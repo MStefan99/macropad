@@ -5,10 +5,11 @@
 #include "Arduino.h"
 
 #include "Plugin.hpp"
+#include "ScreenEnvironment.hpp"
 
 class MainScreen: public Plugin {
 public:
-	MainScreen(PluginEnvironment& environment);
+	MainScreen(ScreenEnvironment& environment);
 
 	virtual void onActivate() override;
 
