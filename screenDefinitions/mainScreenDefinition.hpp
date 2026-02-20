@@ -5,6 +5,7 @@
 
 #include "../ListScreen.hpp"
 #include "../Navigator.hpp"
+#include "../screens.hpp"
 
 
 ListScreen::Definition mainScreenDefinition {
@@ -14,7 +15,7 @@ ListScreen::Definition mainScreenDefinition {
 	Serial.println("Apps");
 }}},
     {"Setup", {[] {
-	Serial.println("Setup");
+	navigator.open(settingsScreen);
 }}}}
 };
 

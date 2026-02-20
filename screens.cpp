@@ -1,7 +1,11 @@
 #include "screens.hpp"
 
 #include "screenDefinitions/mainScreenDefinition.hpp"
+#include "screenDefinitions/settingsScreenDefinition.hpp"
 
 
 static ListScreen _mainScreen {pluginEnvironment, mainScreenDefinition};
-Plugin*           mainScreen {&_mainScreen};
+static ListScreen _settingsScreen {pluginEnvironment, settingsScreenDefinition};
+
+Plugin* mainScreen {&_mainScreen};
+Plugin* settingsScreen {&_settingsScreen};

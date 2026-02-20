@@ -7,5 +7,6 @@
 
 
 extern Plugin* mainScreen;
+extern Plugin* settingsScreen;
 
 #endif

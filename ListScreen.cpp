@@ -29,12 +29,20 @@ void ListScreen::_displayItems() {
 		uint16_t w, h;
 
 		_environment.canvas.fillRoundRect(x, 4, 46, 46, 4, bgColor);
-		_environment.canvas.drawRoundRect(x, 4, 46, 46, 4, fgColor);
+		if (idx != _activeItem) {
+			_environment.canvas.drawRoundRect(x, 4, 46, 46, 4, fgColor);
+		}
 
-		_environment.canvas.getTextBounds(_definition.items[idx].displayName, 0, 0, &x, &y, &w, &h);
+		auto item {_definition.items[idx]};
+
+		if (item.icon) {
+			_environment.canvas.drawBitmap(21 + 54 * i, 7, item.icon, 32, 32, fgColor, bgColor);
+		}
+
+		_environment.canvas.getTextBounds(item.displayName, 0, 0, &x, &y, &w, &h);
 		_environment.canvas.setTextColor(fgColor);
 		_environment.canvas.setCursor(37 + 54 * i - w / 2, 41);
-		_environment.canvas.print(_definition.items[idx].displayName);
+		_environment.canvas.print(item.displayName);
 	}
 
 	_environment.canvas.display();
@@ -44,8 +52,8 @@ void ListScreen::_prevItem() {
 	if (_activeItem) {
 		--_activeItem;
 	}
-	if (_leftItem - _activeItem > 2) {
-		_leftItem = _activeItem + 1;
+	if (_activeItem < _leftItem) {
+		_leftItem = _activeItem;
 	}
 }
 
@@ -55,7 +63,7 @@ void ListScreen::_nextItem() {
 			++_activeItem;
 		}
 	}
-	if (_activeItem - _leftItem > 2) {
+	if (_activeItem - _leftItem > 1) {
 		_leftItem = _activeItem - 1;
 	}
 }
@@ -136,4 +144,8 @@ const char* ListScreen::getName() const {
 
 const char* ListScreen::getDisplayName() const {
 	return _definition.displayName;
+}
+
+const uint8_t* ListScreen::getIcon() const {
+	return _definition.icon;
 }

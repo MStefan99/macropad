@@ -99,3 +99,7 @@ const char* QuickPlugin::getName() const {
 const char* QuickPlugin::getDisplayName() const {
 	return _definition.displayName;
 }
+
+const uint8_t* QuickPlugin::getIcon() const {
+	return _definition.icon;
+}

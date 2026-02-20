@@ -184,3 +184,7 @@ const char* ComboPlugin::getName() const {
 const char* ComboPlugin::getDisplayName() const {
 	return _definition.displayName;
 }
+
+const uint8_t* ComboPlugin::getIcon() const {
+	return _definition.icon;
+}
