@@ -21,6 +21,7 @@ public:
 		char           name[16];
 		char           displayName[16];
 		ListScreenItem items[16];
+		uint8_t        firstItem {0};
 		const uint8_t* icon;
 	};
 

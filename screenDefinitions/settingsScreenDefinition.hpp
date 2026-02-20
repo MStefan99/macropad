@@ -32,10 +32,13 @@ ListScreen::Definition settingsScreenDefinition {
 	Serial.println("Sound");
 },
      icons::bell},
-    {"Time", [] {
+    {"Time",
+     [] {
 	Serial.println("Time");
-}, icons::hourglass},
-    }
+},
+     icons::hourglass},
+    },
+  1
 };
 
 #endif

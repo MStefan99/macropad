@@ -17,15 +17,17 @@ ListScreen::Definition mainScreenDefinition {
 	navigator.close();
 },
     icons::exit},
-
     {"Apps",
     [] {
 	Serial.println("Apps");
 },
     icons::app},
-    {"Setup", [] {
+    {"Setup",
+    [] {
 	navigator.open(settingsScreen);
-}, icons::cog}}
+},
+    icons::cog}},
+  1
 };
 
 #endif
