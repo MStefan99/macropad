@@ -175,12 +175,22 @@ void ComboPlugin::onKeyUp(uint8_t key) {
 }
 
 void ComboPlugin::onEncoderDown(int32_t count) {
-	auto kd {_definition.encoderDefinitions[_encoderMode].encoderKeys[0]};
+	if (_layerKey) {
+		_comboActivated = true;
+	}
+
+	uint8_t layer = _layerKey ? _layerKey - 1 : _encoderMode;
+	auto    kd {_definition.encoderDefinitions[layer].encoderKeys[0]};
 	_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
 }
 
 void ComboPlugin::onEncoderUp(int32_t count) {
-	auto kd {_definition.encoderDefinitions[_encoderMode].encoderKeys[1]};
+	if (_layerKey) {
+		_comboActivated = true;
+	}
+
+	uint8_t layer = _layerKey ? _layerKey - 1 : _encoderMode;
+	auto    kd {_definition.encoderDefinitions[layer].encoderKeys[1]};
 	_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
 }
 
