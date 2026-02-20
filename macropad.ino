@@ -44,6 +44,7 @@ static uint8_t  activePluginCount {0};
 static uint8_t  settingsIdx = ~0;
 static uint32_t lastAction {0};
 static bool     idle {false};
+static bool     suspended {false};
 
 static uint8_t  dispatchQueue[8] {0};
 static uint16_t dispatchConsumer {0};
@@ -356,7 +357,8 @@ void loop() {
 	}
 
 	// USB suspend
-	if (!tud_ready() && activePluginCount) {
+	if (!tud_ready() && !suspended) {
+		suspended = true;
 		suspendPlugin();
 
 		display.fillScreen(SH110X_BLACK);
@@ -366,7 +368,8 @@ void loop() {
 			strip.setPixelColor(i, 0);
 		}
 		strip.show();
-	} else if (tud_ready() && !activePluginCount && plugins[0]) {
+	} else if (tud_ready() && suspended) {
+		suspended = false;
 		resumePlugin();
 		lastAction = millis();
 	}
