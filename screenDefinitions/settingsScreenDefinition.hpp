@@ -3,6 +3,7 @@
 
 #include "Keyboard.h"
 
+#include "../icons.hpp"
 #include "../ListScreen.hpp"
 #include "../Navigator.hpp"
 
@@ -10,21 +11,31 @@
 ListScreen::Definition settingsScreenDefinition {
   "s_set",
   "Setup",
-  {{"Light",
-    [] {
+  {
+    {"Back",
+     [] {
+	navigator.close();
+},
+     icons::exit},
+    {"Light",
+     [] {
 	Serial.println("Light");
-}},
-    {"Time",
-    [] {
-	Serial.println("Time");
-}},
+},
+     icons::sun},
     {"Knob",
-    [] {
+     [] {
 	Serial.println("Knob");
-}},
-    {"Sound", [] {
+},
+     icons::rotate},
+    {"Sound",
+     [] {
 	Serial.println("Sound");
-}}}
+},
+     icons::bell},
+    {"Time", [] {
+	Serial.println("Time");
+}, icons::hourglass},
+    }
 };
 
 #endif

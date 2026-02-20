@@ -36,7 +36,7 @@ void ListScreen::_displayItems() {
 		auto item {_definition.items[idx]};
 
 		if (item.icon) {
-			_environment.canvas.drawBitmap(21 + 54 * i, 7, item.icon, 32, 32, fgColor, bgColor);
+			_environment.canvas.drawBitmap(21 + 54 * i, 7, item.icon, 32, 32, bgColor, fgColor);
 		}
 
 		_environment.canvas.getTextBounds(item.displayName, 0, 0, &x, &y, &w, &h);

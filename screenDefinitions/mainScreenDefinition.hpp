@@ -3,6 +3,7 @@
 
 #include "Keyboard.h"
 
+#include "../icons.hpp"
 #include "../ListScreen.hpp"
 #include "../Navigator.hpp"
 #include "../screens.hpp"
@@ -11,12 +12,20 @@
 ListScreen::Definition mainScreenDefinition {
   "s_main",
   "Menu",
-  {{"Apps", {[] {
+  {{"Quit",
+    [] {
+	navigator.close();
+},
+    icons::exit},
+
+    {"Apps",
+    [] {
 	Serial.println("Apps");
-}}},
-    {"Setup", {[] {
+},
+    icons::app},
+    {"Setup", [] {
 	navigator.open(settingsScreen);
-}}}}
+}, icons::cog}}
 };
 
 #endif
