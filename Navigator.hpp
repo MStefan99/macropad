@@ -21,4 +21,6 @@ protected:
 	CloseCallbackType _closeCallback {};
 };
 
+extern Navigator navigator;
+
 #endif

@@ -3,7 +3,7 @@
 
 
 #include "macropad.hpp"
-#include "MainScreen.hpp"
+#include "Plugin.hpp"
 
 
 extern Plugin* mainScreen;

@@ -67,8 +67,7 @@ ToneProvider      toneProvider {};
 KeyDispatcher     keyDispatcher {dispatchKeys};
 PluginEnvironment pluginEnvironment {canvasProvider, backlightProvider, toneProvider, keyDispatcher};
 
-Navigator         navigator(activatePlugin, deactivatePlugin);
-ScreenEnvironment screenEnvironment {canvasProvider, backlightProvider, toneProvider, keyDispatcher, navigator};
+Navigator navigator(activatePlugin, deactivatePlugin);
 
 // Called from interrupts
 void displayPlugin() {
@@ -206,6 +205,10 @@ void deactivatePlugin() {
 		drawPluginName();
 		display.display();
 	}
+
+	if (settingsIdx <= activePluginCount) {
+		settingsIdx = ~0;
+	}
 }
 
 void setup() {
@@ -246,10 +249,12 @@ void setup() {
 }
 
 void loop() {
+	// Tick the plugin
 	if (activePluginCount) {
 		pluginStack[activePluginCount - 1]->onTick();
 	}
 
+	// Dispatch keys
 	if (!dispatched && (dispatchQueue[0] || dispatchConsumer)) {
 		for (uint8_t i {0}; i < 8 && dispatchQueue[i]; ++i) {
 			Keyboard.press(dispatchQueue[i]);
@@ -264,7 +269,15 @@ void loop() {
 		dispatched = true;
 	}
 
-	if (!pinStatuses[0] && millis() - pinTimes[0] > longPressDuration) {
+	// Release keys
+	if (dispatched && millis() - dispatchStart > dispatchDuration) {
+		dispatched = false;
+		Keyboard.releaseAll();
+		Keyboard.consumerRelease();
+	}
+
+	// Open menu
+	if (!pinStatuses[0] && skipButtonRelease && millis() - pinTimes[0] > longPressDuration) {
 		pinStatuses[0] = PinStatus::HIGH;
 
 		if (settingsIdx > activePluginCount) {
@@ -272,12 +285,10 @@ void loop() {
 			activatePlugin(mainScreen);
 		} else {
 			deactivatePlugin();
-			if (settingsIdx <= activePluginCount) {
-				settingsIdx = ~0;
-			}
 		}
 	}
 
+	// Screen timeout
 	if (!idle && millis() - lastAction > idleTimeout) {
 		idle = true;
 		display.fillScreen(SH110X_BLACK);
@@ -296,12 +307,7 @@ void loop() {
 
 	settingsProvider::commitSettings();
 
-	if (dispatched && millis() - dispatchStart > dispatchDuration) {
-		dispatched = false;
-		Keyboard.releaseAll();
-		Keyboard.consumerRelease();
-	}
-
+	// Update display
 	if (updateDisplay) {
 		updateDisplay = false;
 		display
@@ -309,6 +315,7 @@ void loop() {
 		display.display();
 	}
 
+	// Update backlight
 	if (showBacklight) {
 		showBacklight = false;
 		uint8_t brightness = settingsProvider::getSettings().brightness * (256 / 32);
@@ -325,7 +332,7 @@ void loop() {
 		strip.show();
 	}
 
-
+	// USB suspend
 	if (!tud_ready() && activePluginCount) {
 		while (activePluginCount) {
 			deactivatePlugin();

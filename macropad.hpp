@@ -19,7 +19,6 @@
 #include "Navigator.hpp"
 #include "Plugin.hpp"
 #include "PluginEnvironment.hpp"
-#include "ScreenEnvironment.hpp"
 #include "screens.hpp"
 #include "SettingsProvider.hpp"
 #include "ToneProvider.hpp"
@@ -30,9 +29,6 @@ extern BacklightProvider backlightProvider;
 extern ToneProvider      toneProvider;
 extern KeyDispatcher     keyDispatcher;
 extern PluginEnvironment pluginEnvironment;
-
-extern Navigator         navigator;
-extern ScreenEnvironment screenEnvironment;
 
 
 extern Plugin* plugins[];
