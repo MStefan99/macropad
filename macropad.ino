@@ -1,4 +1,4 @@
-#include "macropad.hpp"
+#include "src/macropad.hpp"
 
 #define OLED_MOSI 27
 #define OLED_CLK  26
