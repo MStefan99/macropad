@@ -41,7 +41,6 @@ static uint32_t encoderTime {0};
 
 static Plugin*  pluginStack[16] {};
 static uint8_t  activePluginCount {0};
-static uint8_t  settingsIdx = ~0;
 static uint32_t lastAction {0};
 static bool     idle {false};
 static bool     suspended {false};
@@ -195,9 +194,12 @@ void activatePlugin(Plugin* plugin) {
 	suspendPlugin();
 
 	plugin->onActivate();
-	plugin->onResume();
+	if (!idle && !suspended) {
+		plugin->onResume();
+	}
 
-	pluginStack[++activePluginCount - 1] = plugin;
+	pluginStack[activePluginCount] = plugin;
+	++activePluginCount;
 
 	display.clearDisplay();
 	drawPluginName();
@@ -225,14 +227,12 @@ void deactivatePlugin() {
 		return;
 	}
 
-	pluginStack[activePluginCount - 1]->onSuspend();
+	if (!idle && !suspended) {
+		pluginStack[activePluginCount - 1]->onSuspend();
+	}
 	pluginStack[activePluginCount-- - 1]->onDeactivate();
 
 	resumePlugin();
-
-	if (activePluginCount <= settingsIdx) {
-		settingsIdx = ~0;
-	}
 }
 
 void setup() {
@@ -306,11 +306,14 @@ void loop() {
 	if (!pinStatuses[0] && skipButtonRelease && millis() - pinTimes[0] > longPressDuration) {
 		pinStatuses[0] = PinStatus::HIGH;
 
-		if (settingsIdx > activePluginCount) {
-			settingsIdx = activePluginCount;
-			activatePlugin(mainScreen);
-		} else {
+		if (!activePluginCount) {
+			return;
+		}
+
+		if (activePluginCount > 1) {
 			deactivatePlugin();
+		} else {
+			activatePlugin(mainScreen);
 		}
 	}
 
@@ -383,21 +386,24 @@ void loop() {
 
 		if (!byte || byte == '\r' || (byte == '\n' && serialIdx > 1)) {
 			if (!strncmp(serialBuffer, "a>", 2)) {
+				uint8_t foundIdx {0};
+
 				for (uint8_t i {0}; i < pluginCount; ++i) {
 					if (!strncmp(serialBuffer + 2, plugins[i]->getName(), strlen(plugins[i]->getName()))) {
-						deactivatePlugin();
-						activatePlugin(plugins[i]);
-						Serial.print("a=>");
-						Serial.println(plugins[i]->getName());
-						serialIdx = 0;
+						foundIdx = i;
+						break;
 					}
 				}
 
-				if (serialIdx) {
+				auto activeName {pluginStack[0]->getName()};
+				if (strncmp(activeName, plugins[foundIdx]->getName(), strlen(activeName)) && activePluginCount == 1) {
 					deactivatePlugin();
-					activatePlugin(plugins[0]);
-					Serial.print("a!>");
-					Serial.println(plugins[0]->getName());
+					activatePlugin(plugins[foundIdx]);
+					Serial.print("a=");
+					Serial.println(plugins[foundIdx]->getName());
+				} else {
+					Serial.print("a~");
+					Serial.println(activeName);
 				}
 			}
 
