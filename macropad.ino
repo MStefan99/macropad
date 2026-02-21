@@ -207,13 +207,13 @@ void activatePlugin(Plugin* plugin) {
 }
 
 void suspendPlugin() {
-	if (activePluginCount) {
+	if (activePluginCount && !idle && !suspended) {
 		pluginStack[activePluginCount - 1]->onSuspend();
 	}
 }
 
 void resumePlugin() {
-	if (activePluginCount) {
+	if (activePluginCount && !idle && !suspended) {
 		pluginStack[activePluginCount - 1]->onResume();
 
 		display.clearDisplay();
@@ -320,8 +320,8 @@ void loop() {
 	// Screen timeout
 	auto screenTimeout {settingsProvider::getSettings().screenTimeout};
 	if (!idle && millis() - lastAction > screenTimeout) {
-		idle = true;
 		suspendPlugin();
+		idle = true;
 		display.fillScreen(SH110X_BLACK);
 		display.display();
 		for (uint8_t i {0}; i < 12; ++i) {
@@ -330,7 +330,6 @@ void loop() {
 		strip.show();
 	} else if (idle && millis() - lastAction < screenTimeout) {
 		idle = false;
-
 		resumePlugin();
 	}
 
@@ -363,8 +362,8 @@ void loop() {
 
 	// USB suspend
 	if (!tud_ready() && !suspended) {
-		suspended = true;
 		suspendPlugin();
+		suspended = true;
 
 		display.fillScreen(SH110X_BLACK);
 		display.display();
