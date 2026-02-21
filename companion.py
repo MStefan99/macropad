@@ -4,9 +4,27 @@ import serial.tools.list_ports
 import time
 import platform
 import os
+import json
+import sys
 
 current_app = ""
 port = None
+
+
+def map_app_to_alias(app_name, alias_file="aliases.json"):
+    try:
+        with open(alias_file, 'r') as f:
+            aliases = json.load(f)
+        if app_name in aliases:
+            return aliases[app_name]
+        else:
+            return app_name
+    except FileNotFoundError:
+        return app_name
+    except json.JSONDecodeError:
+        return app_name
+    except Exception as e:
+        return app_name
 
 
 def get_active_executable():
@@ -79,10 +97,14 @@ def send_over_serial(exe_name):
 
 
 if __name__ == "__main__":
-    SERIAL_PORT = "COM4" if platform.system() == "Windows" else "/dev/ttyACM0"
     BAUD_RATE = 115200
 
-    print(f"Monitoring active applications. Sending to {SERIAL_PORT}...")
+    if (len(sys.argv) <= 1):
+        raise Exception("Serial port name must be provided as an argument")
+
+    serial_port = sys.argv[1]
+
+    print(f"Monitoring active applications. Sending to {serial_port}...")
 
     try:
         while True:
@@ -90,19 +112,19 @@ if __name__ == "__main__":
                 p.device for p in serial.tools.list_ports.comports()]
 
             if not port:
-                if SERIAL_PORT in available_ports:
+                if serial_port in available_ports:
                     try:
-                        port = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
-                        print(f"Connected to {SERIAL_PORT}")
+                        port = serial.Serial(serial_port, BAUD_RATE, timeout=1)
+                        print(f"Connected to {serial_port}")
                     except:
                         pass
-            elif SERIAL_PORT not in available_ports:
+            elif serial_port not in available_ports:
                 port.close()
                 port = None
                 current_app = ""
                 print("Disconnected.")
             else:
-                exe_name = get_active_executable()
+                exe_name = map_app_to_alias(get_active_executable())
                 if exe_name and exe_name != current_app:
                     current_app = exe_name
                     send_over_serial(exe_name)
