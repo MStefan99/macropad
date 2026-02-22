@@ -108,7 +108,7 @@ void buttonHandler(void* pinPtr) {
 	}
 	pinTimes[pin] = millis();
 
-	if (!tud_ready()) {
+	if (suspended) {
 		return;
 	}
 
@@ -146,7 +146,7 @@ void encoderHandler(void* pinPtr) {
 	}
 	encoderTime = millis();
 
-	if (!tud_ready()) {
+	if (suspended) {
 		return;
 	}
 
@@ -303,7 +303,7 @@ void loop() {
 	}
 
 	// Open menu
-	if (!pinStatuses[0] && skipButtonRelease && millis() - pinTimes[0] > longPressDuration) {
+	if (!suspended && !pinStatuses[0] && skipButtonRelease && millis() - pinTimes[0] > longPressDuration) {
 		pinStatuses[0] = PinStatus::HIGH;
 
 		if (!activePluginCount) {
