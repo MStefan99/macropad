@@ -25,6 +25,7 @@ public:
 	struct EncoderDefinition {
 		char                 displayName[16];
 		EncoderKeyDefinition encoderKeys[2];
+		EncoderKeyDefinition encoderPushKeys;
 	};
 
 	struct Definition {
