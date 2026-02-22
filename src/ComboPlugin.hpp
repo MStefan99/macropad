@@ -11,10 +11,14 @@
 class ComboPlugin: public Plugin {
 public:
 	struct KeyDefinition {
-		char     displayName[8];
-		uint8_t  keys[8];
-		Color    color;
-		uint16_t consumerKey;
+		char displayName[8];
+
+		struct {
+			uint8_t  keys[8];
+			uint16_t consumerKey;
+		};
+
+		Color color;
 	};
 
 	struct LayerDefinition {
