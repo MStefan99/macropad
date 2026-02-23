@@ -20,7 +20,7 @@ QuickPlugin::Definition systemQuickDefinition {
     {"Snap >", {KEY_LEFT_GUI, KEY_RIGHT_ARROW}, Color::Purple()},
     {"Apps", {KEY_LEFT_GUI, KEY_TAB}, Color::Lime()},
     {"Min", {KEY_LEFT_GUI, 'd'}, Color::Orange()},
-    {"Paste", {KEY_LEFT_GUI, KEY_LEFT_SHIFT, 'v'}}},
+    {"Paste", {KEY_LEFT_GUI, 'v'}, Color::Mint()}},
   {"Volume", {{{}, KEY_VOLUME_DECREMENT}, {{}, KEY_VOLUME_INCREMENT}}, {{}, {KEY_MUTE}}}
 };
 

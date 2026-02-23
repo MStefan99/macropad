@@ -64,8 +64,6 @@ void QuickPlugin::_highlight(uint8_t key, bool down) {
 
 void QuickPlugin::onKeyDown(uint8_t key) {
 	if (!key) {  // Encoder pressed
-		auto kd {_definition.encoderDefinition.encoderPushKeys};
-		_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
 		return;
 	}
 	--key;
@@ -77,6 +75,8 @@ void QuickPlugin::onKeyDown(uint8_t key) {
 
 void QuickPlugin::onKeyUp(uint8_t key) {
 	if (!key) {  // Encoder pressed
+		auto kd {_definition.encoderDefinition.encoderPushKeys};
+		_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
 		return;
 	}
 	--key;
