@@ -193,17 +193,16 @@ void activatePlugin(Plugin* plugin) {
 
 	suspendPlugin();
 
-	plugin->onActivate();
-	if (!idle && !suspended) {
-		plugin->onResume();
-	}
-
 	pluginStack[activePluginCount] = plugin;
 	++activePluginCount;
 
-	display.clearDisplay();
-	drawPluginName();
-	display.display();
+	plugin->onActivate();
+	if (!idle && !suspended) {
+		plugin->onResume();
+		display.clearDisplay();
+		drawPluginName();
+		display.display();
+	}
 }
 
 void suspendPlugin() {
