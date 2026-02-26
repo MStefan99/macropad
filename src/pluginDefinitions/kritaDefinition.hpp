@@ -1,12 +1,12 @@
-#ifndef KRITA_COMBO_DEFINITION_HPP
-#define KRITA_COMBO_DEFINITION_HPP
+#ifndef KRITA_DEFINITION_HPP
+#define KRITA_DEFINITION_HPP
 
 #include "Keyboard.h"
 
 #include "../ComboPlugin.hpp"
 
 
-ComboPlugin::Definition kritaComboDefinition {
+ComboPlugin::Definition kritaDefinition {
   "krita",
   "Krita",
   // Keys
