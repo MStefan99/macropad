@@ -59,7 +59,7 @@ ComboPlugin::Definition kritaComboDefinition {
        {"Fill", {'f'}, Color::Pink()},
        {},
        {"WandC", {KEY_LEFT_ALT, 'c'}, Color::Azure()},
-       {"Wand", {KEY_LEFT_ALT, 's'}, Color::Blue()},
+       {"Wand", {KEY_LEFT_ALT, KEY_LEFT_CTRL, 'w'}, Color::Blue()},
        {"Mag", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'm'}, Color::Purple()},
        {"Line", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'l'}, Color::Orange()},
        {"Ell", {KEY_LEFT_SHIFT, 'j'}, Color::Yellow()},
