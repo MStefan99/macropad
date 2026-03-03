@@ -257,6 +257,7 @@ void setup() {
 	strip.show();
 
 	display.begin(0, true);
+	display.drawBitmap(0, 0, reinterpret_cast<const uint8_t*>(icons::macropad), 128, 64, SH110X_WHITE, SH110X_BLACK);
 	display.display();
 	delay(1000);
 

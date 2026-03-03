@@ -15,6 +15,7 @@
 
 #include "BacklightProvider.hpp"
 #include "CanvasProvider.hpp"
+#include "icons.hpp"
 #include "KeyDispatcher.hpp"
 #include "Navigator.hpp"
 #include "Plugin.hpp"
