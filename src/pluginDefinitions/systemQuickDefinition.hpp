@@ -6,6 +6,14 @@
 #include "../QuickPlugin.hpp"
 
 
+PROGMEM const uint32_t desktop_icon[] = {0x00000000, 0xfe1f0000, 0xff3f0000, 0x03300000, 0x03300000, 0xf3330000,
+                                         0xf3330000, 0x03f8ff7f, 0x03fcffff, 0x030c00c0, 0x030c00c0, 0x030c00c0,
+                                         0x030c00c0, 0x030c00c0, 0x030c00c0, 0x030c00c0, 0x030c00c0, 0x030c00c0,
+                                         0x030c00c0, 0x030c00c0, 0x030c00c0, 0xe30d00c0, 0xe3fdffff, 0xe3f9ff7f,
+                                         0xe3317800, 0x03307800, 0x03307800, 0x03307800, 0xffbfff07, 0xfe9fff07,
+                                         0x00000000, 0x00000000};
+
+
 QuickPlugin::Definition systemQuickDefinition {
   "sys",
   "Desktop",
@@ -21,7 +29,8 @@ QuickPlugin::Definition systemQuickDefinition {
     {"Apps", {KEY_LEFT_GUI, KEY_TAB}, Color::Lime()},
     {"Min", {KEY_LEFT_GUI, 'd'}, Color::Orange()},
     {"Paste", {KEY_LEFT_GUI, 'v'}, Color::Mint()}},
-  {"Volume", {{{}, KEY_VOLUME_DECREMENT}, {{}, KEY_VOLUME_INCREMENT}}, {{}, {KEY_MUTE}}}
+  {"Volume", {{{}, KEY_VOLUME_DECREMENT}, {{}, KEY_VOLUME_INCREMENT}}, {{}, {KEY_MUTE}}},
+  desktop_icon
 };
 
 #endif

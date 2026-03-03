@@ -6,6 +6,14 @@
 #include "../ComboPlugin.hpp"
 
 
+PROGMEM const uint32_t krita_icon[] = {0x00000000, 0x00000000, 0x00f00fe0, 0x00fc3f90, 0x000ff08c, 0x80038047,
+                                       0xc001c061, 0x60006030, 0x70003018, 0x30001c0c, 0x1800061e, 0x1800031b,
+                                       0x0c808131, 0x0cc0c030, 0x0c406030, 0x0ce03030, 0x0cf01830, 0x0cfc0f30,
+                                       0x0c7e0030, 0x0c330030, 0x18110018, 0x18110018, 0x3009000c, 0x700a000e,
+                                       0x60040006, 0xc0018003, 0x8003c001, 0x000ff000, 0x00fc3f00, 0x00f00f00,
+                                       0x00000000, 0x00000000};
+
+
 ComboPlugin::Definition kritaDefinition {
   "krita",
   "Krita",
@@ -76,7 +84,8 @@ ComboPlugin::Definition kritaDefinition {
    {"Flow", {{KEY_LEFT_SHIFT, ','}, {KEY_LEFT_SHIFT, '.'}}, Color::Mint()},
    {"Opct", {{'i'}, {'o'}}, Color::Cyan()},
    {"Layer", {{KEY_PAGE_UP}, {KEY_PAGE_DOWN}}, Color::Yellow()},
-   }
+   },
+  krita_icon
 };
 
 #endif
