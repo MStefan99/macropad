@@ -45,7 +45,7 @@ public:
 		KeyDefinition     keyDefinitions[12];
 		LayerDefinition   layerDefinitions[12];
 		EncoderDefinition encoderDefinitions[12];
-		const uint8_t*    icon;
+		const uint32_t*   icon;
 	};
 
 	ComboPlugin(PluginEnvironment& environment, const Definition& definition);
@@ -58,9 +58,9 @@ public:
 	virtual void onEncoderDown(int32_t count) override;
 	virtual void onEncoderUp(int32_t count) override;
 
-	virtual const char*    getName() const override;
-	virtual const char*    getDisplayName() const override;
-	virtual const uint8_t* getIcon() const override;
+	virtual const char*     getName() const override;
+	virtual const char*     getDisplayName() const override;
+	virtual const uint32_t* getIcon() const override;
 
 protected:
 	enum class DisplayMode : uint8_t {

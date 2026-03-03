@@ -17,7 +17,7 @@ ComboPlugin::Definition kritaDefinition {
    {"Move", {KEY_LEFT_CTRL, 't'}, Color::Azure()},
    {"Lasso", {'s'}, Color::Lime()},
    {"Mirror", {'m'}, Color::Blue()},
-   {},
+   {"Swap", {'x'}, Color::Yellow()},
    {"Desel", {KEY_LEFT_CTRL, 'd'}, Color::Magenta()}},
   // Layers
   {

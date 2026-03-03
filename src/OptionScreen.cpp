@@ -10,7 +10,8 @@ void OptionScreen::_display() {
 	_environment.canvas.fillScreen(SH110X_BLACK);
 
 	if (_definition.icon) {
-		_environment.canvas.drawBitmap(48, 4, _definition.icon, 32, 32, SH110X_BLACK, SH110X_WHITE);
+		_environment.canvas
+		    .drawBitmap(48, 4, reinterpret_cast<const uint8_t*>(_definition.icon), 32, 32, SH110X_WHITE, SH110X_BLACK);
 	}
 
 	int16_t  x, y;
@@ -69,6 +70,6 @@ const char* OptionScreen::getDisplayName() const {
 	return _definition.displayName;
 }
 
-const uint8_t* OptionScreen::getIcon() const {
+const uint32_t* OptionScreen::getIcon() const {
 	return _definition.icon;
 }

@@ -33,9 +33,9 @@ public:
 	virtual void onEncoderDown(int32_t count);
 	virtual void onEncoderUp(int32_t count);
 
-	virtual const char*    getName() const;
-	virtual const char*    getDisplayName() const;
-	virtual const uint8_t* getIcon() const;
+	virtual const char*     getName() const;
+	virtual const char*     getDisplayName() const;
+	virtual const uint32_t* getIcon() const;
 
 	virtual void onTick();
 

@@ -202,6 +202,6 @@ const char* ComboPlugin::getDisplayName() const {
 	return _definition.displayName;
 }
 
-const uint8_t* ComboPlugin::getIcon() const {
+const uint32_t* ComboPlugin::getIcon() const {
 	return _definition.icon;
 }

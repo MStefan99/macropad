@@ -37,7 +37,7 @@ public:
 		char              displayName[16];
 		KeyDefinition     keyDefinitions[12];
 		EncoderDefinition encoderDefinition;
-		const uint8_t*    icon;
+		const uint32_t*   icon;
 	};
 
 	QuickPlugin(PluginEnvironment& environment, const Definition& definition);
@@ -49,9 +49,9 @@ public:
 	virtual void onEncoderDown(int32_t count) override;
 	virtual void onEncoderUp(int32_t count) override;
 
-	virtual const char*    getName() const override;
-	virtual const char*    getDisplayName() const override;
-	virtual const uint8_t* getIcon() const override;
+	virtual const char*     getName() const override;
+	virtual const char*     getDisplayName() const override;
+	virtual const uint32_t* getIcon() const override;
 
 protected:
 	const Definition& _definition;

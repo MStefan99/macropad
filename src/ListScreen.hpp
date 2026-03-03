@@ -14,15 +14,15 @@ public:
 	struct ListScreenItem {
 		char             displayName[16];
 		ListItemCallback callback;
-		const uint8_t*   icon;
+		const uint32_t*  icon;
 	};
 
 	struct Definition {
-		char           name[16];
-		char           displayName[16];
-		ListScreenItem items[16];
-		uint8_t        firstItem {0};
-		const uint8_t* icon;
+		char            name[16];
+		char            displayName[16];
+		ListScreenItem  items[16];
+		uint8_t         firstItem {0};
+		const uint32_t* icon;
 	};
 
 	ListScreen(PluginEnvironment& environment, const Definition& definition);
@@ -35,9 +35,9 @@ public:
 	virtual void onEncoderDown(int32_t count) override;
 	virtual void onEncoderUp(int32_t count) override;
 
-	virtual const char*    getName() const override;
-	virtual const char*    getDisplayName() const override;
-	virtual const uint8_t* getIcon() const override;
+	virtual const char*     getName() const override;
+	virtual const char*     getDisplayName() const override;
+	virtual const uint32_t* getIcon() const override;
 
 protected:
 	const Definition& _definition;

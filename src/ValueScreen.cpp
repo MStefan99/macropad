@@ -23,7 +23,8 @@ void ValueScreen::_display() {
 	_environment.canvas.fillScreen(SH110X_BLACK);
 
 	if (_definition.icon) {
-		_environment.canvas.drawBitmap(48, 4, _definition.icon, 32, 32, SH110X_BLACK, SH110X_WHITE);
+		_environment.canvas
+		    .drawBitmap(48, 4, reinterpret_cast<const uint8_t*>(_definition.icon), 32, 32, SH110X_WHITE, SH110X_BLACK);
 	}
 
 	_environment.canvas.drawRect(16, 40, _environment.canvas.width() - 32, 8, SH110X_WHITE);
@@ -106,6 +107,6 @@ const char* ValueScreen::getDisplayName() const {
 	return _definition.displayName;
 }
 
-const uint8_t* ValueScreen::getIcon() const {
+const uint32_t* ValueScreen::getIcon() const {
 	return _definition.icon;
 }

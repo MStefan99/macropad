@@ -16,7 +16,7 @@ public:
 		char            displayName[16];
 		InitialCallback initialCallback;
 		ChangeCallback  changeCallback;
-		const uint8_t*  icon;
+		const uint32_t* icon;
 	};
 
 	OptionScreen(PluginEnvironment& environment, const Definition& definition);
@@ -26,9 +26,9 @@ public:
 
 	virtual void onKeyUp(uint8_t key) override;
 
-	virtual const char*    getName() const override;
-	virtual const char*    getDisplayName() const override;
-	virtual const uint8_t* getIcon() const override;
+	virtual const char*     getName() const override;
+	virtual const char*     getDisplayName() const override;
+	virtual const uint32_t* getIcon() const override;
 
 protected:
 	const Definition& _definition;
