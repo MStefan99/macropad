@@ -7,7 +7,16 @@
 #include "screenDefinitions/speedScreenDefinition.hpp"
 #include "screenDefinitions/timeoutScreenDefinition.hpp"
 
-ListScreen::Definition appsScreenDefinition {"s_apps", "Apps", {}, 0};
+ListScreen::Definition appsScreenDefinition {
+  "s_apps",
+  "Apps",
+  {{"Back",
+    [](uint8_t i) {
+	navigator.close();
+},
+    icons::exit}},
+  1
+};
 
 void activatePlugin(uint8_t idx) {
 	navigator.close();  // Close apps screen
@@ -17,17 +26,20 @@ void activatePlugin(uint8_t idx) {
 }
 
 void populateAppsScreen() {
-	uint8_t screenDefinitionCount = sizeof(ListScreen::Definition::items) / sizeof(ListScreen::Definition::items[0]);
+	uint8_t screenDefinitionCount =
+	    sizeof(ListScreen::Definition::items) / sizeof(ListScreen::Definition::items[0]) - 1;  // -1 for the back button
 
-	for (uint8_t i {0}; i < min(pluginCount, screenDefinitionCount); ++i) {
-		auto* name {plugins[i]->getDisplayName()};
+	for (uint8_t i {1}; i <= min(pluginCount, screenDefinitionCount); ++i) {
+		auto* plugin {plugins[i - 1]};
+		auto* name {plugin->getDisplayName()};
+
 		for (uint8_t j {0}; j < 16 && name[j]; ++j) {
 			appsScreenDefinition.items[i].displayName[j] = name[j];
 		}
 		appsScreenDefinition.items[i].callback = activatePlugin;
 
-		if (plugins[i]->getIcon()) {
-			appsScreenDefinition.items[i].icon = plugins[i]->getIcon();
+		if (plugin->getIcon()) {
+			appsScreenDefinition.items[i].icon = plugin->getIcon();
 		} else {
 			appsScreenDefinition.items[i].icon = icons::app;
 		}
