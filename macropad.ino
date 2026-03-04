@@ -23,6 +23,12 @@ constexpr static int8_t encoderTransitions[4][4] {
   {0,  1,  -1, 0 }
 };
 
+// Gamma correction can be too eager to clip the brightness to 0
+// This table adds an offset to correct for that
+constexpr static uint8_t brightnessTable[32] {0,   25,  32,  40,  48,  55,  63,  71,  78,  86,  94,
+                                              101, 109, 117, 124, 132, 140, 147, 155, 163, 170, 178,
+                                              186, 193, 201, 209, 216, 224, 232, 239, 247, 255};
+
 
 static Adafruit_SH1106G  display = Adafruit_SH1106G(128, 64, OLED_MOSI, OLED_CLK, OLED_DC, OLED_RST, OLED_CS);
 static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
@@ -346,7 +352,7 @@ void loop() {
 	// Update backlight
 	if (showBacklight) {
 		showBacklight = false;
-		uint8_t brightness = settingsProvider::getSettings().brightness * (256 / 32);
+		uint8_t brightness = brightnessTable[settingsProvider::getSettings().brightness];
 
 		for (uint8_t i {0}; i < 12; ++i) {
 			auto color {backlightProvider.getPixel(i)};
