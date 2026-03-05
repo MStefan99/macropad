@@ -15,9 +15,9 @@ ValueScreen::ValueScreen(PluginEnvironment& environment, const Definition& defin
 }
 
 void ValueScreen::_display() {
-	_environment.backlight.setPixels(0, 12, Color::Black());
-	_environment.backlight.setPixels(0, 2, Color::White());
-	_environment.backlight.setPixel(2, Color::Red());
+	_environment.backlight.setPixels(0, 2, Color::Purple(96));
+	_environment.backlight.setPixel(2, Color::Green());
+	_environment.backlight.setPixels(3, 9, Color::Black());
 	_environment.backlight.show();
 
 	_environment.canvas.fillScreen(SH110X_BLACK);

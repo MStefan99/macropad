@@ -76,7 +76,7 @@ void ListScreen::onActivate() {
 void ListScreen::onResume() {
 	_environment.backlight.setPixels(0, 2, Color::White());
 	_environment.backlight.setPixel(2, Color::Red());
-	_environment.backlight.setPixels(3, 2, Color::Cyan());
+	_environment.backlight.setPixels(3, 2, Color::Purple(96));
 	_environment.backlight.setPixel(5, Color::Green());
 	_environment.backlight.setPixels(6, 6, Color::Black());
 	_environment.backlight.show();
