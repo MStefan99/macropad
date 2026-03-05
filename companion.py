@@ -6,9 +6,21 @@ import platform
 import os
 import json
 import sys
+import re
 
 current_app = ""
 port = None
+
+MACROPAD_VID = 0x239A  # Adafruit VID
+MACROPAD_PID = 0x8106  # Macropad RP2040 PID
+BAUD_RATE = 115200
+
+
+def find_macropad_port(vid, pid):
+    for p in serial.tools.list_ports.comports():
+        if p.vid == vid and p.pid == pid:
+            return p.device
+    return None
 
 
 def map_app_to_alias(app_name, alias_file="aliases.json"):
@@ -84,45 +96,47 @@ def send_over_serial(exe_name):
         command = f"a>{exe_name}"
         port.write(command.encode('utf-8'))
         port.write(b'\n')
-        print(f"Switching profile to: {exe_name}")
+        print(f"Switching profile to \"{exe_name}\"")
 
         time.sleep(0.1)
         if port.in_waiting > 0:
             response = port.read(port.in_waiting).decode(
                 'utf-8', errors='ignore').strip()
-            print(f"Macropad says: {response}")
+            res = re.search(r"^a(.)(\w+)", response)
+            found = res.group(1) == "="
+
+            if found:
+                print(f"Macropad found profile \"{res.group(2)}\"")
+            else:
+                print(
+                    f"Macropad couldn't find the profile, using \"{res.group(2)}\"")
 
     except Exception as e:
         print(f"Serial error: {e}")
 
 
 if __name__ == "__main__":
-    BAUD_RATE = 115200
-
-    if (len(sys.argv) <= 1):
-        raise Exception("Serial port name must be provided as an argument")
-
-    serial_port = sys.argv[1]
-
-    print(f"Monitoring active applications. Sending to {serial_port}...")
+    print(f"Monitoring active applications...")
 
     try:
         while True:
-            available_ports = [
-                p.device for p in serial.tools.list_ports.comports()]
+            target_port_path = find_macropad_port(MACROPAD_VID, MACROPAD_PID)
 
             if not port:
-                if serial_port in available_ports:
+                if target_port_path:
                     try:
-                        port = serial.Serial(serial_port, BAUD_RATE, timeout=1)
-                        print(f"Connected to {serial_port}")
-                    except:
-                        pass
-            elif serial_port not in available_ports:
+                        port = serial.Serial(
+                            target_port_path, BAUD_RATE, timeout=1)
+                        print(f"Connected to Macropad at {target_port_path}")
+                    except Exception as e:
+                        print(f"Port found but could not connect: {e}")
+
+            elif port and not target_port_path:
                 port.close()
                 port = None
                 current_app = ""
-                print("Disconnected.")
+                print("Macropad disconnected. Waiting for reconnection...")
+
             else:
                 exe_name = map_app_to_alias(get_active_executable())
                 if exe_name and exe_name != current_app:
