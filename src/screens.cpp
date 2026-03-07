@@ -22,7 +22,7 @@ void activatePlugin(uint8_t idx) {
 	navigator.close();  // Close apps screen
 	navigator.close();  // Close main menu screen
 	navigator.close();  // Close currently open plugin
-	navigator.open(plugins[idx]);
+	navigator.open(plugins[idx - 1]);
 }
 
 void populateAppsScreen() {

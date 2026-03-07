@@ -183,6 +183,10 @@ void encoderHandler(void* pinPtr) {
 }
 
 void drawPluginName() {
+	if (!activePluginCount) {
+		return;
+	}
+
 	display.fillRect(0, 0, 128, 8, SH110X_WHITE);
 	display.setTextColor(SH110X_BLACK);
 
@@ -272,11 +276,8 @@ void setup() {
 	populateAppsScreen();
 
 	// Plugin initialization
-	if (tud_ready() && plugins[0]) {  // TODO: Bad, needs fixing
+	if (tud_ready() && pluginCount) {
 		activatePlugin(plugins[0]);
-	} else {
-		display.fillScreen(SH110X_BLACK);
-		display.display();
 	}
 }
 
