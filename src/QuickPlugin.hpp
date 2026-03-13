@@ -45,7 +45,6 @@ public:
 	virtual void onResume() override;
 
 	virtual void onKeyDown(uint8_t key) override;
-	virtual void onKeyUp(uint8_t key) override;
 	virtual void onEncoderDown(int32_t count) override;
 	virtual void onEncoderUp(int32_t count) override;
 

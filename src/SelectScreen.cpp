@@ -80,6 +80,7 @@ void SelectScreen::onResume() {
 void SelectScreen::onKeyUp(uint8_t key) {
 	switch (key) {
 		case 0:
+		case 3:
 			navigator.close();
 			break;
 		case 1:
@@ -98,8 +99,6 @@ void SelectScreen::onKeyUp(uint8_t key) {
 				_definition.changeCallback(_definition.options[_idx].value);
 			}
 			break;
-		case 3:
-			navigator.close();
 	}
 }
 

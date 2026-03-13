@@ -140,8 +140,14 @@ void ComboPlugin::onResume() {
 }
 
 void ComboPlugin::onKeyDown(uint8_t key) {
-	if (!key) {               // Encoder
-		                        // Do nothing
+	if (!key) {                                                                                 // Encoder
+		if (!_layerKey) {                                                                         // No layer
+			_displayMode = static_cast<DisplayMode>((static_cast<uint8_t>(_displayMode) + 1) % 3);  // Switch display mode
+		} else {                                                                                  // Layer selected
+			_encoderMode = _layerKey - 1;                                                           // Switch encoder mode
+			_layerKey = 0;                                                                          // Deactivate layer
+		}
+		_display();
 	} else if (!_layerKey) {  // Activate layer
 		_layerKey = key;
 		_display(true);
@@ -153,16 +159,8 @@ void ComboPlugin::onKeyDown(uint8_t key) {
 }
 
 void ComboPlugin::onKeyUp(uint8_t key) {
-	if (!key) {                                                                                 // Encoder
-		if (!_layerKey) {                                                                         // No layer
-			_displayMode = static_cast<DisplayMode>((static_cast<uint8_t>(_displayMode) + 1) % 3);  // Switch display mode
-		} else {                                                                                  // Layer selected
-			_encoderMode = _layerKey - 1;                                                           // Switch encoder mode
-			_layerKey = 0;                                                                          // Deactivate layer
-		}
-		_display();
-	} else if (key == _layerKey) {  // Layer released
-		_layerKey = 0;                // Deactivate layer
+	if (key == _layerKey) {  // Layer released
+		_layerKey = 0;         // Deactivate layer
 
 		if (!_comboActivated) {  // No other key was pressed
 			auto kd {_definition.keyDefinitions[key - 1]};

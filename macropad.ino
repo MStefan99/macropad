@@ -131,10 +131,15 @@ void buttonHandler(void* pinPtr) {
 	}
 
 	if (activePluginCount) {
-		if (status) {
-			pluginStack[activePluginCount - 1]->onKeyUp(pin);
+		if (!status) {
+			if (pin) {  // Defer encoder until release due to long pressitaita
+				pluginStack[activePluginCount - 1]->onKeyDown(pin);
+			}
 		} else {
-			pluginStack[activePluginCount - 1]->onKeyDown(pin);
+			if (!pin) {  // Dispatch deferred encoder press
+				pluginStack[activePluginCount - 1]->onKeyDown(pin);
+			}
+			pluginStack[activePluginCount - 1]->onKeyUp(pin);
 		}
 	}
 }

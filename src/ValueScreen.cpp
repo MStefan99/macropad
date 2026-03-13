@@ -62,6 +62,7 @@ void ValueScreen::onResume() {
 void ValueScreen::onKeyUp(uint8_t key) {
 	switch (key) {
 		case 0:
+		case 3:
 			navigator.close();
 			break;
 		case 1:
@@ -78,8 +79,6 @@ void ValueScreen::onKeyUp(uint8_t key) {
 			}
 			_display();
 			break;
-		case 3:
-			navigator.close();
 	}
 }
 

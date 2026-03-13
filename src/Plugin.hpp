@@ -29,7 +29,7 @@ public:
 	virtual void onDeactivate();
 
 	virtual void onKeyDown(uint8_t key);
-	virtual void onKeyUp(uint8_t key) = 0;
+	virtual void onKeyUp(uint8_t key);
 	virtual void onEncoderDown(int32_t count);
 	virtual void onEncoderUp(int32_t count);
 
