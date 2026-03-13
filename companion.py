@@ -102,14 +102,23 @@ def send_over_serial(exe_name):
         if port.in_waiting > 0:
             response = port.read(port.in_waiting).decode(
                 'utf-8', errors='ignore').strip()
-            res = re.search(r"^a(.)(\w+)", response)
-            found = res.group(1) == "="
+            res = re.search(r"^a(\S)(\w+)", response)
 
-            if found:
-                print(f"Macropad found profile \"{res.group(2)}\"")
-            else:
+            if response == "a-":
+                print("Macropad cannot switch profiles right now")
+            elif res.group(1) == "=":
+                print(f"Macropad found and switched to \"{res.group(2)}\"")
+            elif res.group(1) == ":":
                 print(
-                    f"Macropad couldn't find the profile, using \"{res.group(2)}\"")
+                    f"Macropad found and is already using \"{res.group(2)}\"")
+            elif res.group(1) == "!":
+                print(
+                    f"Macropad couldn't find \"{exe_name}\" and switched to \"{res.group(2)}\"")
+            elif res.group(1) == "~":
+                print(
+                    f"Macropad couldn't find \"{exe_name}\" and is already using \"{res.group(2)}\"")
+            else:
+                print("Macropad sent unknown status")
 
     except Exception as e:
         print(f"Serial error: {e}")

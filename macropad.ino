@@ -397,24 +397,30 @@ void loop() {
 
 		if (!byte || byte == '\r' || (byte == '\n' && serialIdx > 1)) {
 			if (!strncmp(serialBuffer, "a>", 2)) {
-				uint8_t foundIdx {0};
+				if (activePluginCount == 1) {
+					uint8_t foundIdx {0};
+					bool    found {false};
 
-				for (uint8_t i {0}; i < pluginCount; ++i) {
-					if (!strncmp(serialBuffer + 2, plugins[i]->getName(), strlen(plugins[i]->getName()))) {
-						foundIdx = i;
-						break;
+					for (uint8_t i {0}; i < pluginCount; ++i) {
+						if (!strncmp(serialBuffer + 2, plugins[i]->getName(), strlen(plugins[i]->getName()))) {
+							foundIdx = i;
+							found = true;
+							break;
+						}
 					}
-				}
 
-				auto activeName {pluginStack[0]->getName()};
-				if (strncmp(activeName, plugins[foundIdx]->getName(), strlen(activeName)) && activePluginCount == 1) {
-					deactivatePlugin();
-					activatePlugin(plugins[foundIdx]);
-					Serial.print("a=");
+					auto activePluginIdx {pluginStack[0] - plugins[0]};
+					auto switching {activePluginIdx != foundIdx};
+
+					if (switching) {
+						deactivatePlugin();
+						activatePlugin(plugins[foundIdx]);
+					}
+
+					Serial.print(found ? switching ? "a=" : "a:" : switching ? "a!" : "a~");
 					Serial.println(plugins[foundIdx]->getName());
 				} else {
-					Serial.print("a~");
-					Serial.println(activeName);
+					Serial.println("a-");
 				}
 			}
 
