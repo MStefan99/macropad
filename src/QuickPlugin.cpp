@@ -61,8 +61,10 @@ void QuickPlugin::_highlight(uint8_t key, bool down) {
 	_environment.canvas.print(_definition.keyDefinitions[key].displayName);
 	_environment.canvas.display();
 
-	_environment.backlight.setPixel(key, down ? Color::White() : _definition.keyDefinitions[key].color);
-	_environment.backlight.show();
+	if (_definition.keyDefinitions[key].displayName[0]) {
+		_environment.backlight.setPixel(key, down ? Color::White() : _definition.keyDefinitions[key].color);
+		_environment.backlight.show();
+	}
 }
 
 void QuickPlugin::onKeyDown(uint8_t key) {
