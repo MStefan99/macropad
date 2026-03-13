@@ -409,8 +409,7 @@ void loop() {
 						}
 					}
 
-					auto activePluginIdx {pluginStack[0] - plugins[0]};
-					auto switching {activePluginIdx != foundIdx};
+					auto switching {pluginStack[0] != plugins[foundIdx]};
 
 					if (switching) {
 						deactivatePlugin();
@@ -418,7 +417,7 @@ void loop() {
 					}
 
 					Serial.print(found ? switching ? "a=" : "a:" : switching ? "a!" : "a~");
-					Serial.println(plugins[foundIdx]->getName());
+					Serial.println(pluginStack[0]->getName());
 				} else {
 					Serial.println("a-");
 				}
