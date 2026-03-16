@@ -8,8 +8,9 @@
 
 
 ValueScreen::Definition brightnessScreenDefinition {
-  "s_brightness",
+  "s_bl",
   "Brightness",
+  "Light",
   {0, 31, 1},
   []() -> int {
 	return settingsProvider::getSettings().brightness;

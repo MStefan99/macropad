@@ -106,6 +106,10 @@ const char* ValueScreen::getDisplayName() const {
 	return _definition.displayName;
 }
 
+const char* ValueScreen::getShortDisplayName() const {
+	return _definition.shortDisplayName;
+}
+
 const uint32_t* ValueScreen::getIcon() const {
 	return _definition.icon;
 }

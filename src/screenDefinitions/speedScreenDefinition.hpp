@@ -9,6 +9,7 @@
 
 SelectScreen::Definition speedScreenDefinition {
   "s_timeout",
+  "Knob speed",
   "Speed",
   {{"x0.25", 16}, {"x0.5", 8}, {"x1", 4}, {"x2", 2}, {"x4", 1}},
   []() -> int {

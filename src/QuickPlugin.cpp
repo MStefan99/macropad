@@ -107,6 +107,10 @@ const char* QuickPlugin::getDisplayName() const {
 	return _definition.displayName;
 }
 
+const char* QuickPlugin::getShortDisplayName() const {
+	return _definition.shortDisplayName;
+}
+
 const uint32_t* QuickPlugin::getIcon() const {
 	return _definition.icon;
 }

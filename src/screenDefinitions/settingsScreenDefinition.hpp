@@ -9,6 +9,7 @@
 
 ListScreen::Definition settingsScreenDefinition {
   "s_set",
+  "Settings",
   "Setup",
   {
     {"Back",

@@ -17,18 +17,19 @@ PROGMEM const uint32_t desktop_icon[] = {0x00000000, 0xfe1f0000, 0xff3f0000, 0x0
 QuickPlugin::Definition systemQuickDefinition {
   "sys",
   "Desktop",
+  "Desktop",
   {{"Copy", {KEY_LEFT_CTRL, 'c'}, Color::Green()},
     {"Paste", {KEY_LEFT_CTRL, 'v'}, Color::Mint()},
     {"Cut", {KEY_LEFT_CTRL, 'v'}, Color::Cyan()},
     {"< Trk", {{}, KEY_SCAN_PREVIOUS}, Color::Yellow()},
     {"Pause", {{}, KEY_PLAY_PAUSE}, Color::Red()},
     {"Trk >", {{}, KEY_SCAN_NEXT}, Color::Green()},
-    {"< Snap", {KEY_LEFT_GUI, KEY_LEFT_ARROW}, Color::Purple()},
-    {"Max", {KEY_LEFT_GUI, KEY_PAGE_UP}, Color::Blue()},
-    {"Snap >", {KEY_LEFT_GUI, KEY_RIGHT_ARROW}, Color::Purple()},
     {"Apps", {KEY_LEFT_GUI, KEY_TAB}, Color::Lime()},
+    {"Max", {KEY_LEFT_GUI, KEY_PAGE_UP}, Color::Blue()},
+    {"Paste", {KEY_LEFT_GUI, 'v'}, Color::Mint()},
+    {"< Snap", {KEY_LEFT_GUI, KEY_LEFT_ARROW}, Color::Purple()},
     {"Min", {KEY_LEFT_GUI, 'd'}, Color::Orange()},
-    {"Paste", {KEY_LEFT_GUI, 'v'}, Color::Mint()}},
+    {"Snap >", {KEY_LEFT_GUI, KEY_RIGHT_ARROW}, Color::Purple()}},
   {"Volume", {{{}, KEY_VOLUME_DECREMENT}, {{}, KEY_VOLUME_INCREMENT}}, {{}, {KEY_MUTE}}},
   desktop_icon
 };

@@ -35,6 +35,7 @@ public:
 
 	virtual const char*     getName() const;
 	virtual const char*     getDisplayName() const;
+	virtual const char*     getShortDisplayName() const;
 	virtual const uint32_t* getIcon() const;
 
 	virtual void onTick();

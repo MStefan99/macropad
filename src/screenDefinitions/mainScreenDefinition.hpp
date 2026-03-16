@@ -10,6 +10,7 @@
 ListScreen::Definition mainScreenDefinition {
   "s_main",
   "Menu",
+  "Menu",
   {{"Quit",
     [](uint8_t i) {
 	navigator.close();

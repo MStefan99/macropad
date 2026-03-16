@@ -17,6 +17,7 @@ PROGMEM const uint32_t krita_icon[] = {0x00000000, 0x00000000, 0x00f00fe0, 0x00f
 ComboPlugin::Definition kritaDefinition {
   "krita",
   "Krita",
+  "Krita",
   // Keys
   {{"Undo", {KEY_LEFT_CTRL, 'z'}, Color::Red()},
    {"Redo", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'z'}, Color::Green()},
@@ -28,7 +29,7 @@ ComboPlugin::Definition kritaDefinition {
    {"Swap", {'x'}, Color::Yellow()},
    {"Desel", {KEY_LEFT_CTRL, 'd'}, Color::Magenta()}},
   // Layers
-  {// Brushb layer
+  {// Brush layer
    {"Brush",
     {
       {},

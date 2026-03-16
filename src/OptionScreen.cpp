@@ -70,6 +70,10 @@ const char* OptionScreen::getDisplayName() const {
 	return _definition.displayName;
 }
 
+const char* OptionScreen::getShortDisplayName() const {
+	return _definition.shortDisplayName;
+}
+
 const uint32_t* OptionScreen::getIcon() const {
 	return _definition.icon;
 }

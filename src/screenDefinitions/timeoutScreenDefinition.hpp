@@ -9,6 +9,7 @@
 
 SelectScreen::Definition timeoutScreenDefinition {
   "s_timeout",
+  "Screen timeout",
   "Timeout",
   {{"15s", 1000 * 15},
     {"30s", 1000 * 30},

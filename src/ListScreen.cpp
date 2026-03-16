@@ -149,6 +149,10 @@ const char* ListScreen::getDisplayName() const {
 	return _definition.displayName;
 }
 
+const char* ListScreen::getShortDisplayName() const {
+	return _definition.shortDisplayName;
+}
+
 const uint32_t* ListScreen::getIcon() const {
 	return _definition.icon;
 }

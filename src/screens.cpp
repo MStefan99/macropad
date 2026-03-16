@@ -10,6 +10,7 @@
 ListScreen::Definition appsScreenDefinition {
   "s_apps",
   "Apps",
+  "Apps",
   {{"Back",
     [](uint8_t i) {
 	navigator.close();
@@ -31,11 +32,12 @@ void populateAppsScreen() {
 
 	for (uint8_t i {1}; i <= min(pluginCount, screenDefinitionCount); ++i) {
 		auto* plugin {plugins[i - 1]};
-		auto* name {plugin->getDisplayName()};
+		auto* name {plugin->getShortDisplayName()};
 
-		for (uint8_t j {0}; j < 16 && name[j]; ++j) {
+		for (uint8_t j {0}; j < 8 && name[j]; ++j) {
 			appsScreenDefinition.items[i].displayName[j] = name[j];
 		}
+		appsScreenDefinition.items[i].displayName[8] = 0;
 		appsScreenDefinition.items[i].callback = activatePlugin;
 
 		if (plugin->getIcon()) {

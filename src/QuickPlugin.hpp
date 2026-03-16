@@ -34,7 +34,8 @@ public:
 
 	struct Definition {
 		char              name[16];
-		char              displayName[16];
+		char              displayName[24];
+		char              shortDisplayName[8];
 		KeyDefinition     keyDefinitions[12];
 		EncoderDefinition encoderDefinition;
 		const uint32_t*   icon;
@@ -51,6 +52,7 @@ public:
 
 	virtual const char*     getName() const override;
 	virtual const char*     getDisplayName() const override;
+	virtual const char*     getShortDisplayName() const override;
 	virtual const uint32_t* getIcon() const override;
 
 protected:

@@ -49,6 +49,10 @@ const char* Plugin::getDisplayName() const {
 	return "Plugin";
 }
 
+const char* Plugin::getShortDisplayName() const {
+	return "Plugin";
+}
+
 const uint32_t* Plugin::getIcon() const {
 	return nullptr;
 }

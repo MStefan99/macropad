@@ -120,6 +120,10 @@ const char* SelectScreen::getDisplayName() const {
 	return _definition.displayName;
 }
 
+const char* SelectScreen::getShortDisplayName() const {
+	return _definition.shortDisplayName;
+}
+
 const uint32_t* SelectScreen::getIcon() const {
 	return _definition.icon;
 }
