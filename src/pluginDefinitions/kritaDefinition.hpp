@@ -48,17 +48,17 @@ ComboPlugin::Definition kritaDefinition {
     Color::Yellow()},
    // (Krita) Layers layer
    {"Layer",
-    {
-      {"Ins", {KEY_INSERT}, Color::Green()},
-      {},
-      {"Del", {KEY_LEFT_SHIFT, KEY_DELETE}, Color::Red()},
-      {"Group", {KEY_LEFT_CTRL, 'g'}, Color::Cyan()},
-      {"Ungr", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'g'}, Color::Magenta()},
-      {"Merge", {KEY_LEFT_CTRL, 'e'}, Color::Red()},
-      {"Copy+", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'j'}, Color::Lime()},
-      {"Cut+", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'j'}, Color::Orange()},
-      {"Dupl", {KEY_LEFT_CTRL, 'j'}, Color::Blue()},
-    },
+    {{"Ins", {KEY_INSERT}, Color::Green()},
+     {},
+     {"Del", {KEY_LEFT_SHIFT, KEY_DELETE}, Color::Red()},
+     {"Group", {KEY_LEFT_CTRL, 'g'}, Color::Cyan()},
+     {"Ungr", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'g'}, Color::Magenta()},
+     {"Merge", {KEY_LEFT_CTRL, 'e'}, Color::Red()},
+     {"Copy+", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'j'}, Color::Lime()},
+     {"Cut+", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'j'}, Color::Orange()},
+     {"Dupl", {KEY_LEFT_CTRL, 'j'}, Color::Blue()},
+     {"Fil+", {KEY_LEFT_SHIFT, 'f'}, Color::Purple()},
+     {"FilM+", {KEY_LEFT_SHIFT, 'm'}, Color::Magenta()}},
     Color::Cyan()},
    // Tools layer
    {"Tool",
@@ -73,7 +73,21 @@ ComboPlugin::Definition kritaDefinition {
       {"Ell", {KEY_LEFT_SHIFT, 'j'}, Color::Yellow()},
       {"Poly", {KEY_LEFT_SHIFT, 'r'}, Color::Lime()},
     },
-    Color::Lime()}
+    Color::Lime()},
+   {"Filter",
+    {
+      {"Inv", {KEY_LEFT_CTRL, 'i'}, Color::Red()},
+      {"Curve", {KEY_LEFT_CTRL, 'm'}, Color::Azure()},
+      {"SOP", {KEY_LEFT_CTRL, KEY_LEFT_ALT, ','}, Color::Lime()},
+      {},
+      {"Map", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '.'}, Color::Green()},
+      {"Desat", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'u'}, Color::White()},
+      {"HSV", {KEY_LEFT_CTRL, 'u'}, Color::Green()},
+      {"BlurL", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'b'}, Color::Azure()},
+      {"BlurM", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'n'}, Color::Blue()},
+      {"Level", {KEY_LEFT_CTRL, 'l'}, Color::Yellow()},
+    },
+    Color::Purple()}
   },
   // Encoder modes
   {
@@ -84,6 +98,7 @@ ComboPlugin::Definition kritaDefinition {
    {"Flow", {{KEY_LEFT_SHIFT, ','}, {KEY_LEFT_SHIFT, '.'}}, Color::Mint()},
    {"Opct", {{'i'}, {'o'}}, Color::Cyan()},
    {"Brght", {{'k'}, {'l'}}, Color::Blue()},
+   {"Sat", {{KEY_LEFT_SHIFT, ';'}, {KEY_LEFT_SHIFT, '\''}}, Color::Orange()},
    {
       "Layer",
       {{KEY_PAGE_UP}, {KEY_PAGE_DOWN}},
