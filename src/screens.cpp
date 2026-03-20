@@ -37,7 +37,7 @@ void populateAppsScreen() {
 		for (uint8_t j {0}; j < 8 && name[j]; ++j) {
 			appsScreenDefinition.items[i].displayName[j] = name[j];
 		}
-		appsScreenDefinition.items[i].displayName[8] = 0;
+		appsScreenDefinition.items[i].displayName[7] = 0;
 		appsScreenDefinition.items[i].callback = activatePlugin;
 
 		if (plugin->getIcon()) {

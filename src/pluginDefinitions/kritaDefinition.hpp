@@ -57,7 +57,7 @@ ComboPlugin::Definition kritaDefinition {
      {"Copy+", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'j'}, Color::Lime()},
      {"Cut+", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'j'}, Color::Orange()},
      {"Dupl", {KEY_LEFT_CTRL, 'j'}, Color::Blue()},
-     {"Fil+", {KEY_LEFT_SHIFT, 'f'}, Color::Purple()},
+     {"Filt+", {KEY_LEFT_SHIFT, 'f'}, Color::Purple()},
      {"FilM+", {KEY_LEFT_SHIFT, 'm'}, Color::Magenta()}},
     Color::Cyan()},
    // Tools layer
