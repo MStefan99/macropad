@@ -49,7 +49,7 @@ static Plugin*  pluginStack[16] {};
 static uint8_t  activePluginCount {0};
 static uint32_t lastAction {0};
 static bool     idle {false};
-static bool     suspended {false};
+static bool     suspended {true};
 
 static uint8_t  dispatchQueue[8] {0};
 static uint16_t dispatchConsumer {0};
@@ -276,14 +276,14 @@ void setup() {
 	display.display();
 	delay(1000);
 
-	digitalWrite(LED_PIN, LOW);
+	if (!tud_ready()) {
+		display.fillScreen(SH110X_BLACK);
+		display.display();
+	}
 
 	populateAppsScreen();
 
-	// Plugin initialization
-	if (tud_ready() && pluginCount) {
-		activatePlugin(plugins[0]);
-	}
+	digitalWrite(LED_PIN, LOW);
 }
 
 void loop() {
@@ -319,10 +319,8 @@ void loop() {
 		pinStatuses[0] = PinStatus::HIGH;
 
 		if (!activePluginCount) {
-			return;
-		}
-
-		if (activePluginCount > 1) {
+			// Do nothing
+		} else if (activePluginCount > 1) {
 			deactivatePlugin();
 		} else {
 			activatePlugin(mainScreen);
@@ -384,9 +382,13 @@ void loop() {
 			strip.setPixelColor(i, 0);
 		}
 		strip.show();
-	} else if (tud_ready() && suspended) {
+	} else if (tud_ready() && suspended && pluginCount) {
 		suspended = false;
-		resumePlugin();
+		if (!activePluginCount) {  // Plugin initialization
+			activatePlugin(plugins[0]);
+		} else {
+			resumePlugin();
+		}
 		lastAction = millis();
 	}
 
