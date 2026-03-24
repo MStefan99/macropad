@@ -27,7 +27,8 @@ ComboPlugin::Definition kritaDefinition {
    {"Lasso", {'s'}, Color::Lime()},
    {"Mirror", {'m'}, Color::Blue()},
    {"Swap", {'x'}, Color::Yellow()},
-   {"Desel", {KEY_LEFT_CTRL, 'd'}, Color::Magenta()}},
+   {"Desel", {KEY_LEFT_CTRL, 'd'}, Color::Magenta()},
+   {"Inv", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'i'}, Color::Orange()}},
   // Layers
   {// Brush layer
    {"Brush",
@@ -78,8 +79,9 @@ ComboPlugin::Definition kritaDefinition {
     {
       {"Inv", {KEY_LEFT_CTRL, 'i'}, Color::Red()},
       {"Curve", {KEY_LEFT_CTRL, 'm'}, Color::Azure()},
-      {"SOP", {KEY_LEFT_CTRL, KEY_LEFT_ALT, ','}, Color::Lime()},
+      {"CCC", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'm'}, Color::Blue()},
       {},
+      {"SOP", {KEY_LEFT_CTRL, KEY_LEFT_ALT, ','}, Color::Lime()},
       {"Map", {KEY_LEFT_CTRL, KEY_LEFT_ALT, '.'}, Color::Green()},
       {"Desat", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'u'}, Color::White()},
       {"HSV", {KEY_LEFT_CTRL, 'u'}, Color::Green()},
@@ -90,20 +92,15 @@ ComboPlugin::Definition kritaDefinition {
     Color::Purple()}
   },
   // Encoder modes
-  {
-   {"Zoom", {{'-'}, {'='}}, Color::Mint()},
+  {{"Zoom", {{'-'}, {'='}}, Color::Mint()},
    {"Rot", {{KEY_LEFT_CTRL, '['}, {KEY_LEFT_CTRL, ']'}}, Color::Green()},
    {"Hist", {{KEY_LEFT_CTRL, 'z'}, {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'z'}}, Color::Red()},
    {"Size", {{'['}, {']'}}, Color::Green()},
    {"Flow", {{KEY_LEFT_SHIFT, ','}, {KEY_LEFT_SHIFT, '.'}}, Color::Mint()},
    {"Opct", {{'i'}, {'o'}}, Color::Cyan()},
-   {"Brght", {{'k'}, {'l'}}, Color::Blue()},
-   {"Sat", {{KEY_LEFT_SHIFT, ';'}, {KEY_LEFT_SHIFT, '\''}}, Color::Orange()},
-   {
-      "Layer",
-      {{KEY_PAGE_UP}, {KEY_PAGE_DOWN}},
-      Color::Yellow(),
-    }, },
+   {"Brght", {{'k'}, {'l'}}, Color::Orange()},
+   {"Sat", {{KEY_LEFT_SHIFT, ';'}, {KEY_LEFT_SHIFT, '\''}}, Color::Yellow()},
+   {"Hue", {{KEY_LEFT_ALT, ';'}, {KEY_LEFT_ALT, '\''}}, Color::Lime()}},
   krita_icon
 };
 
