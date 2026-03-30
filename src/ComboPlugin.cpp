@@ -128,6 +128,40 @@ void ComboPlugin::_display(bool peek) {
 	_environment.canvas.display();
 }
 
+void ComboPlugin::_highlight(uint8_t key, bool down) {
+	uint8_t  layer = _layerKey - 1;
+	int16_t  x, y;
+	uint16_t w, h;
+	_environment.canvas
+	    .getTextBounds(_definition.layerDefinitions[layer].keyDefinitions[key].displayName, 0, 0, &x, &y, &w, &h);
+
+	switch (key % 3) {
+		case 0:
+			x = 0;
+			break;
+		case 1:
+			x = (_environment.canvas.width() - w) / 2;
+			break;
+		case 2:
+			x = _environment.canvas.width() - w;
+	}
+	y = 16 + key / 3 * h;
+
+	_environment.canvas.fillRect(x, y, w, h, down ? SH110X_WHITE : SH110X_BLACK);
+	_environment.canvas.setTextColor(down ? SH110X_BLACK : SH110X_WHITE);
+	_environment.canvas.setCursor(x, y);
+	_environment.canvas.print(_definition.layerDefinitions[layer].keyDefinitions[key].displayName);
+	_environment.canvas.display();
+
+	if (_definition.layerDefinitions[layer].keyDefinitions[key].displayName[0]) {
+		_environment.backlight.setPixel(
+		    key,
+		    down ? Color::White() : _definition.layerDefinitions[layer].keyDefinitions[key].color
+		);
+		_environment.backlight.show();
+	}
+}
+
 void ComboPlugin::onActivate() {
 	_layerKey = 0;
 	_comboActivated = false;
@@ -155,6 +189,7 @@ void ComboPlugin::onKeyDown(uint8_t key) {
 		auto kd {_definition.layerDefinitions[_layerKey - 1].keyDefinitions[key - 1]};
 		_environment.keyDispatcher.dispatch(kd.keys, kd.consumerKey);
 		_comboActivated = true;
+		_highlight(key - 1, true);
 	}
 }
 
@@ -169,6 +204,8 @@ void ComboPlugin::onKeyUp(uint8_t key) {
 		_comboActivated = false;
 
 		_display();
+	} else if (_layerKey) {
+		_highlight(key - 1, false);
 	}
 }
 

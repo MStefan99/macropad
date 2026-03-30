@@ -58,7 +58,7 @@ public:
 protected:
 	const Definition& _definition;
 
-	void _highlight(uint8_t key, bool down);
+	void _highlight(uint8_t key, bool down = false);
 };
 
 

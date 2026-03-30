@@ -81,6 +81,7 @@ protected:
 	void _printLabel(uint8_t idx, const char* label);
 	void _displayLayer();
 	void _display(bool peek = false);
+	void _highlight(uint8_t key, bool down = false);
 };
 
 
