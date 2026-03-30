@@ -14,6 +14,7 @@
 constexpr static uint32_t keyDebounceTime {5};
 constexpr static uint32_t encoderDebounceTime {2};
 constexpr static uint32_t longPressDuration {750};
+constexpr static uint32_t transitionDuration {500};
 
 
 constexpr static int8_t encoderTransitions[4][4] {
@@ -59,6 +60,9 @@ static uint32_t dispatchDuration {0};
 
 static char    serialBuffer[32] {};
 static uint8_t serialIdx {0};
+
+static uint32_t transitionStart {0};
+static bool     transitionActive {true};
 
 
 void displayPlugin();
@@ -131,6 +135,8 @@ void buttonHandler(void* pinPtr) {
 	}
 
 	if (activePluginCount) {
+		lastAction = millis();
+
 		if (!status) {
 			if (pin) {  // Defer encoder until release due to long pressitaita
 				pluginStack[activePluginCount - 1]->onKeyDown(pin);
@@ -169,6 +175,7 @@ void encoderHandler(void* pinPtr) {
 
 	int32_t count = encoderCount / settingsProvider::getSettings().encoderDivisor;
 	if (transition && count != sentEncoderCount) {
+		lastAction = millis();
 		sentEncoderCount = count;
 		if (!pinStatuses[0] && tud_ready()) {  // Setting brightness
 			auto settings {settingsProvider::getSettings()};
@@ -282,6 +289,7 @@ void setup() {
 	}
 
 	populateAppsScreen();
+	lastAction = transitionStart = millis();
 
 	digitalWrite(LED_PIN, LOW);
 }
@@ -341,6 +349,8 @@ void loop() {
 	} else if (idle && millis() - lastAction < screenTimeout) {
 		idle = false;
 		resumePlugin();
+		lastAction = transitionStart = millis();
+		transitionActive = true;
 	}
 
 	settingsProvider::commitSettings();
@@ -354,7 +364,36 @@ void loop() {
 	}
 
 	// Update backlight
-	if (showBacklight) {
+	uint32_t transitionTime = millis() - transitionStart;
+	uint32_t transitionProgress =
+	    transitionTime < transitionDuration ? transitionTime : screenTimeout + transitionDuration - transitionTime;
+
+	if (transitionProgress > transitionDuration) {
+		transitionActive = false;
+	} else if (!transitionActive) {
+		if (lastAction > transitionStart) {
+			transitionStart = lastAction;
+		}
+		if (transitionProgress < transitionDuration) {
+			transitionActive = true;
+		}
+	}
+
+	if (transitionActive) {
+		uint8_t brightness =
+		    brightnessTable[settingsProvider::getSettings().brightness] * transitionProgress / transitionDuration;
+
+		for (uint8_t i {0}; i < 12; ++i) {
+			auto color {backlightProvider.getPixel(i)};
+			strip.setPixelColor(
+			    i,
+			    strip.gamma8((color.getR() * brightness) >> 8u),
+			    strip.gamma8((color.getG() * brightness) >> 8u),
+			    strip.gamma8((color.getB() * brightness) >> 8u)
+			);
+		}
+		strip.show();
+	} else if (showBacklight) {
 		showBacklight = false;
 		uint8_t brightness = brightnessTable[settingsProvider::getSettings().brightness];
 
@@ -389,7 +428,8 @@ void loop() {
 		} else {
 			resumePlugin();
 		}
-		lastAction = millis();
+		lastAction = transitionStart = millis();
+		transitionActive = true;
 	}
 
 	// Serial commands
