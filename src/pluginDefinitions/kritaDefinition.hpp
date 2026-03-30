@@ -19,16 +19,17 @@ ComboPlugin::Definition kritaDefinition {
   "Krita",
   "Krita",
   // Keys
-  {{"Undo", {KEY_LEFT_CTRL, 'z'}, Color::Red()},
+  {
+   {"Undo", {KEY_LEFT_CTRL, 'z'}, Color::Red()},
    {"Redo", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'z'}, Color::Green()},
    {"Brush", {'b'}, Color::Yellow()},
    {"Save", {KEY_LEFT_CTRL, 's'}, Color::Green()},
    {"Move", {KEY_LEFT_CTRL, 't'}, Color::Azure()},
    {"Lasso", {'s'}, Color::Lime()},
    {"Mirror", {'m'}, Color::Blue()},
-   {"Swap", {'x'}, Color::Yellow()},
+   {"InvS", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'i'}, Color::Orange()},
    {"Desel", {KEY_LEFT_CTRL, 'd'}, Color::Magenta()},
-   {"Inv", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'i'}, Color::Orange()}},
+   },
   // Layers
   {// Brush layer
    {"Brush",
@@ -89,7 +90,21 @@ ComboPlugin::Definition kritaDefinition {
       {"BlurM", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'n'}, Color::Blue()},
       {"Level", {KEY_LEFT_CTRL, 'l'}, Color::Yellow()},
     },
-    Color::Purple()}
+    Color::Purple()},
+   {"Blend",
+    {{"Mult", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'm'}, Color::Blue(96)},
+     {"HardL", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'h'}, Color::Green(96)},
+     {"Screen", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 's'}, Color::Yellow(96)},
+     {"Norm", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'n'}, Color::Green()},
+     {},
+     {"Lum", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'y'}, Color::White()},
+     {"LinB", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'a'}, Color::Blue(160)},
+     {"LinL", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'j'}, Color::Green(160)},
+     {"LinD", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'w'}, Color::Yellow(160)},
+     {"Burn", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'b'}, Color::Blue()},
+     {"VivL", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'v'}, Color::Green()},
+     {"Dodge", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'd'}, Color::Yellow()}},
+    Color::Orange()}
   },
   // Encoder modes
   {{"Zoom", {{'-'}, {'='}}, Color::Mint()},
