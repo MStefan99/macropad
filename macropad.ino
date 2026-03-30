@@ -370,6 +370,12 @@ void loop() {
 
 	if (transitionProgress > transitionDuration) {
 		transitionActive = false;
+		if (transitionTime > screenTimeout) {
+			for (uint8_t i {0}; i < 12; ++i) {
+				strip.setPixelColor(i, 0);
+			}
+			strip.show();
+		}
 	} else if (!transitionActive) {
 		if (lastAction > transitionStart) {
 			transitionStart = lastAction;
@@ -417,10 +423,7 @@ void loop() {
 		display.fillScreen(SH110X_BLACK);
 		display.display();
 
-		for (uint8_t i {0}; i < 12; ++i) {
-			strip.setPixelColor(i, 0);
-		}
-		strip.show();
+		transitionStart = millis() - screenTimeout;
 	} else if (tud_ready() && suspended && pluginCount) {
 		suspended = false;
 		if (!activePluginCount) {  // Plugin initialization
