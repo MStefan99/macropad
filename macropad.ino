@@ -58,6 +58,9 @@ static bool     dispatched {false};
 static uint32_t dispatchStart {0};
 static uint32_t dispatchDuration {0};
 
+static uint8_t  outString[64] {0};
+static uint8_t* outChar {outString};
+
 static char    serialBuffer[32] {};
 static uint8_t serialIdx {0};
 
@@ -68,13 +71,14 @@ static bool     transitionActive {true};
 void displayPlugin();
 void setBacklight();
 void dispatchKeys(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration);
+void typeString(const char* string, uint8_t len, uint32_t delay);
 void activatePlugin(Plugin* plugin);
 void deactivatePlugin();
 
 
 CanvasProvider    canvasProvider {displayPlugin};
 BacklightProvider backlightProvider {setBacklight};
-KeyDispatcher     keyDispatcher {dispatchKeys};
+KeyDispatcher     keyDispatcher {dispatchKeys, typeString};
 PluginEnvironment pluginEnvironment {canvasProvider, backlightProvider, keyDispatcher};
 
 Navigator navigator(activatePlugin, deactivatePlugin);
@@ -93,13 +97,26 @@ void setBacklight() {
 
 // Called from interrupts
 void dispatchKeys(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration) {
-	for (uint8_t i {0}; i < 6 && keys[i]; ++i) {
+	uint8_t i {0};
+	for (; i < sizeof(dispatchQueue) - 1 && keys[i]; ++i) {
 		dispatchQueue[i] = keys[i];
 	}
+	dispatchQueue[i] = 0;
 
 	dispatchConsumer = consumerKey;
 	dispatchDuration = duration;
 	lastAction = millis();
+}
+
+// Called from interrupts
+void typeString(const char* str, uint8_t len, uint32_t delay) {
+	uint8_t i {0};
+	for (; i < len && i < sizeof(outString) - 1 && str[i]; ++i) {
+		outString[i] = str[i];
+	}
+	outString[i] = 0;
+
+	dispatchDuration = delay;
 }
 
 // Called from interrupts
@@ -302,7 +319,7 @@ void loop() {
 
 	// Dispatch keys
 	if (!dispatched && (dispatchQueue[0] || dispatchConsumer)) {
-		for (uint8_t i {0}; i < 8 && dispatchQueue[i]; ++i) {
+		for (uint8_t i {0}; i < sizeof(dispatchQueue) && dispatchQueue[i]; ++i) {
 			Keyboard.press(dispatchQueue[i]);
 			dispatchQueue[i] = 0;
 		}
@@ -313,6 +330,24 @@ void loop() {
 		dispatchConsumer = 0;
 		dispatchStart = millis();
 		dispatched = true;
+	}
+
+	// Type string
+	if (!dispatched && *outChar) {
+		if (*outChar >= 0x41 && *outChar <= 0x5a) {  // Uppercase letters
+			*outChar += 0x20;
+			Keyboard.press(KEY_LEFT_SHIFT);
+		}
+
+		Keyboard.press(*outChar);
+		dispatched = true;
+		dispatchStart = millis();
+
+		++outChar;
+		if (!*outChar) {
+			outString[0] = 0;
+			outChar = outString;
+		}
 	}
 
 	// Release keys

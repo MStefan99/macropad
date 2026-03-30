@@ -6,14 +6,17 @@
 
 class KeyDispatcher {
 public:
-	using CallbackType = void (*)(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration);
+	using DispatchCallbackType = void (*)(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration);
+	using TypeCallbackType = void     (*)(const char* string, uint8_t len, uint32_t delay);
 
-	KeyDispatcher(CallbackType dispatchCallback = nullptr);
+	KeyDispatcher(DispatchCallbackType dispatchCallback = nullptr, TypeCallbackType typecallback = nullptr);
 
 	void dispatch(const uint8_t keys[8], uint16_t consumerKey = 0, uint32_t duration = 10);
+	void type(const char* string, uint8_t len, uint32_t duration = 10);
 
 protected:
-	CallbackType _dispatchCallback {};
+	DispatchCallbackType _dispatchCallback {};
+	TypeCallbackType     _typeCallback {};
 };
 
 
