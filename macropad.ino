@@ -375,6 +375,8 @@ void loop() {
 	if (!idle && millis() - lastAction > screenTimeout) {
 		suspendPlugin();
 		idle = true;
+		transitionStart = millis() - screenTimeout;
+		transitionActive = true;
 		display.fillScreen(SH110X_BLACK);
 		display.display();
 		for (uint8_t i {0}; i < 12; ++i) {
@@ -411,12 +413,8 @@ void loop() {
 			}
 			strip.show();
 		}
-	} else if (!transitionActive) {
 		if (lastAction > transitionStart) {
 			transitionStart = lastAction;
-		}
-		if (transitionProgress < transitionDuration) {
-			transitionActive = true;
 		}
 	}
 
@@ -459,6 +457,7 @@ void loop() {
 		display.display();
 
 		transitionStart = millis() - screenTimeout;
+		transitionActive = true;
 	} else if (tud_ready() && suspended && pluginCount) {
 		suspended = false;
 		if (!activePluginCount) {  // Plugin initialization
