@@ -19,8 +19,7 @@ ComboPlugin::Definition kritaDefinition {
   "Krita",
   "Krita",
   // Keys
-  {
-   {"Undo", {KEY_LEFT_CTRL, 'z'}, Color::Red()},
+  {{"Undo", {KEY_LEFT_CTRL, 'z'}, Color::Red()},
    {"Redo", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'z'}, Color::Green()},
    {"Brush", {'b'}, Color::Yellow()},
    {"Save", {KEY_LEFT_CTRL, 's'}, Color::Green()},
@@ -29,7 +28,7 @@ ComboPlugin::Definition kritaDefinition {
    {"Mirror", {'m'}, Color::Blue()},
    {"InvS", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'i'}, Color::Orange()},
    {"Desel", {KEY_LEFT_CTRL, 'd'}, Color::Magenta()},
-   },
+   {"SelD", {KEY_LEFT_CTRL, 'h'}, Color::Mint()}},
   // Layers
   {// Brush layer
    {"Brush",

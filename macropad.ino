@@ -372,22 +372,24 @@ void loop() {
 
 	// Screen timeout
 	auto screenTimeout {settingsProvider::getSettings().screenTimeout};
-	if (!idle && millis() - lastAction > screenTimeout) {
-		suspendPlugin();
-		idle = true;
-		transitionStart = millis() - screenTimeout;
-		transitionActive = true;
-		display.fillScreen(SH110X_BLACK);
-		display.display();
-		for (uint8_t i {0}; i < 12; ++i) {
-			strip.setPixelColor(i, 0);
+	if (!suspended) {
+		if (!idle && millis() - lastAction > screenTimeout) {
+			suspendPlugin();
+			idle = true;
+			transitionStart = millis() - screenTimeout;
+			transitionActive = true;
+			display.fillScreen(SH110X_BLACK);
+			display.display();
+			for (uint8_t i {0}; i < 12; ++i) {
+				strip.setPixelColor(i, 0);
+			}
+			strip.show();
+		} else if (idle && millis() - lastAction < screenTimeout) {
+			idle = false;
+			resumePlugin();
+			lastAction = transitionStart = millis();
+			transitionActive = true;
 		}
-		strip.show();
-	} else if (idle && millis() - lastAction < screenTimeout) {
-		idle = false;
-		resumePlugin();
-		lastAction = transitionStart = millis();
-		transitionActive = true;
 	}
 
 	settingsProvider::commitSettings();
