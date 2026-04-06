@@ -11,11 +11,26 @@
 #define NEOPIXEL_COUNT 12
 
 
+// Options
 constexpr static uint32_t keyDebounceTime {5};
 constexpr static uint32_t encoderDebounceTime {2};
 constexpr static uint32_t longPressDuration {750};
 constexpr static uint32_t transitionDuration {500};
 
+
+// Static
+enum class PluginState : uint8_t {
+	New = 0,
+	Activated = 1,
+	Resumed = 2,
+	Suspended = 3,
+	Deactivated = 4
+};
+
+struct PluginInfo {
+	Plugin*     plugin;
+	PluginState state;
+};
 
 constexpr static int8_t encoderTransitions[4][4] {
   {0,  -1, 1,  0 },
@@ -34,6 +49,8 @@ constexpr static uint8_t brightnessTable[32] {0,   25,  32,  40,  48,  55,  63, 
 static Adafruit_SH1106G  display = Adafruit_SH1106G(128, 64, OLED_MOSI, OLED_CLK, OLED_DC, OLED_RST, OLED_CS);
 static Adafruit_NeoPixel strip(NEOPIXEL_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
+
+// State
 static bool updateDisplay {false};
 static bool showBacklight {false};
 
@@ -46,11 +63,11 @@ static int32_t  encoderCount {0};
 static int32_t  sentEncoderCount {0};
 static uint32_t encoderTime {0};
 
-static Plugin*  pluginStack[16] {};
-static uint8_t  activePluginCount {0};
-static uint32_t lastAction {0};
-static bool     idle {false};
-static bool     suspended {true};
+static PluginInfo pluginStack[16] {};
+static uint8_t    activePluginCount {0};
+static uint32_t   lastAction {0};
+static bool       idle {false};
+static bool       suspended {true};
 
 static uint8_t  dispatchQueue[8] {0};
 static uint16_t dispatchConsumer {0};
@@ -75,6 +92,41 @@ void typeString(const char* string, uint8_t len, uint32_t delay);
 void activatePlugin(Plugin* plugin);
 void deactivatePlugin();
 
+bool rewindState(PluginInfo& info, PluginState targetState) {
+	while (info.state != targetState) {
+		switch (info.state) {
+			case PluginState::New:
+				info.plugin->onActivate();
+				info.state = PluginState::Activated;
+				break;
+			case PluginState::Activated:
+				info.plugin->onResume();
+				info.state = PluginState::Resumed;
+				break;
+			case PluginState::Resumed:
+				info.plugin->onSuspend();
+				info.state = PluginState::Suspended;
+				break;
+			case PluginState::Suspended:
+				if (targetState == PluginState::Deactivated) {
+					info.plugin->onDeactivate();
+					info.state = PluginState::Deactivated;
+				} else {
+					info.plugin->onResume();
+					info.state = PluginState::Resumed;
+				}
+				break;
+			case PluginState::Deactivated:
+				if (targetState == PluginState::New) {
+					return false;
+				}
+				info.plugin->onActivate();
+				info.state = PluginState::Activated;
+				break;
+		}
+	}
+	return true;
+}
 
 CanvasProvider    canvasProvider {displayPlugin};
 BacklightProvider backlightProvider {setBacklight};
@@ -86,13 +138,11 @@ Navigator navigator(activatePlugin, deactivatePlugin);
 // Called from interrupts
 void displayPlugin() {
 	updateDisplay = true;
-	lastAction = millis();
 }
 
 // Called from interrupts
 void setBacklight() {
 	showBacklight = true;
-	lastAction = millis();
 }
 
 // Called from interrupts
@@ -105,7 +155,6 @@ void dispatchKeys(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration
 
 	dispatchConsumer = consumerKey;
 	dispatchDuration = duration;
-	lastAction = millis();
 }
 
 // Called from interrupts
@@ -139,15 +188,14 @@ void buttonHandler(void* pinPtr) {
 		return;
 	}
 
-	if (idle) {
-		displayPlugin();
-		setBacklight();
-		skipButtonRelease = pin;
+	if (status && pin == skipButtonRelease) {
+		skipButtonRelease = ~0;
 		return;
 	}
 
-	if (status && pin == skipButtonRelease) {
-		skipButtonRelease = ~0;
+	if (idle) {
+		skipButtonRelease = pin;
+		lastAction = millis();
 		return;
 	}
 
@@ -156,13 +204,13 @@ void buttonHandler(void* pinPtr) {
 
 		if (!status) {
 			if (pin) {  // Defer encoder until release due to long pressitaita
-				pluginStack[activePluginCount - 1]->onKeyDown(pin);
+				pluginStack[activePluginCount - 1].plugin->onKeyDown(pin);
 			}
 		} else {
 			if (!pin) {  // Dispatch deferred encoder press
-				pluginStack[activePluginCount - 1]->onKeyDown(pin);
+				pluginStack[activePluginCount - 1].plugin->onKeyDown(pin);
 			}
-			pluginStack[activePluginCount - 1]->onKeyUp(pin);
+			pluginStack[activePluginCount - 1].plugin->onKeyUp(pin);
 		}
 	}
 }
@@ -203,9 +251,9 @@ void encoderHandler(void* pinPtr) {
 			setBacklight();
 		} else if (activePluginCount) {
 			if (transition > 0) {
-				pluginStack[activePluginCount - 1]->onEncoderUp(count);
+				pluginStack[activePluginCount - 1].plugin->onEncoderUp(count);
 			} else {
-				pluginStack[activePluginCount - 1]->onEncoderDown(count);
+				pluginStack[activePluginCount - 1].plugin->onEncoderDown(count);
 			}
 		}
 	}
@@ -221,10 +269,10 @@ void drawPluginName() {
 
 	int16_t  x, y;
 	uint16_t w, h;
-	display.getTextBounds(pluginStack[activePluginCount - 1]->getDisplayName(), 0, 0, &x, &y, &w, &h);
+	display.getTextBounds(pluginStack[activePluginCount - 1].plugin->getDisplayName(), 0, 0, &x, &y, &w, &h);
 
 	display.setCursor(64 - w / 2, 0);
-	display.print(pluginStack[activePluginCount - 1]->getDisplayName());
+	display.print(pluginStack[activePluginCount - 1].plugin->getDisplayName());
 }
 
 void activatePlugin(Plugin* plugin) {
@@ -232,12 +280,14 @@ void activatePlugin(Plugin* plugin) {
 
 	suspendPlugin();
 
-	pluginStack[activePluginCount] = plugin;
+	pluginStack[activePluginCount].plugin = plugin;
+	pluginStack[activePluginCount].state = PluginState::New;
 	++activePluginCount;
 
-	plugin->onActivate();
+	rewindState(pluginStack[activePluginCount - 1], PluginState::Activated);
+
 	if (!idle && !suspended) {
-		plugin->onResume();
+		rewindState(pluginStack[activePluginCount - 1], PluginState::Resumed);
 		display.clearDisplay();
 		drawPluginName();
 		display.display();
@@ -245,19 +295,23 @@ void activatePlugin(Plugin* plugin) {
 }
 
 void suspendPlugin() {
-	if (activePluginCount && !idle && !suspended) {
-		pluginStack[activePluginCount - 1]->onSuspend();
+	if (!activePluginCount) {
+		return;
 	}
+
+	rewindState(pluginStack[activePluginCount - 1], PluginState::Suspended);
 }
 
 void resumePlugin() {
-	if (activePluginCount && !idle && !suspended) {
-		pluginStack[activePluginCount - 1]->onResume();
-
-		display.clearDisplay();
-		drawPluginName();
-		display.display();
+	if (!activePluginCount) {
+		return;
 	}
+
+	rewindState(pluginStack[activePluginCount - 1], PluginState::Resumed);
+
+	display.clearDisplay();
+	drawPluginName();
+	display.display();
 }
 
 void deactivatePlugin() {
@@ -265,11 +319,7 @@ void deactivatePlugin() {
 		return;
 	}
 
-	if (!idle && !suspended) {
-		pluginStack[activePluginCount - 1]->onSuspend();
-	}
-	pluginStack[activePluginCount-- - 1]->onDeactivate();
-
+	rewindState(pluginStack[activePluginCount-- - 1], PluginState::Deactivated);
 	resumePlugin();
 }
 
@@ -314,7 +364,7 @@ void setup() {
 void loop() {
 	// Tick the plugin
 	if (activePluginCount) {
-		pluginStack[activePluginCount - 1]->onTick();
+		pluginStack[activePluginCount - 1].plugin->onTick();
 	}
 
 	// Dispatch keys
@@ -458,8 +508,10 @@ void loop() {
 		display.fillScreen(SH110X_BLACK);
 		display.display();
 
-		transitionStart = millis() - screenTimeout;
-		transitionActive = true;
+		if (!idle) {
+			transitionStart = millis() - screenTimeout;
+			transitionActive = true;
+		}
 	} else if (tud_ready() && suspended && pluginCount) {
 		suspended = false;
 		if (!activePluginCount) {  // Plugin initialization
@@ -467,6 +519,7 @@ void loop() {
 		} else {
 			resumePlugin();
 		}
+		idle = false;
 		lastAction = transitionStart = millis();
 		transitionActive = true;
 	}
@@ -490,7 +543,7 @@ void loop() {
 						}
 					}
 
-					auto switching {pluginStack[0] != plugins[foundIdx]};
+					auto switching {pluginStack[0].plugin != plugins[foundIdx]};
 
 					if (switching) {
 						deactivatePlugin();
@@ -498,7 +551,7 @@ void loop() {
 					}
 
 					Serial.print(found ? switching ? "a=" : "a:" : switching ? "a!" : "a~");
-					Serial.println(pluginStack[0]->getName());
+					Serial.println(pluginStack[0].plugin->getName());
 				} else {
 					Serial.println("a-");
 				}
