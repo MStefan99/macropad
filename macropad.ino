@@ -165,6 +165,7 @@ void typeString(const char* str, uint8_t len, uint32_t delay) {
 		outString[i] = str[i];
 	}
 	outString[i] = 0;
+	outChar = outString;
 
 	dispatchDuration = delay;
 }
@@ -277,6 +278,10 @@ void drawPluginName() {
 }
 
 void activatePlugin(Plugin* plugin) {
+	if (activePluginCount > sizeof(pluginStack) / sizeof(pluginStack[0])) {
+		return;
+	}
+
 	encoderCount = 0;
 
 	suspendPlugin();
@@ -441,16 +446,23 @@ void loop() {
 			lastAction = transitionStart = millis();
 			transitionActive = true;
 		}
-	}
 
-	settingsProvider::commitSettings();
+		settingsProvider::commitSettings();
 
-	// Update display
-	if (updateDisplay) {
-		updateDisplay = false;
-		display
-		    .drawBitmap(0, 8, const_cast<const uint8_t*>(canvasProvider.getBuffer()), 128, 56, SH110X_WHITE, SH110X_BLACK);
-		display.display();
+		// Update display
+		if (!idle && updateDisplay) {
+			updateDisplay = false;
+			display.drawBitmap(
+			    0,
+			    8,
+			    const_cast<const uint8_t*>(canvasProvider.getBuffer()),
+			    128,
+			    56,
+			    SH110X_WHITE,
+			    SH110X_BLACK
+			);
+			display.display();
+		}
 	}
 
 	// Update backlight
@@ -485,7 +497,7 @@ void loop() {
 			);
 		}
 		strip.show();
-	} else if (showBacklight) {
+	} else if (!idle && showBacklight) {
 		showBacklight = false;
 		uint8_t brightness = brightnessTable[settingsProvider::getSettings().brightness];
 
@@ -530,7 +542,7 @@ void loop() {
 		auto byte {Serial.read()};
 		serialBuffer[serialIdx++] = byte;
 
-		if (!byte || byte == '\r' || (byte == '\n' && serialIdx > 1)) {
+		if (!byte || byte == '\r' || byte == '\n') {
 			if (!strncmp(serialBuffer, "a>", 2)) {
 				if (activePluginCount == 1) {
 					uint8_t foundIdx {0};
