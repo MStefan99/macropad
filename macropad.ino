@@ -125,6 +125,7 @@ bool rewindState(PluginInfo& info, PluginState targetState) {
 				break;
 		}
 	}
+
 	return true;
 }
 
