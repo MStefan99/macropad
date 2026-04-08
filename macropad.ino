@@ -234,6 +234,8 @@ void encoderHandler(void* pinPtr) {
 		return;
 	}
 
+	lastAction = millis();
+
 	if (idle) {
 		displayPlugin();
 		setBacklight();
@@ -242,7 +244,6 @@ void encoderHandler(void* pinPtr) {
 
 	int32_t count = encoderCount / settingsProvider::getSettings().encoderDivisor;
 	if (transition && count != sentEncoderCount) {
-		lastAction = millis();
 		sentEncoderCount = count;
 		if (!pinStatuses[0] && tud_ready()) {  // Setting brightness
 			auto settings {settingsProvider::getSettings()};
