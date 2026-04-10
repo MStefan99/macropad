@@ -97,7 +97,7 @@ ComboPlugin::Definition kritaDefinition {
      {"Screen", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 's'}, Color::Yellow(96)},
      {"Norm", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'n'}, Color::Green()},
      {},
-     {"Lum", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'y'}, Color::White()},
+     {"Hue", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'u'}, Color::Red()},
      {"LinB", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'a'}, Color::Blue(160)},
      {"LinL", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'j'}, Color::Green(160)},
      {"LinD", {KEY_LEFT_ALT, KEY_LEFT_SHIFT, 'w'}, Color::Yellow(160)},
