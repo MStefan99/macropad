@@ -10,7 +10,6 @@
 #define NEOPIXEL_PIN   19
 #define NEOPIXEL_COUNT 12
 
-
 // Options
 constexpr static uint32_t keyDebounceTime {5};
 constexpr static uint32_t encoderDebounceTime {2};

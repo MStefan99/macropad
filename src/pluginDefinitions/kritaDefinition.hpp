@@ -28,7 +28,8 @@ ComboPlugin::Definition kritaDefinition {
    {"Mirror", {'m'}, Color::Blue()},
    {"InvS", {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'i'}, Color::Orange()},
    {"Desel", {KEY_LEFT_CTRL, 'd'}, Color::Magenta()},
-   {"SelD", {KEY_LEFT_CTRL, 'h'}, Color::Mint()}},
+   {"SelD", {KEY_LEFT_CTRL, 'h'}, Color::Mint()},
+   {"Alpha", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'a'}, Color::Yellow()}},
   // Layers
   {// Brush layer
    {"Brush",
