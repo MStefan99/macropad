@@ -18,6 +18,7 @@
 #include "icons.hpp"
 #include "KeyDispatcher.hpp"
 #include "Navigator.hpp"
+#include "options.hpp"
 #include "Plugin.hpp"
 #include "PluginEnvironment.hpp"
 #include "PluginRegistrar.hpp"

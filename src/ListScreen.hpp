@@ -5,6 +5,7 @@
 #include "Arduino.h"
 
 #include "Navigator.hpp"
+#include "options.hpp"
 #include "Plugin.hpp"
 
 class ListScreen: public Plugin {
@@ -21,7 +22,7 @@ public:
 		char            name[16];
 		char            displayName[24];
 		char            shortDisplayName[8];
-		ListScreenItem  items[16];
+		ListScreenItem  items[std::max(MAX_PLUGINS, static_cast<uint8_t>(16))];
 		uint8_t         firstItem {0};
 		const uint32_t* icon;
 	};

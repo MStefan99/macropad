@@ -4,7 +4,7 @@
 
 static QuickPlugin systemPlugin {pluginEnvironment, systemQuickDefinition};
 
-Plugin* plugins[16] {&systemPlugin};  // System plugin has to come first
+Plugin* plugins[MAX_PLUGINS] {&systemPlugin};  // System plugin has to come first
 uint8_t pluginCount {1};
 uint8_t pluginCapacity {sizeof(plugins) / sizeof(plugins[0])};
 
