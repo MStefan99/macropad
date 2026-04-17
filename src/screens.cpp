@@ -1,6 +1,6 @@
 #include "screens.hpp"
 
-#include "plugins.hpp"
+#include "PluginRegistrar.hpp"
 #include "screenDefinitions/brightnessScreenDefinition.hpp"
 #include "screenDefinitions/mainScreenDefinition.hpp"
 #include "screenDefinitions/settingsScreenDefinition.hpp"

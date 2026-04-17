@@ -3,6 +3,7 @@
 
 #include "Keyboard.h"
 
+#include "../PluginRegistrar.hpp"
 #include "../QuickPlugin.hpp"
 
 
@@ -30,5 +31,9 @@ QuickPlugin::Definition firefoxDefinition {
   {"Volume", {{{}, KEY_VOLUME_DECREMENT}, {{}, KEY_VOLUME_INCREMENT}}, {{}, {KEY_PLAY_PAUSE}}},
   firefox_icon
 };
+
+
+QuickPlugin     firefoxPlugin {pluginEnvironment, firefoxDefinition};
+PluginRegistrar firefoxRegistrar {firefoxPlugin};
 
 #endif

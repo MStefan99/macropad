@@ -4,6 +4,7 @@
 #include "Keyboard.h"
 
 #include "../ComboPlugin.hpp"
+#include "../PluginRegistrar.hpp"
 
 
 PROGMEM const uint32_t krita_icon[] = {0x00000000, 0x00000000, 0x00f00fe0, 0x00fc3f90, 0x000ff08c, 0x80038047,
@@ -121,5 +122,9 @@ ComboPlugin::Definition kritaDefinition {
    },
   krita_icon
 };
+
+
+ComboPlugin     kritaPlugin {pluginEnvironment, kritaDefinition};
+PluginRegistrar kritaRegistrar {kritaPlugin};
 
 #endif

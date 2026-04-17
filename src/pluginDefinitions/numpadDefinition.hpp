@@ -3,6 +3,7 @@
 
 #include "Keyboard.h"
 
+#include "../PluginRegistrar.hpp"
 #include "../QuickPlugin.hpp"
 
 
@@ -33,5 +34,9 @@ QuickPlugin::Definition numpadDefinition {
   {"Volume", {{{}, KEY_VOLUME_DECREMENT}, {{}, KEY_VOLUME_INCREMENT}}, {{}, {KEY_MUTE}}},
   numpad_icon
 };
+
+
+QuickPlugin     numpadPlugin {pluginEnvironment, numpadDefinition};
+PluginRegistrar numpadRegistrar {numpadPlugin};
 
 #endif

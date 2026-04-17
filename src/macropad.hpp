@@ -20,7 +20,7 @@
 #include "Navigator.hpp"
 #include "Plugin.hpp"
 #include "PluginEnvironment.hpp"
-#include "plugins.hpp"
+#include "PluginRegistrar.hpp"
 #include "screens.hpp"
 #include "SerialProvider.hpp"
 #include "SettingsProvider.hpp"

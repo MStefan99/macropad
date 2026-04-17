@@ -1,15 +1,12 @@
 #include "macropad.hpp"
-#include "pluginDefinitions/firefoxDefinition.hpp"
-#include "pluginDefinitions/kritaDefinition.hpp"
+#include "PluginRegistrar.hpp"
+
+
+// Desktop plugin is automatically included as the first plugin
+// Include your additional plugins below
+// The order of plugins in the menu will follow the include order
 #include "pluginDefinitions/numpadDefinition.hpp"
-#include "pluginDefinitions/systemQuickDefinition.hpp"
-
-
-static QuickPlugin systemPlugin {pluginEnvironment, systemQuickDefinition};
-static QuickPlugin numpadPlugin {pluginEnvironment, numpadDefinition};
-static QuickPlugin firefoxPlugin {pluginEnvironment, firefoxDefinition};
-static ComboPlugin kritaPlugin {pluginEnvironment, kritaDefinition};
-
-Plugin* plugins[] {&systemPlugin, &numpadPlugin, &firefoxPlugin, &kritaPlugin};
-
-uint8_t pluginCount {sizeof(plugins) / sizeof(plugins[0])};
+// You can insert comments to stop clang-format from reordering plugins
+#include "pluginDefinitions/firefoxDefinition.hpp"
+//
+#include "pluginDefinitions/kritaDefinition.hpp"

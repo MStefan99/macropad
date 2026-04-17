@@ -20,7 +20,7 @@ void ListScreen::_displayItems() {
 		}
 	}
 
-	for (uint8_t i {0}; i < 2 && _definition.items[i].displayName[0]; ++i) {
+	for (uint8_t i {0}; i < 2 && _definition.items[_leftItem + i].displayName[0]; ++i) {
 		uint8_t idx = _leftItem + i;
 
 		auto     bgColor {idx == _activeItem ? SH110X_WHITE : SH110X_BLACK};
