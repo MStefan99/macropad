@@ -88,6 +88,7 @@ void displayPlugin();
 void setBacklight();
 void dispatchKeys(const uint8_t keys[8], uint16_t consumerKey, uint32_t duration);
 void typeString(const char* string, uint8_t len, uint32_t delay);
+void pluginPrint(const char* string);
 void activatePlugin(Plugin* plugin);
 void deactivatePlugin();
 
@@ -130,8 +131,9 @@ bool rewindState(PluginInfo& info, PluginState targetState) {
 
 CanvasProvider    canvasProvider {displayPlugin};
 BacklightProvider backlightProvider {setBacklight};
+SerialProvider    serialProvider {pluginPrint};
 KeyDispatcher     keyDispatcher {dispatchKeys, typeString};
-PluginEnvironment pluginEnvironment {canvasProvider, backlightProvider, keyDispatcher};
+PluginEnvironment pluginEnvironment {canvasProvider, backlightProvider, serialProvider, keyDispatcher};
 
 Navigator navigator(activatePlugin, deactivatePlugin);
 
@@ -167,6 +169,11 @@ void typeString(const char* str, uint8_t len, uint32_t delay) {
 	outChar = outString;
 
 	dispatchDuration = delay;
+}
+
+void pluginPrint(const char* string) {
+	Serial.print("d<");
+	Serial.println(string);
 }
 
 // Called from interrupts
@@ -543,7 +550,7 @@ void loop() {
 		serialBuffer[serialIdx++] = byte;
 
 		if (!byte || byte == '\r' || byte == '\n') {
-			if (!strncmp(serialBuffer, "a>", 2)) {
+			if (!strncmp(serialBuffer, "p>", 2)) {
 				if (activePluginCount == 1) {
 					uint8_t foundIdx {0};
 					bool    found {false};
@@ -563,11 +570,13 @@ void loop() {
 						activatePlugin(plugins[foundIdx]);
 					}
 
-					Serial.print(found ? switching ? "a=" : "a:" : switching ? "a!" : "a~");
+					Serial.print(found ? switching ? "p=" : "p:" : switching ? "p!" : "p~");
 					Serial.println(pluginStack[0].plugin->getName());
 				} else {
-					Serial.println("a-");
+					Serial.println("p-");
 				}
+			} else if (!strncmp(serialBuffer, "d>", 2) && activePluginCount) {
+				pluginStack[activePluginCount - 1].plugin->onData(serialBuffer + 2);
 			}
 
 			serialIdx = 0;

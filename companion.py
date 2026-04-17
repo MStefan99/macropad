@@ -1,19 +1,77 @@
+import socketserver
 import subprocess
+import http.server
 import serial
 import serial.tools.list_ports
+from threading import Thread
 import time
 import platform
 import os
 import json
-import sys
 import re
 
 current_app = ""
+current_profile = "sys"
 port = None
 
+WEB_PORT = 6227
 MACROPAD_VID = 0x239A  # Adafruit VID
 MACROPAD_PID = 0x8106  # Macropad RP2040 PID
 BAUD_RATE = 115200
+
+
+class Server(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(404)
+        self.end_headers()
+        self.wfile.write(b"Only POST requests are supported\n")
+
+    def do_POST(self):
+        content_length = int(self.headers['Content-Length'])
+        profile = self.headers['Profile']
+        data = self.rfile.read(content_length)[0:64].decode('utf-8')
+        print(f"Requested to send \"{data}\" from profile \"{profile}\"")
+
+        if profile != current_profile:
+            self.send_response(400)
+            self.end_headers()
+            self.wfile.write(b"App not active\n")
+            print(
+                f"Profile \"{profile}\" is not active. Active profile is \"{current_profile}\"")
+
+        elif port:
+            try:
+                port.write(f"d>{data}\n".encode(
+                    'ascii', errors='backslashreplace'))
+                print(f"Profile \"{profile}\" sent \"{data}\" to Macropad")
+                time.sleep(0.25)
+                self.send_response(200)
+                self.end_headers()
+                response = port.read(port.in_waiting).decode(
+                    'ascii', errors='ignore').strip()
+                res = re.search(r"^d>(.+)", response)
+                if res:
+                    print(
+                        f"Profile \"{profile}\" received \"{res.group(1)}\" from Macropad")
+                    self.wfile.write(f"{res.group(1)}\n".encode('utf-8'))
+                else:
+                    print("Macropad did not respond")
+                    self.wfile.write(b"")
+
+            except Exception as e:
+                self.send_response(500)
+                self.end_headers()
+                self.wfile.write(f"{str(e)}\n".encode('utf-8'))
+                print(f"Error sending data to Macropad: {e}")
+
+        else:
+            self.send_response(500)
+            self.end_headers()
+            self.wfile.write(b"Macropad not connected\n")
+            print("Macropad not connected")
+
+    def log_message(self, format, *args):
+        pass  # Logging above
 
 
 def find_macropad_port(vid, pid):
@@ -93,32 +151,33 @@ def get_active_executable():
 
 def send_over_serial(exe_name):
     try:
-        command = f"a>{exe_name}"
-        port.write(command.encode('utf-8'))
-        port.write(b'\n')
+        port.write(f"p>{exe_name}\n".encode(
+            'ascii', errors='backslashreplace'))
         print(f"Switching profile to \"{exe_name}\"")
 
         time.sleep(0.1)
         if port.in_waiting > 0:
             response = port.read(port.in_waiting).decode(
-                'utf-8', errors='ignore').strip()
-            res = re.search(r"^a(\S)(\w+)", response)
+                'ascii', errors='ignore').strip()
+            res = re.search(r"^p(\S)(\w+)", response)
 
-            if response == "a-":
-                print("Macropad cannot switch profiles right now")
-            elif res.group(1) == "=":
-                print(f"Macropad found and switched to \"{res.group(2)}\"")
-            elif res.group(1) == ":":
-                print(
-                    f"Macropad found and is already using \"{res.group(2)}\"")
-            elif res.group(1) == "!":
-                print(
-                    f"Macropad couldn't find \"{exe_name}\" and switched to \"{res.group(2)}\"")
-            elif res.group(1) == "~":
-                print(
-                    f"Macropad couldn't find \"{exe_name}\" and is already using \"{res.group(2)}\"")
-            else:
-                print("Macropad sent unknown status")
+            try:
+                if response == "p-":
+                    print("Macropad cannot switch profiles right now")
+                elif res.group(1) == "=":
+                    print(f"Macropad found and switched to \"{res.group(2)}\"")
+                elif res.group(1) == ":":
+                    print(
+                        f"Macropad found and is already using \"{res.group(2)}\"")
+                elif res.group(1) == "!":
+                    print(
+                        f"Macropad couldn't find \"{exe_name}\" and switched to \"{res.group(2)}\"")
+                elif res.group(1) == "~":
+                    print(
+                        f"Macropad couldn't find \"{exe_name}\" and is already using \"{res.group(2)}\"")
+                current_profile = res.group(2)
+            except Exception as e:
+                print(f"Macropad sent an unknown message: {response}")
 
     except Exception as e:
         print(f"Serial error: {e}")
@@ -127,33 +186,41 @@ def send_over_serial(exe_name):
 if __name__ == "__main__":
     print(f"Monitoring active applications...")
 
-    try:
-        while True:
-            target_port_path = find_macropad_port(MACROPAD_VID, MACROPAD_PID)
+    with socketserver.TCPServer(("127.0.0.1", WEB_PORT), Server) as httpd:
+        print(f"Web server started on port {WEB_PORT}")
+        try:
+            thread = Thread(target=httpd.serve_forever, daemon=True)
+            thread.start()
 
-            if not port:
-                if target_port_path:
-                    try:
-                        port = serial.Serial(
-                            target_port_path, BAUD_RATE, timeout=1)
-                        print(f"Connected to Macropad at {target_port_path}")
-                    except Exception as e:
-                        print(f"Port found but could not connect: {e}")
+            while True:
+                target_port_path = find_macropad_port(
+                    MACROPAD_VID, MACROPAD_PID)
 
-            elif port and not target_port_path:
+                if not port:
+                    if target_port_path:
+                        try:
+                            port = serial.Serial(
+                                target_port_path, BAUD_RATE, timeout=1)
+                            print(
+                                f"Connected to Macropad at {target_port_path}")
+                        except Exception as e:
+                            print(f"Port found but could not connect: {e}")
+
+                elif port and not target_port_path:
+                    port.close()
+                    port = None
+                    current_app = ""
+                    print("Macropad disconnected. Waiting for reconnection...")
+
+                else:
+                    exe_name = map_app_to_alias(get_active_executable())
+                    if exe_name and exe_name != current_app:
+                        current_app = exe_name
+                        send_over_serial(exe_name[0:64])
+
+                time.sleep(1)
+
+        except KeyboardInterrupt:
+            httpd.server_close()
+            if port:
                 port.close()
-                port = None
-                current_app = ""
-                print("Macropad disconnected. Waiting for reconnection...")
-
-            else:
-                exe_name = map_app_to_alias(get_active_executable())
-                if exe_name and exe_name != current_app:
-                    current_app = exe_name
-                    send_over_serial(exe_name)
-
-            time.sleep(1)
-
-    except KeyboardInterrupt:
-        if port:
-            port.close()

@@ -7,15 +7,23 @@
 #include "BacklightProvider.hpp"
 #include "CanvasProvider.hpp"
 #include "KeyDispatcher.hpp"
+#include "SerialProvider.hpp"
 
 struct PluginEnvironment {
 	CanvasProvider&    canvas;
 	BacklightProvider& backlight;
+	SerialProvider&    serial;
 	KeyDispatcher&     keyDispatcher;
 
-	PluginEnvironment(CanvasProvider& canvas, BacklightProvider& backlight, KeyDispatcher& keyDispatcher):
+	PluginEnvironment(
+	    CanvasProvider&    canvas,
+	    BacklightProvider& backlight,
+	    SerialProvider&    serialProvider,
+	    KeyDispatcher&     keyDispatcher
+	):
 	  canvas {canvas},
 	  backlight {backlight},
+	  serial {serialProvider},
 	  keyDispatcher {keyDispatcher} {
 		// Nothing to do
 	}

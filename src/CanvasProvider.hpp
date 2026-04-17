@@ -1,5 +1,5 @@
-#ifndef PLUGIN_CANVAS_HPP
-#define PLUGIN_CANVAS_HPP
+#ifndef CANVAS_PROVIDER_HPP
+#define CANVAS_PROVIDER_HPP
 
 
 #include "Adafruit_GFX.h"

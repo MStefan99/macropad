@@ -37,6 +37,10 @@ void Plugin::onEncoderUp(int32_t count) {
 	// Empty stub
 }
 
+void Plugin::onData(char* string) {
+	// Empty stub
+}
+
 void Plugin::onTick() {
 	// Empty stub
 }

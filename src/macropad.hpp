@@ -22,12 +22,10 @@
 #include "PluginEnvironment.hpp"
 #include "plugins.hpp"
 #include "screens.hpp"
+#include "SerialProvider.hpp"
 #include "SettingsProvider.hpp"
 
 
-extern CanvasProvider    canvasProvider;
-extern BacklightProvider backlightProvider;
-extern KeyDispatcher     keyDispatcher;
 extern PluginEnvironment pluginEnvironment;
 
 template <typename T>

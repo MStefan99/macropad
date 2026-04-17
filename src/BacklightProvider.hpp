@@ -1,5 +1,5 @@
-#ifndef PLUGIN_BACKLIGHT_HPP
-#define PLUGIN_BACKLIGHT_HPP
+#ifndef BACKLIGHT_PROVIDER_HPP
+#define BACKLIGHT_PROVIDER_HPP
 
 
 #include "Arduino.h"

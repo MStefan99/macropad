@@ -108,15 +108,17 @@ ComboPlugin::Definition kritaDefinition {
     Color::Orange()}
   },
   // Encoder modes
-  {{"Zoom", {{'-'}, {'='}}, Color::Mint()},
+  {
+   {"Zoom", {{'-'}, {'='}}, Color::Mint()},
    {"Rot", {{KEY_LEFT_CTRL, '['}, {KEY_LEFT_CTRL, ']'}}, Color::Green()},
    {"Hist", {{KEY_LEFT_CTRL, 'z'}, {KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 'z'}}, Color::Red()},
    {"Size", {{'['}, {']'}}, Color::Green()},
    {"Flow", {{KEY_LEFT_SHIFT, ','}, {KEY_LEFT_SHIFT, '.'}}, Color::Mint()},
    {"Opct", {{'i'}, {'o'}}, Color::Cyan()},
-   {"Brght", {{'k'}, {'l'}}, Color::Orange()},
-   {"Sat", {{KEY_LEFT_SHIFT, ';'}, {KEY_LEFT_SHIFT, '\''}}, Color::Yellow()},
-   {"Hue", {{KEY_LEFT_ALT, ';'}, {KEY_LEFT_ALT, '\''}}, Color::Lime()}},
+   {"Hue", {{KEY_LEFT_ALT, ';'}, {KEY_LEFT_ALT, '\''}}, Color::Orange()},
+   {"Sat", {{KEY_LEFT_SHIFT, ';'}, {KEY_LEFT_SHIFT, '\''}}, Color::Azure()},
+   {"Val", {{'k'}, {'l'}}, Color::White()},
+   },
   krita_icon
 };
 
