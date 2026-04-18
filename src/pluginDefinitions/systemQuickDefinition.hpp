@@ -34,4 +34,7 @@ QuickPlugin::Definition systemQuickDefinition {
   desktop_icon
 };
 
+
+// System plugin registered automatically
+
 #endif

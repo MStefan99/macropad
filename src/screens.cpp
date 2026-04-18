@@ -20,9 +20,9 @@ ListScreen::Definition appsScreenDefinition {
 };
 
 void activatePlugin(uint8_t idx) {
-	navigator.close();  // Close apps screen
-	navigator.close();  // Close main menu screen
-	navigator.close();  // Close currently open plugin
+	while (getActivePluginCount()) {
+		navigator.close();  // Close all open plugins
+	}
 	navigator.open(plugins[idx - 1]);
 }
 

@@ -1,8 +1,8 @@
 #ifndef SCREENS_HPP
 #define SCREENS_HPP
 
+#define ALLOW_STORAGE
 
-#include "macropad.hpp"
 #include "Plugin.hpp"
 
 
@@ -14,7 +14,7 @@ extern Plugin* speedScreen;
 extern Plugin* soundScreen;
 extern Plugin* timeoutScreen;
 
-
-void populateAppsScreen();
+extern uint8_t getActivePluginCount();
+void           populateAppsScreen();
 
 #endif

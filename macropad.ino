@@ -85,6 +85,10 @@ void pluginPrint(const char* string);
 void activatePlugin(Plugin* plugin);
 void deactivatePlugin();
 
+uint8_t getActivePluginCount() {
+	return activePluginCount;
+}
+
 bool rewindState(PluginInfo& info, PluginState targetState) {
 	while (info.state != targetState) {
 		switch (info.state) {
