@@ -6,6 +6,11 @@
 #include "../ComboPlugin.hpp"
 #include "../PluginRegistrar.hpp"
 
+// This plugin uses a custom Krita keymap for additional shortcuts that are missing by default
+// Krita keymap file can be found in the resources folder
+// It can be imported in Krita by navigating to:
+// Settings -> Configure Krita -> Keyboard shortcuts -> Save/Load -> Import scheme
+
 
 PROGMEM const uint32_t krita_icon[] = {0x00000000, 0x00000000, 0x00f00fe0, 0x00fc3f90, 0x000ff08c, 0x80038047,
                                        0xc001c061, 0x60006030, 0x70003018, 0x30001c0c, 0x1800061e, 0x1800031b,
