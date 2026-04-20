@@ -3,6 +3,11 @@
 
 #include "Arduino.h"
 
+// This class handles color and conversion between color models
+// Please note that for HSV, hue ranges from 0 to 1535 (256 * 6 - 1)
+// while both saturation and value are in the 0-255 range
+// For RGB, the components are 0-255
+
 class Color {
 public:
 	struct RGBchannels {

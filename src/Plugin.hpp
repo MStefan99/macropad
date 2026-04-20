@@ -23,9 +23,16 @@ public:
 	Plugin(PluginEnvironment& environment);
 	virtual ~Plugin() = default;
 
+	// Called when the plugin is initialized.
+	// Plugins are not guaranteed to be destroyed between activations,
+	// so make sure to initialize your internal state here
 	virtual void onActivate();
+	// Called when the plugin is about to being shown on screen
+	// Draw the UI and set up backlight here
 	virtual void onResume() = 0;
+	// Called when the plugin is about to move to background
 	virtual void onSuspend();
+	// Called when the plugin is about to be deactivated
 	virtual void onDeactivate();
 
 	virtual void onKeyDown(uint8_t key);
@@ -33,6 +40,7 @@ public:
 	virtual void onEncoderDown(int32_t count);
 	virtual void onEncoderUp(int32_t count);
 
+	// Called when data is received from the computer
 	virtual void onData(char* string);
 
 	virtual const char*     getName() const;
@@ -40,6 +48,7 @@ public:
 	virtual const char*     getShortDisplayName() const;
 	virtual const uint32_t* getIcon() const;
 
+	// Called every millisecond when the plugin is in the foreground (resumed)
 	virtual void onTick();
 
 protected:
