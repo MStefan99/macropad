@@ -165,8 +165,10 @@ void ComboPlugin::_highlight(uint8_t key, bool down) {
 void ComboPlugin::onActivate() {
 	_layerKey = 0;
 	_comboActivated = false;
-	_encoderMode = 0;
 	_displayMode = DisplayMode::KEY;
+#if !COMBO_PLUGIN_KEEP_ENCODER_MODE
+	_encoderMode = 0;
+#endif
 }
 
 void ComboPlugin::onResume() {

@@ -11,5 +11,10 @@ constexpr uint32_t encoderDebounceTime {2};
 constexpr uint32_t longPressDuration {750};
 constexpr uint32_t transitionDuration {500};
 
+/* Encoder mode being reset when you return back to the combo plugin can be annoying.
+ * Use this option to keep the previously used mode
+ */
+#define COMBO_PLUGIN_KEEP_ENCODER_MODE true
+
 
 #endif

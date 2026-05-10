@@ -5,6 +5,7 @@
 #include "Arduino.h"
 
 #include "Color.hpp"
+#include "options.hpp"
 #include "Plugin.hpp"
 #include "PluginEnvironment.hpp"
 

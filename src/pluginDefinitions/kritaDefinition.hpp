@@ -72,15 +72,18 @@ ComboPlugin::Definition kritaDefinition {
    // Tools layer
    {"Tool",
     {
-      {"Asst", {'a'}, Color::Purple()},
-      {"Fill", {'f'}, Color::Pink()},
+      {"Fill", {'f'}, Color::Magenta()},
+      {"Grad", {'g'}, Color::Pink()},
       {},
+      {"Asst", {'a'}, Color::Orange()},
+      {"RectS", {KEY_LEFT_CTRL, 'r'}, Color::Mint()},
+      {"PolyS", {KEY_LEFT_SHIFT, 'P'}, Color::Cyan()},
       {"WandC", {KEY_LEFT_ALT, 'c'}, Color::Azure()},
       {"Wand", {KEY_LEFT_ALT, KEY_LEFT_CTRL, 'w'}, Color::Blue()},
       {"Mag", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'm'}, Color::Purple()},
-      {"Line", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'l'}, Color::Orange()},
-      {"Ell", {KEY_LEFT_SHIFT, 'j'}, Color::Yellow()},
-      {"Poly", {KEY_LEFT_SHIFT, 'r'}, Color::Lime()},
+      {"Line", {KEY_LEFT_CTRL, KEY_LEFT_ALT, 'l'}, Color::Yellow()},
+      {"Ell", {KEY_LEFT_SHIFT, 'j'}, Color::Orange()},
+      {"Poly", {KEY_LEFT_SHIFT, 'r'}, Color::Red()},
     },
     Color::Lime()},
    // Filter layer
